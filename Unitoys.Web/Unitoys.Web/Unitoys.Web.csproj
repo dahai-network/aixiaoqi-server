@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Manage\Controllers\UTConfigController.cs" />
     <Compile Include="Areas\Manage\Controllers\PageShowController.cs" />
     <Compile Include="Areas\Manage\Controllers\BaseController.cs" />
     <Compile Include="Areas\Manage\Controllers\BannerController.cs" />
@@ -1039,6 +1040,7 @@
     <Content Include="Content\js\ckeditor\plugins\wsc\README.md" />
     <Content Include="Content\js\ckeditor\README.md" />
     <Content Include="Content\js\ckeditor\skins\moono\readme.md" />
+    <Content Include="Areas\Manage\Views\UTConfig\Index.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>
@@ -1155,6 +1157,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manage\Models\" />
+    <Folder Include="Areas\Manage\Views\Config\" />
     <Folder Include="Areas\wx\Models\" />
   </ItemGroup>
   <ItemGroup>

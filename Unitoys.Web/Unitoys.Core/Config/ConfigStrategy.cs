@@ -44,14 +44,6 @@ namespace Unitoys.Core.Config
         }
 
         /// <summary>
-        /// 获得配置
-        /// </summary>
-        public DeviceBraceletOTAConfigInfo GetDeviceBraceletOTAConfig()
-        {
-            return (DeviceBraceletOTAConfigInfo)LoadConfigInfo(typeof(DeviceBraceletOTAConfigInfo), IOHelper.GetMapPath(_deviceBraceletOTAConfigFilePath));
-        }
-
-        /// <summary>
         /// 保存配置
         /// </summary>
         /// <param name="configInfo">短信配置信息</param>
@@ -61,5 +53,12 @@ namespace Unitoys.Core.Config
             return SaveConfigInfo(configInfo, IOHelper.GetMapPath(_siteConfigFilePath));
         }
 
+        /// <summary>
+        /// 获得配置
+        /// </summary>
+        public DeviceBraceletOTAConfigInfo GetDeviceBraceletOTAConfig()
+        {
+            return (DeviceBraceletOTAConfigInfo)LoadConfigInfo(typeof(DeviceBraceletOTAConfigInfo), IOHelper.GetMapPath(_deviceBraceletOTAConfigFilePath));
+        }
     }
 }
