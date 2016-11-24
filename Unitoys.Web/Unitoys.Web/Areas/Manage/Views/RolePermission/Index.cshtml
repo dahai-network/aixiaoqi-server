@@ -1,0 +1,189 @@
+﻿@{
+    ViewBag.Title = "角色&权限管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+<div id="roleList" class="easyui-layout" fit="true" style="overflow-y: hidden">
+    <div data-options="region:'west',title:'角色列表',split:false,collapsible:false" style="width:150px;">
+        <ul class="navlist"></ul>
+    </div>
+
+    <style>
+        .permission_tab {
+            padding: 0px;
+            margin: 0px;
+            width: 100%;
+        }
+
+            .permission_tab td {
+                border-top: solid 1px #95B8E7;
+                border-left: solid 1px #95B8E7;
+                border-bottom: solid 1px #95B8E7;
+                border-right: solid 1px #95B8E7;
+                height: 45px;
+            }
+
+                .permission_tab td.left {
+                    border-left: solid 1px #95B8E7;
+                    font-size: 14px;
+                    width: 80px;
+                    font-weight: bold;
+                    text-align: center;
+                }
+
+                .permission_tab td label {
+                    margin-right: 15px;
+                    font-size: 13px;
+                    margin-left: 10px;
+                }
+    </style>
+
+    
+
+    <div data-options="region:'center',title:'权限列表'" style="padding:5px;background:#eee;overflow-y:hidden">
+        <div id="permissionList" class="easyui-panel" style="width:100%;height:100%;padding:10px;">
+            <div id="selectedRoleText">您目前没有选中角色</div><br />
+            <table class="permission_tab" cellpadding="0" cellspacing="0">
+            </table>
+            <br />    
+            <a id="saveBtn" href="#" class="easyui-linkbutton" iconcls="icon-ok">保存</a>        
+        </div>
+    </div>
+
+    
+</div>
+
+<script type="text/javascript">
+    //global property
+    var selectedRole;
+
+    $(function () {
+        getAllRole();
+        $("#saveBtn").hide();
+    });
+
+    function getAllRole() {
+        $.ajax({
+            type: "GET",
+            url: "/Manage/Role/GetAllRole",
+            success: function (data) {
+
+                getAllPermission();
+
+                if (data != null && data.length > 0 && Array.isArray(data)) {
+                    var ul = $("#roleList .navlist");
+
+                    for (var i = 0; i < data.length; i++) {
+                        var li = "<li>" +
+                                    "<div class=''>" +
+                                        "<a ref='12' href='#' rel='' value='" + data[i].ID + "'>" +
+                                            "<span class='icon icon-users'>" + "&nbsp;" +
+                                            "</span>" +
+                                            "<span class='nav'>" + data[i].Description +
+                                            "</span>"
+                                        "</a>"
+                                    "</div>"
+                                  "</li>";
+                        ul.append(li);
+                    }
+
+                    //绑定a标签事件。
+                    $("#roleList .navlist a").click(function () {
+                        selectedRole = $(this).attr("value");
+                        getPermissionListByRoleId($(this).attr("value"));
+                    });                    
+                }
+            }
+        });
+    };
+
+    function getAllPermission() {
+        $.ajax({
+            type: "GET",
+            url: "/Manage/Permission/GetAllPermission",
+            success: function (data) {
+                if (data != null && data.length > 0 && Array.isArray(data)) {
+                    var table = $(".permission_tab");
+
+                    for (var i = 0; i < data[0].DisplayOrder; i++) {
+                        var tr = document.createElement("tr");
+                        var td = document.createElement("td");
+
+                        for (var j = 0; j < data.length; j++) {
+                            
+                            if (data[j].DisplayOrder == i + 1) {                                
+                                var label = "<label>" + data[j].Description +
+                                               "<input type='checkbox' name='permissionObj' value='" + data[j].ID + "' />" +
+                                            "</label>";
+                                $(td).append(label);                                
+                            }
+                            $(tr).append(td);
+                        }
+                        table.append(tr);
+                    }
+                    
+                    $("#saveBtn").show();
+                    $("#saveBtn").click(save);
+                }
+            }
+        });
+    };
+
+    function getPermissionListByRoleId(roleId) {
+        $("#roleList .navlist a[value!='" + roleId + "'] .nav").css("font-weight", "normal");
+        $("#roleList .navlist a[value$='" + roleId + "'] .nav").css("font-weight", "bold");
+
+        $("#selectedRoleText").text("您当前选中的角色是：" + $("#roleList .navlist a[value$='" + roleId + "'] .nav").text());
+
+        $.ajax({
+            type: "GET",
+            url: "/Manage/RolePermission/GetPermissionListByRoleId",
+            data: { roleId: roleId },
+            success: function (data) {
+                $("input[name$='permissionObj']").attr("checked", false);
+                if (data != null && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("input[value$='" + data[i] + "']").attr("checked", true);
+                    }
+                }
+            }
+        });
+    };
+
+    function save() {
+
+        if (selectedRole == null || selectedRole == "") {
+            alert('请先选择角色！');
+            return;
+        }
+
+        var selectedIds = new Array();
+        var unselectedIds = new Array();
+        
+        //获取权限列表的value
+        var checkboxs = document.getElementsByName("permissionObj");
+
+        for (var i = 0; i < checkboxs.length; i++) {
+            if (checkboxs[i].checked) {
+                selectedIds.push(checkboxs[i].value);
+            }
+            else {
+                unselectedIds.push(checkboxs[i].value);
+            }
+        }
+
+        $("#saveBtn").linkbutton('disable');
+        $.ajax({
+            type: "POST",
+            url: "/Manage/RolePermission/ModifyRolePermissions",
+            data: { roleId: selectedRole, selectedIds: selectedIds, unselectedIds: unselectedIds },
+            success: function (data) {
+                $("#saveBtn").linkbutton('enable');
+                if (data) {
+                    alert('保存成功');
+                }
+            }
+        });
+    }
+
+</script>

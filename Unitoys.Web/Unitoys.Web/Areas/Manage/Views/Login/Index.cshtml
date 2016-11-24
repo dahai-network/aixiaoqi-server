@@ -1,0 +1,92 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>登录</title>
+    <link rel="stylesheet" href="@Url.Content("~/Content/css/default.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/js/themes/default/easyui.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/js/themes/icon.css")" type="text/css" />
+    <script type="text/javascript" src="@Url.Content("~/Content/js/jquery-1.7.2.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/js/jquery.easyui.min.js")"></script>
+    <style>
+        body
+        {
+            background:url(/Content/images/manage/login_bg.jpg);
+            background-size:cover;
+            width:100%;
+            height:100%;
+        }
+        .mainbox
+        {
+            position:absolute;
+            left:50%;
+            top:50%;
+            margin-left:-204px;
+            margin-top:-132px;
+            width:408px;
+            height:264px;
+            background:url(/content/images/manage/login_box_bg.png);
+        }
+            .mainbox .ipt
+            {
+                width:301px;height:100px;
+                margin:80px auto 0;
+            }
+                
+            .mainbox .submit
+            {
+                text-align:center;
+                margin-top:13px;
+            }
+        .btn_submit_login
+        {
+            background:url(/content/images/manage/btn_submit_login.png);
+            width:301px;height:43px;border:none;
+        }
+    </style>
+</head>
+<body>
+    <div class="mainbox">
+         
+        <div class="ipt">
+            <div style="margin-bottom:10px">
+			    <input class="easyui-textbox" id="LoginName" style="width:100%;height:40px;padding:12px" data-options="prompt:'用户名',iconCls:'icon-man',iconWidth:38">
+		    </div>   
+            <div style="margin-bottom:20px">
+			    <input class="easyui-textbox" id="PassWord" type="password" style="width:100%;height:40px;padding:12px" data-options="prompt:'密码',iconCls:'icon-lock',iconWidth:38">
+		    </div>
+        </div>
+        <div class="submit">
+            <input type="button" class="btn_submit_login" value=" " />
+        </div>
+    </div>
+    <script type="text/ecmascript">
+        $(".btn_submit_login").bind("click", function () {
+            var LoginName = $("#LoginName").val();
+            var PassWord = $("#PassWord").val();
+            if (LoginName == "") {
+                $.messager.alert('提示', '登录帐号不能为空！', 'info');
+            } else if (PassWord == "") {
+                $.messager.alert('提示', '登录密码不能为空！', 'info');
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Manage/Login/CheckLogin",
+                    data: "LoginName=" + LoginName + "&PassWord=" + PassWord,
+                    success: function (msg) {
+                        if (msg == "OK") {
+                            location.href = "/Manage/Home";
+                        } else {
+                            $.messager.alert('提示', msg, 'info');
+                        }
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

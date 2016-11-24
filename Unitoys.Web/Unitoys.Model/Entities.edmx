@@ -1,0 +1,721 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="UnitoysModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="UT_Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pic" Type="nvarchar" MaxLength="200" />
+          <Property Name="Rate" Type="float" />
+        </EntityType>
+        <EntityType Name="UT_ManageUsers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoginName" Type="nvarchar" MaxLength="50" />
+          <Property Name="PassWord" Type="nvarchar" MaxLength="50" />
+          <Property Name="TrueName" Type="nvarchar" MaxLength="50" />
+          <Property Name="GroupId" Type="int" />
+          <Property Name="Lock4" Type="int" />
+          <Property Name="AddTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UT_Package">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PackageName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="Flow" Type="int" Nullable="false" />
+          <Property Name="Desction" Type="text" />
+          <Property Name="Pic" Type="nvarchar" MaxLength="200" />
+          <Property Name="Discount" Type="float" />
+          <Property Name="ExpireDays" Type="int" Nullable="false" />
+          <Property Name="CountryId" Type="int" />
+          <Property Name="Lock4" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UT_PayRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="PayDate" Type="datetime" />
+          <Property Name="PayBank" Type="nvarchar" MaxLength="50" />
+          <Property Name="Ip" Type="varchar" MaxLength="50" />
+          <Property Name="Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UT_SMS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="FromNum" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ToNum" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SendTime" Type="datetime" />
+          <Property Name="Content" Type="text" />
+          <Property Name="Type" Type="int" />
+          <Property Name="IsRead" Type="int" />
+        </EntityType>
+        <EntityType Name="UT_SpeakRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CallTime" Type="datetime" />
+          <Property Name="FromCall" Type="nvarchar" MaxLength="100" />
+          <Property Name="ToCall" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="UT_UserBill">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="UserOldAmount" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserNewAmount" Type="nvarchar" MaxLength="100" />
+          <Property Name="BillType" Type="int" />
+          <Property Name="PayType" Type="int" />
+        </EntityType>
+        <EntityType Name="UT_UserLoginInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="LoginTime" Type="datetime" />
+          <Property Name="LoginIp" Type="varchar" MaxLength="50" />
+          <Property Name="Entrance" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="UT_UserPackage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="PackageName" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalFlow" Type="int" />
+          <Property Name="UsedFlow" Type="int" />
+          <Property Name="AddTime" Type="datetime" />
+          <Property Name="StartTime" Type="datetime" />
+          <Property Name="ExpireDays" Type="int" />
+          <Property Name="Status" Type="char" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="UT_Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoginName" Type="nvarchar" MaxLength="100" />
+          <Property Name="PassWord" Type="nvarchar" MaxLength="50" />
+          <Property Name="Amount" Type="nvarchar" MaxLength="100" />
+          <Property Name="TrueName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="Tel" Type="varchar" MaxLength="50" />
+          <Property Name="QQ" Type="varchar" MaxLength="12" />
+          <Property Name="AddTime" Type="datetime" />
+          <Property Name="GroupId" Type="int" />
+          <Property Name="Lock4" Type="int" />
+          <Property Name="Score" Type="int" />
+          <Property Name="Sex" Type="int" />
+        </EntityType>
+        <EntityType Name="UT_UsersGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Level" Type="int" />
+        </EntityType>
+        <Association Name="FK_UT_Package_UT_Country">
+          <End Role="UT_Country" Type="Self.UT_Country" Multiplicity="0..1" />
+          <End Role="UT_Package" Type="Self.UT_Package" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_Package">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_PayRecord_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="1" />
+          <End Role="UT_PayRecord" Type="Self.UT_PayRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_PayRecord">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_SMS_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="1" />
+          <End Role="UT_SMS" Type="Self.UT_SMS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_SMS">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_SpeakRecord_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="0..1" />
+          <End Role="UT_SpeakRecord" Type="Self.UT_SpeakRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_SpeakRecord">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_UserLoginInfo_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="0..1" />
+          <End Role="UT_UserLoginInfo" Type="Self.UT_UserLoginInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_UserLoginInfo">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_UserPackage_UT_Users1">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="0..1" />
+          <End Role="UT_UserPackage" Type="Self.UT_UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_UserPackage">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_Users_UT_UsersGroup">
+          <End Role="UT_UsersGroup" Type="Self.UT_UsersGroup" Multiplicity="0..1" />
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_UsersGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_Users">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UnitoysModelStoreContainer">
+          <EntitySet Name="UT_Country" EntityType="Self.UT_Country" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_ManageUsers" EntityType="Self.UT_ManageUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_Package" EntityType="Self.UT_Package" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_PayRecord" EntityType="Self.UT_PayRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_SMS" EntityType="Self.UT_SMS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_SpeakRecord" EntityType="Self.UT_SpeakRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_UserBill" EntityType="Self.UT_UserBill" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_UserLoginInfo" EntityType="Self.UT_UserLoginInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_UserPackage" EntityType="Self.UT_UserPackage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_Users" EntityType="Self.UT_Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UT_UsersGroup" EntityType="Self.UT_UsersGroup" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_UT_Package_UT_Country" Association="Self.FK_UT_Package_UT_Country">
+            <End Role="UT_Country" EntitySet="UT_Country" />
+            <End Role="UT_Package" EntitySet="UT_Package" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_PayRecord_UT_Users" Association="Self.FK_UT_PayRecord_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_PayRecord" EntitySet="UT_PayRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_SMS_UT_Users" Association="Self.FK_UT_SMS_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_SMS" EntitySet="UT_SMS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_SpeakRecord_UT_Users" Association="Self.FK_UT_SpeakRecord_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_SpeakRecord" EntitySet="UT_SpeakRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_UserLoginInfo_UT_Users" Association="Self.FK_UT_UserLoginInfo_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_UserLoginInfo" EntitySet="UT_UserLoginInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_UserPackage_UT_Users1" Association="Self.FK_UT_UserPackage_UT_Users1">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_UserPackage" EntitySet="UT_UserPackage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_Users_UT_UsersGroup" Association="Self.FK_UT_Users_UT_UsersGroup">
+            <End Role="UT_UsersGroup" EntitySet="UT_UsersGroup" />
+            <End Role="UT_Users" EntitySet="UT_Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UnitoysModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="UT_Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CountryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pic" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Rate" Type="Double" />
+          <NavigationProperty Name="UT_Package" Relationship="UnitoysModel.FK_UT_Package_UT_Country" FromRole="UT_Country" ToRole="UT_Package" />
+        </EntityType>
+        <EntityType Name="UT_ManageUsers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PassWord" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TrueName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GroupId" Type="Int32" />
+          <Property Name="Lock4" Type="Int32" />
+          <Property Name="AddTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="UT_SMS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="FromNum" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ToNum" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SendTime" Type="DateTime" Precision="3" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="Int32" />
+          <Property Name="IsRead" Type="Int32" />
+          <NavigationProperty Name="UT_Users" Relationship="Self.FK_UT_SMS_UT_Users" FromRole="UT_SMS" ToRole="UT_Users" />
+        </EntityType>
+        <EntityType Name="UT_SpeakRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CallTime" Type="DateTime" Precision="3" />
+          <Property Name="FromCall" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ToCall" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="UT_Users" Relationship="Self.FK_UT_SpeakRecord_UT_Users" FromRole="UT_SpeakRecord" ToRole="UT_Users" />
+        </EntityType>
+        <EntityType Name="UT_UserLoginInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="LoginTime" Type="DateTime" Precision="3" />
+          <Property Name="LoginIp" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Entrance" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UT_Users" Relationship="Self.FK_UT_UserLoginInfo_UT_Users" FromRole="UT_UserLoginInfo" ToRole="UT_Users" />
+        </EntityType>
+        <EntityType Name="UT_Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PassWord" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TrueName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Tel" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="QQ" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="AddTime" Type="DateTime" Precision="3" />
+          <Property Name="GroupId" Type="Int32" />
+          <Property Name="Lock4" Type="Int32" />
+          <Property Name="Score" Type="Int32" />
+          <Property Name="Sex" Type="Int32" />
+          <NavigationProperty Name="UT_SMS" Relationship="Self.FK_UT_SMS_UT_Users" FromRole="UT_Users" ToRole="UT_SMS" />
+          <NavigationProperty Name="UT_SpeakRecord" Relationship="Self.FK_UT_SpeakRecord_UT_Users" FromRole="UT_Users" ToRole="UT_SpeakRecord" />
+          <NavigationProperty Name="UT_UserLoginInfo" Relationship="Self.FK_UT_UserLoginInfo_UT_Users" FromRole="UT_Users" ToRole="UT_UserLoginInfo" />
+          <NavigationProperty Name="UT_UsersGroup" Relationship="Self.FK_UT_Users_UT_UsersGroup" FromRole="UT_Users" ToRole="UT_UsersGroup" />
+          <NavigationProperty Name="UT_UserPackage" Relationship="UnitoysModel.FK_UT_UserPackage_UT_Users1" FromRole="UT_Users" ToRole="UT_UserPackage" />
+          <Property Name="Amount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UT_PayRecord" Relationship="UnitoysModel.FK_UT_PayRecord_UT_Users" FromRole="UT_Users" ToRole="UT_PayRecord" />
+        </EntityType>
+        <EntityType Name="UT_UsersGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Level" Type="Int32" />
+          <NavigationProperty Name="UT_Users" Relationship="Self.FK_UT_Users_UT_UsersGroup" FromRole="UT_UsersGroup" ToRole="UT_Users" />
+        </EntityType>
+        <Association Name="FK_UT_SMS_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="1" />
+          <End Role="UT_SMS" Type="Self.UT_SMS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_SMS">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_SpeakRecord_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="0..1" />
+          <End Role="UT_SpeakRecord" Type="Self.UT_SpeakRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_SpeakRecord">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_UserLoginInfo_UT_Users">
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="0..1" />
+          <End Role="UT_UserLoginInfo" Type="Self.UT_UserLoginInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_UserLoginInfo">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UT_Users_UT_UsersGroup">
+          <End Role="UT_UsersGroup" Type="Self.UT_UsersGroup" Multiplicity="0..1" />
+          <End Role="UT_Users" Type="Self.UT_Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_UsersGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_Users">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UnitoysEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="UT_Country" EntityType="Self.UT_Country" />
+          <EntitySet Name="UT_ManageUsers" EntityType="Self.UT_ManageUsers" />
+          <EntitySet Name="UT_SMS" EntityType="Self.UT_SMS" />
+          <EntitySet Name="UT_SpeakRecord" EntityType="Self.UT_SpeakRecord" />
+          <EntitySet Name="UT_UserLoginInfo" EntityType="Self.UT_UserLoginInfo" />
+          <EntitySet Name="UT_Users" EntityType="Self.UT_Users" />
+          <EntitySet Name="UT_UsersGroup" EntityType="Self.UT_UsersGroup" />
+          <AssociationSet Name="FK_UT_SMS_UT_Users" Association="Self.FK_UT_SMS_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_SMS" EntitySet="UT_SMS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_SpeakRecord_UT_Users" Association="Self.FK_UT_SpeakRecord_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_SpeakRecord" EntitySet="UT_SpeakRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_UserLoginInfo_UT_Users" Association="Self.FK_UT_UserLoginInfo_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_UserLoginInfo" EntitySet="UT_UserLoginInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UT_Users_UT_UsersGroup" Association="Self.FK_UT_Users_UT_UsersGroup">
+            <End Role="UT_UsersGroup" EntitySet="UT_UsersGroup" />
+            <End Role="UT_Users" EntitySet="UT_Users" />
+          </AssociationSet>
+          <EntitySet Name="UT_Package" EntityType="UnitoysModel.UT_Package" />
+          <AssociationSet Name="FK_UT_Package_UT_Country" Association="UnitoysModel.FK_UT_Package_UT_Country">
+            <End Role="UT_Country" EntitySet="UT_Country" />
+            <End Role="UT_Package" EntitySet="UT_Package" />
+          </AssociationSet>
+          <EntitySet Name="UT_UserPackage" EntityType="UnitoysModel.UT_UserPackage" />
+          <AssociationSet Name="FK_UT_UserPackage_UT_Users1" Association="UnitoysModel.FK_UT_UserPackage_UT_Users1">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_UserPackage" EntitySet="UT_UserPackage" />
+          </AssociationSet>
+          <EntitySet Name="UT_PayRecord" EntityType="UnitoysModel.UT_PayRecord" />
+          <EntitySet Name="UT_UserBill" EntityType="UnitoysModel.UT_UserBill" />
+          <AssociationSet Name="FK_UT_PayRecord_UT_Users" Association="UnitoysModel.FK_UT_PayRecord_UT_Users">
+            <End Role="UT_Users" EntitySet="UT_Users" />
+            <End Role="UT_PayRecord" EntitySet="UT_PayRecord" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="UT_Package">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PackageName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Flow" Type="Int32" Nullable="false" />
+          <Property Name="Desction" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Pic" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Discount" Type="Double" />
+          <Property Name="ExpireDays" Type="Int32" Nullable="false" />
+          <Property Name="CountryId" Type="Int32" />
+          <Property Name="Lock4" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UT_Country" Relationship="UnitoysModel.FK_UT_Package_UT_Country" FromRole="UT_Package" ToRole="UT_Country" />
+        </EntityType>
+        <Association Name="FK_UT_Package_UT_Country">
+          <End Type="UnitoysModel.UT_Country" Role="UT_Country" Multiplicity="0..1" />
+          <End Type="UnitoysModel.UT_Package" Role="UT_Package" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_Package">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UT_UserPackage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="PackageName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalFlow" Type="Int32" />
+          <Property Name="UsedFlow" Type="Int32" />
+          <Property Name="AddTime" Type="DateTime" Precision="3" />
+          <Property Name="StartTime" Type="DateTime" Precision="3" />
+          <Property Name="ExpireDays" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="UT_Users" Relationship="UnitoysModel.FK_UT_UserPackage_UT_Users1" FromRole="UT_UserPackage" ToRole="UT_Users" />
+        </EntityType>
+        <Association Name="FK_UT_UserPackage_UT_Users1">
+          <End Type="UnitoysModel.UT_Users" Role="UT_Users" Multiplicity="0..1" />
+          <End Type="UnitoysModel.UT_UserPackage" Role="UT_UserPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_UserPackage">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UT_PayRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="PayDate" Type="DateTime" Precision="3" />
+          <Property Name="PayBank" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Ip" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UT_Users" Relationship="UnitoysModel.FK_UT_PayRecord_UT_Users" FromRole="UT_PayRecord" ToRole="UT_Users" />
+        </EntityType>
+        <EntityType Name="UT_UserBill">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="UserOldAmount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserNewAmount" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BillType" Type="Int32" />
+          <Property Name="PayType" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_UT_PayRecord_UT_Users">
+          <End Type="UnitoysModel.UT_Users" Role="UT_Users" Multiplicity="1" />
+          <End Type="UnitoysModel.UT_PayRecord" Role="UT_PayRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UT_Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UT_PayRecord">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UnitoysModelStoreContainer" CdmEntityContainer="UnitoysEntities">
+          <EntitySetMapping Name="UT_Country">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_Country">
+              <MappingFragment StoreEntitySet="UT_Country">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="Pic" ColumnName="Pic" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_ManageUsers">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_ManageUsers">
+              <MappingFragment StoreEntitySet="UT_ManageUsers">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
+                <ScalarProperty Name="TrueName" ColumnName="TrueName" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="Lock4" ColumnName="Lock4" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_SMS">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_SMS">
+              <MappingFragment StoreEntitySet="UT_SMS">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FromNum" ColumnName="FromNum" />
+                <ScalarProperty Name="ToNum" ColumnName="ToNum" />
+                <ScalarProperty Name="SendTime" ColumnName="SendTime" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_SpeakRecord">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_SpeakRecord">
+              <MappingFragment StoreEntitySet="UT_SpeakRecord">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CallTime" ColumnName="CallTime" />
+                <ScalarProperty Name="FromCall" ColumnName="FromCall" />
+                <ScalarProperty Name="ToCall" ColumnName="ToCall" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_UserLoginInfo">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_UserLoginInfo">
+              <MappingFragment StoreEntitySet="UT_UserLoginInfo">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="LoginTime" ColumnName="LoginTime" />
+                <ScalarProperty Name="LoginIp" ColumnName="LoginIp" />
+                <ScalarProperty Name="Entrance" ColumnName="Entrance" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_Users">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_Users">
+              <MappingFragment StoreEntitySet="UT_Users">
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="PassWord" ColumnName="PassWord" />
+                <ScalarProperty Name="TrueName" ColumnName="TrueName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Tel" ColumnName="Tel" />
+                <ScalarProperty Name="QQ" ColumnName="QQ" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="Lock4" ColumnName="Lock4" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_UsersGroup">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_UsersGroup">
+              <MappingFragment StoreEntitySet="UT_UsersGroup">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_Package">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_Package">
+              <MappingFragment StoreEntitySet="UT_Package">
+                <ScalarProperty Name="Lock4" ColumnName="Lock4" />
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+                <ScalarProperty Name="ExpireDays" ColumnName="ExpireDays" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Pic" ColumnName="Pic" />
+                <ScalarProperty Name="Desction" ColumnName="Desction" />
+                <ScalarProperty Name="Flow" ColumnName="Flow" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="PackageName" ColumnName="PackageName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_UserPackage">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_UserPackage">
+              <MappingFragment StoreEntitySet="UT_UserPackage">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExpireDays" ColumnName="ExpireDays" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="UsedFlow" ColumnName="UsedFlow" />
+                <ScalarProperty Name="TotalFlow" ColumnName="TotalFlow" />
+                <ScalarProperty Name="PackageName" ColumnName="PackageName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_PayRecord">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_PayRecord">
+              <MappingFragment StoreEntitySet="UT_PayRecord">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Ip" ColumnName="Ip" />
+                <ScalarProperty Name="PayBank" ColumnName="PayBank" />
+                <ScalarProperty Name="PayDate" ColumnName="PayDate" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UT_UserBill">
+            <EntityTypeMapping TypeName="UnitoysModel.UT_UserBill">
+              <MappingFragment StoreEntitySet="UT_UserBill">
+                <ScalarProperty Name="PayType" ColumnName="PayType" />
+                <ScalarProperty Name="BillType" ColumnName="BillType" />
+                <ScalarProperty Name="UserNewAmount" ColumnName="UserNewAmount" />
+                <ScalarProperty Name="UserOldAmount" ColumnName="UserOldAmount" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

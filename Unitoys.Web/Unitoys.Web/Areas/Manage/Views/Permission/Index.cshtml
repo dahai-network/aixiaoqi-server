@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+<table id="grid" class="easyui-datagrid" title="用户管理" style="width:100%;height:100%"
+       data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/Permission/GetPermissionList',method:'get',pagination:true,toolbar:toolbar">
+    <thead>
+        <tr>
+            <th data-options="field:'Name',width:120">权限名称</th>
+            <th data-options="field:'Description',width:120">权限描述</th>
+            <th data-options="field:'CreateDate',width:100">创建时间</th>
+        </tr>
+    </thead>
+</table>
+
+<div id="dlg-edit" class="easyui-dialog" title="添加权限" style="width:500px;height:350px;padding:20px"
+     data-options="
+                    iconCls: 'icon-save',
+                    closed:true,
+                    buttons: [{
+                        text:'保存',
+                        iconCls:'icon-ok',
+                        handler:saveData
+                    }]
+                ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right" width="100">
+                    权限名称：
+                </td>
+                <td>
+                    <input type="text" name="permissionName" id="permissionName" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    权限描述：
+                </td>
+                <td>
+                    <input type="text" name="description" id="description" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    权限排序：
+                </td>
+                <td>
+                    <input type="number" name="displayOrder" id="description" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    $(function () {
+        grid = $("#grid");
+        dlg_Edit = $("#dlg-edit").dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+    });
+
+    var toolbar =
+    [
+        {
+            text: '添加权限',
+            iconCls: 'icon-add',
+            handler: function () {
+                dlg_Edit_form.form('clear');
+                dlg_Edit.dialog('open');
+                dlg_Edit.dialog('setTitle', '添加新角色');
+                dlg_Edit_form.url = '/Manage/Permission/AddPermission';
+            }
+        },
+        {
+            text: '删除权限',
+            iconCls: 'icon-cut',
+            handler: deleteRole
+        }
+    ];
+
+    //保存数据
+    function saveData() {
+        dlg_Edit_form.form('submit', {
+            url: dlg_Edit_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: successCallback
+        });
+    }
+
+    //删除角色
+    function deleteRole() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要删除选中的记录吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/Permission/DeletePermission',
+                        type: 'post',
+                        data: "roleId=" + getSelectedID(),
+                        error: function () {
+                            Msgalert('错误', '删除失败!', 'error');
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要删除的记录。');
+        }
+    }
+</script>

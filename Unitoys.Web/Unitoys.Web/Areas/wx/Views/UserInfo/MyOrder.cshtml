@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Unitoys.Web.Areas.wx.Controllers.RazorUserOrder>
+@{
+    ViewBag.Title = "我购买的套餐";
+}
+
+<div class="packagelist">
+    <ul>
+        @foreach (var item in Model)
+        { 
+        <li>
+            <a href="/wx/userinfo/myorderdetail?orderid=@item.OrderId">
+                <div class="ppic"><img src="@item.LogoPic" /></div>
+                <div class="pname">
+                    <p class="name">@item.PackageName <span class="s1">￥</span><span class="s2">@item.TotalPrice</span></p>
+                    <p class="expiredays">@item.ExpireDays</p>
+                </div>
+                <div class="pstatus">
+                    @if (item.OrderStatus == "0")
+                    {
+                        <p class="error"><span></span>未激活</p>
+                    }
+                    else if (item.OrderStatus == "1")
+                    {
+                        <p class="success"><span></span>已激活</p>
+                    }
+                    else if (item.OrderStatus == "2")
+                    {
+                        <p class="error"><span></span>已过期</p>
+                    }
+                    else if (item.OrderStatus == "3")
+                    {
+                        <p class="error"><span></span>已取消</p>
+                    }
+                    else if (item.OrderStatus == "4")
+                    {
+                        <p class="error"><span></span>激活失败</p>
+                    }
+                </div>
+            </a>
+        </li>
+        }
+    </ul>
+</div>
+

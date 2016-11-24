@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "个人中心";
+}
+
+<div class="userinfo">
+    <div class="header">
+        <p class="head"><img src="@ViewBag.UserHead" /></p>
+        <p class="nick">@ViewBag.NickName</p>
+        <p class="tel">@ViewBag.Tel</p>
+    </div>
+    <div class="user_money">
+        <p class="l"><a href="/wx/userinfo/billlist"><strong>@ViewBag.Amount</strong>余额</a></p>
+        <p class="r"><a href="/wx/wxpay/"><span></span>充值</a></p>
+    </div>
+    <div class="gnlist">
+        <ul>
+            <li>
+                <a href="/wx/userinfo/myorder">
+                    <b class="icon_wdtc"></b>我的套餐 <span></span>
+                </a>
+            </li>
+            <li>
+                <a href="/wx/speakrecord">
+                    <b class="icon_thjl"></b>通话记录 <span></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+

@@ -1,0 +1,24 @@
+
+[接口调用]
+[2016/10/29 9:23:03]
+    URL：https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxe114537f747732cf&secret=b62e263406117f9d20f33b1f36c2305b
+    Result：
+{"access_token":"006TEDoyYJFhY0rO_Lrmhul7sAufe5l5rrcQ5VncajVmOjWe9AiL9Om90hqXF5bUG5kpuDRsz4XwzSvOIqaXKpobhBLrE3d7j3eR6ZhTye55NuZq9H4l6e_bca2WUvnTRNUeAIAVRY","expires_in":7200}
+
+[接口调用]
+[2016/10/29 9:23:03]
+    URL：https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=006TEDoyYJFhY0rO_Lrmhul7sAufe5l5rrcQ5VncajVmOjWe9AiL9Om90hqXF5bUG5kpuDRsz4XwzSvOIqaXKpobhBLrE3d7j3eR6ZhTye55NuZq9H4l6e_bca2WUvnTRNUeAIAVRY&type=jsapi
+    Result：
+{"errcode":0,"errmsg":"ok","ticket":"kgt8ON7yVITDhtdwci0qeSIbNlMwRvoQO9_qaEPc-m3ATyW2BvlW7dguWjTJU86cnTVY0ZEy4QGXCzeYnzfOFA","expires_in":7200}
+
+[接口调用]
+[2016/10/29 9:27:07]
+    URL：https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxe114537f747732cf&secret=b62e263406117f9d20f33b1f36c2305b
+    Result：
+{"access_token":"u9LhOxMV6SdiA5cP95VRBGFHXXxucATrtQB7X3ffIFySgEZnUgpmUliM6YUbCHrPoxiOHNo9Bg7EkqvvjlBrogDRtDv31XtgOg63cQrsPDLSDjZk9gubZ3J6xtGP7JXCHGScAIAZYK","expires_in":7200}
+
+[接口调用]
+[2016/10/29 9:27:07]
+    URL：https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=u9LhOxMV6SdiA5cP95VRBGFHXXxucATrtQB7X3ffIFySgEZnUgpmUliM6YUbCHrPoxiOHNo9Bg7EkqvvjlBrogDRtDv31XtgOg63cQrsPDLSDjZk9gubZ3J6xtGP7JXCHGScAIAZYK&type=jsapi
+    Result：
+{"errcode":0,"errmsg":"ok","ticket":"kgt8ON7yVITDhtdwci0qeSIbNlMwRvoQO9_qaEPc-m3ATyW2BvlW7dguWjTJU86cnTVY0ZEy4QGXCzeYnzfOFA","expires_in":7200}

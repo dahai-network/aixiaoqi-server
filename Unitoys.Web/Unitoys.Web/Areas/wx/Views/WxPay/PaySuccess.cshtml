@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "充值成功";
+}
+
+<div class="pay_success">
+    <div class="suctips">
+        <span>充值成功</span>
+    </div>
+    <div class="box1">
+        <ul>
+            <li>充值方式：<span class="rc">微信支付</span></li>
+            <li>金额：<span class="rc">@ViewBag.Amount</span></li>
+        </ul>
+    </div>
+    <div class="btnbox">
+        <a href="/wx/userinfo" class="btn_pay">完成</a>
+    </div>
+</div>
+

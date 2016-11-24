@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "在线支付订单管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>充值号:</span>
+                <input id="paymentNum" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>用户名:</span>
+                <input id="tel" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="在线支付订单管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/Payment/GetList',method:'get',toolbar:toolbar,pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'PaymentNum',width:120">充值号</th>
+                    <th data-options="field:'Tel',width:60">用户名</th>
+                    <th data-options="field:'Amount',width:40">充值金额</th>
+                    <th data-options="field:'PaymentMethod',width:40,formatter:formatPaymentMethod">支付方式</th>
+                    <th data-options="field:'PaymentPurpose',width:100">支付目的</th>
+                    <th data-options="field:'PayOrReceive',width:50,formatter:formatPayOrReceive">支出/收入</th>
+                    <th data-options="field:'CreateDate',width:80">创建日期</th>
+                    <th data-options="field:'PaymentComfirmDate',width:80">完成支付时间</th>
+                    <th data-options="field:'Status',width:60,formatter:formatLock,styler:stylerFun">状态</th>
+                    <th data-options="field:'Remark',width:60,formatter:formatLock,styler:stylerFun">备注</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var grid;
+
+    $(function () {
+        grid = $("#grid").datagrid();
+    })
+
+    var toolbar = [{
+        text: '设置为已付款',
+        iconCls: 'icon-ok',
+        handler: changeStatus
+    }];
+
+    function changeStatus() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要修改选中的记录状态吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/Payment/ChangeStatus',
+                        type: 'post',
+                        data: "paymentId=" + getSelectedID(),
+                        error: function (data) {
+                            if (data.status == 403) {
+                                Msgalert('错误', '修改失败，没有权限修改！', 'error');
+                            } else {
+                                Msgalert('错误', '修改失败', 'error');
+                            }
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要修改的记录。');
+        }
+    }
+
+    function stylerFun(value, row, index) {
+        if (value == 1) {
+            //return 'background-color:#ffee00;color:red;';
+        }
+    }
+    function formatPayOrReceive(value, rec, index) {
+        if (value == 0) {
+            return "支出";
+        }
+        if (value == 1) {
+            return "收入";
+        }
+        return value;
+    }
+    function formatPaymentMethod(value, rec, index) {
+        if (value == 1) {
+            return "支付宝";
+        }
+        if (value == 2) {
+            return "微信";
+        }
+        if (value == 3) {
+            return "余额";
+        }
+        return value;
+    }
+    function formatLock(value, rec, index) {
+        if (value == 0) {
+            return "<span style='color:#ff0000'>等待付款</span>";
+        }
+        if (value == 1) {
+            return "<span style='color:#1fb237'>已付款</span>";
+        }
+        if (value == 2) {
+            return "已过期";
+        }
+        if (value == -1) {
+            return "异常付款";
+        }
+        return value;
+    }
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            tel: $("#tel").val() == null ? "" : $("#tel").val(),
+            paymentNum: $("#paymentNum").val() == null ? "" : $("#paymentNum").val(),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
+        });
+    }
+
+</script>

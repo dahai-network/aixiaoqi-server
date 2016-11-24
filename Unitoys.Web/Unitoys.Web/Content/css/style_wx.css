@@ -1,0 +1,108 @@
+﻿@charset 'utf-8';
+/******= Reset =******/
+section,article,aside,header,footer,nav,dialog,figure,legend{display:block;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,figure{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;empty-cells:show; table-layout:fixed;}
+table td{word-break:break-all;}
+caption,th{text-align:left;}
+ol,ul{list-style:none;}
+img{display:block;border:0;vertical-align:middle;max-width:100%;height:auto;width:auto\9;/* ie8 */}
+*:focus{outline:0;}
+*{-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-touch-callout:none;-webkit-box-sizing:border-box;box-sizing:border-box}
+audio,canvas,video{display:inline-block;*display:inline;*zoom:1;}
+audio:not([controls]){display:none;}[hidden]{display:none;}
+a{text-decoration:none}
+/******= Typography =******/
+html,body{max-width:720px;height:100%;}
+html{font-size:100px;outline:0;}
+body{color:#767676;background:#ffffff;-webkit-user-select:none;-webkit-text-size-adjust:none;position:relative;font-size:0.16rem;}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+
+
+.loginbox{width:100%;height:100%;background-color:#333a48;overflow:hidden}
+.loginbox .logo{text-align:center;width:5.04rem;margin:1rem  auto 2rem}
+.loginbox .from{margin:1rem auto;width:5.4rem;}
+.loginbox .from p{height:0.82rem;margin-bottom:0.3rem;}
+.loginbox .from p input{width:100%;height:0.82rem;border:none;border-bottom:solid 1px #7d8698;padding-left:0.67rem;color:#ffffff}
+.loginbox .from p.tel input{background:transparent url(../images/wx/login_ipt_tel.png) no-repeat;background-size: auto 80%;}
+.loginbox .from p.pwd input{background:transparent url(../images/wx/login_ipt_pwd.png) no-repeat;background-size: auto 80%;}
+.loginbox .from p a.btn_bindUser{width:100%;height:0.86rem;background-color:#01d0c0;display:block;text-align:center;line-height:0.86rem;text-decoration:none;font-size:0.34rem;color:#ffffff}
+
+
+.userinfo{width:100%;height:100%;background-color:#eaecf0;overflow:hidden}
+.userinfo .header{width:100%;height:2.85rem;background:url(../images/wx/userinfo_header_bg.png) no-repeat;overflow:hidden}
+.userinfo .header .head{width:1.68rem;height:1.68rem;border-radius:50px;margin:0.22rem auto 0;overflow:hidden}
+.userinfo .header .head img{width:100%;height:100%;}
+.userinfo .header .nick{font-size:0.27rem;color:#fff;text-align:center;margin-top:0.1rem;}
+.userinfo .header .tel{font-size:0.23rem;color:#fff;text-align:center;margin-top:0.1rem;}
+.userinfo .user_money{height:0.86rem;border-bottom:solid 1px #cecfd3;background:#ffffff;padding:0.22rem 0;}
+.userinfo .user_money .l{float:left;height:0.38rem;width:50%;border-right:solid 1px #e0e0e0;text-align:center}
+.userinfo .user_money .l a{font-size:0.3rem;color:#000000;}
+.userinfo .user_money .l a strong{font-size:0.36rem;color:#01d0c0}
+.userinfo .user_money .r{float:right;height:0.38rem;width:50%;text-align:center}
+.userinfo .user_money .r a{font-size:0.3rem;color:#000000;}
+.userinfo .user_money .r a span{background:url(../images/wx/userinfo_money.png) no-repeat;width:0.44rem;height:0.37rem;display:inline-block;background-size:cover}
+.userinfo .gnlist{margin-top:0.3rem;}
+.userinfo .gnlist li{height:0.86rem;border-bottom:solid 1px #e0e0e0;background:#ffffff}
+.userinfo .gnlist li a{width:100%;height:100%;display:block;position:relative;line-height:0.86rem;padding-left:0.96rem;font-size:0.3rem;color:#000000}
+.userinfo .gnlist li a span{position:absolute;right:0.3rem;top:0.26rem;width:0.15rem;height:0.26rem;background:url(../images/wx/userinfo_jt.png) no-repeat center center;background-size:cover}
+.userinfo .gnlist .icon_wdtc{background:url(../images/wx/userinfo_icon_wdtc.png) no-repeat;background-size:cover; width:0.45rem;height:0.57rem;position:absolute;left:0.4rem;top:0.10rem;}
+.userinfo .gnlist .icon_sz{background:url(../images/wx/userinfo_icon_sz.png) no-repeat;background-size:cover;width:0.45rem;height:0.57rem;position:absolute;left:0.4rem;top:0.10rem;}
+.userinfo .gnlist .icon_thjl{background:url(../images/wx/userinfo_icon_thjl.png) no-repeat;background-size:cover;width:0.45rem;height:0.57rem;position:absolute;left:0.4rem;top:0.10rem;}
+
+.packagelist li{height:1.24rem;padding:0.32rem;border-bottom:solid 1px #e0e0e0}
+.packagelist li .ppic{float:left;width:0.6rem;height:0.6rem;}
+.packagelist li .pname{float:left;margin-left:0.12rem;}
+.packagelist li .pname .name{font-size:0.3rem;color:#000000;margin-top:-0.15rem;}
+.packagelist li .pname .name .s1{color:#eb8500;}
+.packagelist li .pname .name .s2{color:#eb8500;font-size:0.45rem;}
+.packagelist li .pname .expiredays{color:#a4a4a4;font-size:0.2rem;}
+.packagelist li .pstatus{float:right}
+.packagelist li .pstatus .success{color:#01d0c0;font-size:0.3rem;}
+.packagelist li .pstatus .success span{background:url(../images/wx/order_status_1.png) no-repeat center left;background-size:cover;float:left;width:0.32rem;height:0.32rem;margin-right:0.05rem;}
+.packagelist li .pstatus .error{color:#a4a4a4;font-size:0.3rem;}
+.packagelist li .pstatus .error span{background:url(../images/wx/order_status_0.png) no-repeat center left;background-size:cover;float:left;width:0.32rem;height:0.32rem;margin-right:0.05rem;}
+
+.user_order_detail{background:#eaecf0;width:100%;height:100%;overflow:hidden;font-size:0.3rem;}
+.user_order_detail .box{margin-top:0.3rem;border-bottom:solid 1px #dbdbdb;border-top:solid 1px #dbdbdb;background-color:#ffffff;padding:0.3rem;overflow:hidden}
+.user_order_detail .box .pic{width:1.24rem;height:1.24rem;float:left}
+.user_order_detail .box .pic img{width:100%}
+.user_order_detail .box .rb{margin-left:0.2rem;float:left;width:5.1rem;}
+.user_order_detail .box .title{font-size:0.3rem;font-weight:bold;line-height:25px;}
+.user_order_detail .box .expiredays{font-size:0.2rem;color:#a4a4a4}
+.user_order_detail .box .price_num{font-size:0.3rem;font-weight:bold}
+.user_order_detail .box .price_num .rmb{color:#eb8500}
+.user_order_detail .box .price_num .price{color:#eb8500;font-size:0.45rem;}
+.user_order_detail .box .price_num .quantity{float:right;font-weight:bold;margin-top:0.1rem;}
+
+.user_order_detail .box1{margin-top:0.3rem;border-bottom:solid 1px #dbdbdb;border-top:solid 1px #dbdbdb;background-color:#ffffff;padding:0 0.3rem;overflow:hidden;}
+.user_order_detail .box1 .title{height:0.83rem;line-height:0.83rem;font-weight:bold}
+.user_order_detail .box1 ul li{height:0.83rem;line-height:0.83rem;}
+.user_order_detail .box1 ul li span.rc{float:right;color:#a4a4a4;}
+
+.bill_list{overflow:hidden}
+.bill_list li{height:1.3rem;border-bottom:solid 1px #dbdbdb;padding:0.3rem;font-weight:bold}
+.bill_list li .lc{float:left;}
+.bill_list li .lc .title{font-size:0.3rem;font-weight:bold;color:#000000;margin-bottom:0.1rem;}
+.bill_list li .lc .date{color:#a4a4a4;font-size:0.24rem;}
+.bill_list li .rc{float:right;margin-top:0.2rem;}
+.bill_list li .rc .in{color:#17ba22;font-size:0.3rem;}
+.bill_list li .rc .out{color:#000000;font-size:0.3rem;}
+
+.pay_balance{width:100%;height:100%;background:#eaecf0;overflow:hidden}
+.pay_balance .balance_ipt{margin:0.3rem 0;height:0.88rem;background-color:#ffffff;border-bottom:solid 1px #dbdbdb;border-top:solid 1px #dbdbdb}
+.pay_balance .balance_ipt label{height:0.88rem;line-height:0.88rem;width:1.2rem;text-align:center;font-size:0.3rem;float:left;font-weight:bold;color:#000000}
+.pay_balance .balance_ipt input{height:0.88rem;width:6rem;border:none;background-color:transparent;font-size:0.3rem;}
+.pay_balance .btnbox{padding:0.3rem;}
+.pay_balance .btnbox .btn_pay{width:100%;height:0.86rem;background-color:#01d0c0;display:block;text-align:center;line-height:0.86rem;font-size:0.35rem;color:#ffffff;border-radius:5px;}
+
+
+.pay_success{width:100%;height:100%;background:#eaecf0;overflow:hidden;font-size:0.3rem;}
+.pay_success .suctips{height:2.22rem;width:100%;padding:0.8rem 0;text-align:center}
+.pay_success .suctips span{height:0.6rem;background:url(../images/wx/pay_success.png) no-repeat;background-size:auto 100% ;display:inline-block;padding-left:0.65rem;line-height:0.6rem;}
+.pay_success .box1{border-bottom:solid 1px #dbdbdb;border-top:solid 1px #dbdbdb;background-color:#ffffff;overflow:hidden;}
+.pay_success .box1 .title{height:0.83rem;line-height:0.83rem;font-weight:bold}
+.pay_success .box1 ul li{height:0.83rem;line-height:0.83rem;border-bottom:solid 1px #dbdbdb;padding:0 0.3rem;}
+.pay_success .box1 ul li span.rc{float:right;color:#a4a4a4;}
+.pay_success .btnbox{padding:0.3rem;}
+.pay_success .btnbox .btn_pay{width:100%;height:0.86rem;background-color:#01d0c0;display:block;text-align:center;line-height:0.86rem;font-size:0.35rem;color:#ffffff;border-radius:5px;}

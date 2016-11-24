@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D50AA7F8-3F4D-43C2-8136-267B0114B229}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Unitoys.IServices</RootNamespace>
+    <AssemblyName>Unitoys.IServices</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IPageShowService.cs" />
+    <Compile Include="IUsersConfigService.cs" />
+    <Compile Include="IBaseService.cs" />
+    <Compile Include="IBannerService.cs" />
+    <Compile Include="IAlarmClockService.cs" />
+    <Compile Include="ISportTimePeriodService.cs" />
+    <Compile Include="ISportService.cs" />
+    <Compile Include="IUserWxService.cs" />
+    <Compile Include="IUserShapeService.cs" />
+    <Compile Include="IDeviceBraceletService.cs" />
+    <Compile Include="IPaymentCardService.cs" />
+    <Compile Include="ICountryService.cs" />
+    <Compile Include="IFeedbackService.cs" />
+    <Compile Include="IManageUserService.cs" />
+    <Compile Include="IMessageCommentService.cs" />
+    <Compile Include="IMessageLikeService.cs" />
+    <Compile Include="IMessagePhotoService.cs" />
+    <Compile Include="ICallTransferNumService.cs" />
+    <Compile Include="IMessageService.cs" />
+    <Compile Include="IOrderUsageService.cs" />
+    <Compile Include="IOrderService.cs" />
+    <Compile Include="IPermissionService.cs" />
+    <Compile Include="IPhoneCallbackService.cs" />
+    <Compile Include="IRolePermissionService.cs" />
+    <Compile Include="IRoleService.cs" />
+    <Compile Include="ISMSConfirmationService.cs" />
+    <Compile Include="ISpeakRecordService.cs" />
+    <Compile Include="IUserBillService.cs" />
+    <Compile Include="IPackageService.cs" />
+    <Compile Include="ISMSService.cs" />
+    <Compile Include="IPaymentService.cs" />
+    <Compile Include="IUserLoginRecordService.cs" />
+    <Compile Include="IDeviceGoipService.cs" />
+    <Compile Include="IUserService.cs" />
+    <Compile Include="IManageUsersRoleService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unitoys.Model\Unitoys.Model.csproj">
+      <Project>{749b8faf-fb9b-485c-9295-f3fffcf15b8b}</Project>
+      <Name>Unitoys.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

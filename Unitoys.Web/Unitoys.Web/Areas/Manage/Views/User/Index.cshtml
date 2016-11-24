@@ -1,0 +1,227 @@
+﻿@{
+    ViewBag.Title = "会员管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="easyui-layout" fit="true" >
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>手机号码:</span>
+                <input id="tel" type="text" class="easyui-numberbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>是否锁定:</span>
+                <select id="status" class="easyui-combobox" name="state" style="width:200px;">
+                    <option value="-1">-- 请选择 --</option>
+                    <option value="0">正常</option>
+                    <option value="1">锁定</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="用户管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/User/GetList',method:'get',pagination:true,toolbar:toolbar">
+            <thead>
+                <tr>
+                    <th data-options="field:'Tel',width:120">手机号码</th>
+                    <th data-options="field:'Email',width:120">电子邮箱</th>
+                    <th data-options="field:'TrueName',width:100">真是姓名</th>
+                    <th data-options="field:'QQ',width:60">QQ</th>
+                    <th data-options="field:'Amount',width:60,formatter:formatMoney">账户余额</th>
+                    <th data-options="field:'Sex',width:50,formatter:formatSex">性别</th>
+                    <th data-options="field:'CreateDate',width:100">创建时间</th>
+                    <th data-options="field:'Status',width:60,formatter:formatLock,styler:stylerFun">是否锁定</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+    <div id="dlg-edit" class="easyui-dialog" title="添加管理员" style="width:500px;height:350px;padding:20px"
+         data-options="
+                    iconCls: 'icon-save',
+                    closed:true,
+                    buttons: [{
+                        text:'保存',
+                        iconCls:'icon-ok',
+                        handler:saveData
+                    }]
+                ">
+        <form method="post" id="Form" data-options="novalidate:true">
+            <input type="hidden" value="" id="ID" name="ID" />
+            <table cellpadding="5" class="tb_form">
+                <tr>
+                    <td style="text-align:right">
+                        手机号码：
+                    </td>
+                    <td>
+                        <input type="text" name="tel" id="tel" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right">
+                        密码：
+                    </td>
+                    <td>
+                        <input type="password" name="passWord" id="passWord" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right">
+                        电子邮箱：
+                    </td>
+                    <td>
+                        <input type="text" name="email" id="email" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right">
+                        真实姓名：
+                    </td>
+                    <td>
+                        <input type="text" name="trueName" id="trueName" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        var grid;
+        var dlg_Edit;
+        var dlg_Edit_form;
+
+        var toolbar = [{
+            text: '添加用户',
+            iconCls: 'icon-add',
+            handler: function () {
+                dlg_Edit_form.form('clear');
+                dlg_Edit.dialog('open');
+                dlg_Edit.dialog('setTitle', '添加新用户');
+                $("#LoginName").removeAttr("readonly"); //移除只读
+                dlg_Edit_form.url = '/Manage/User/Add/';
+            }
+        }, {
+            text: '锁定用户',
+            iconCls: 'icon-lock',
+            handler: LockFun
+        }, {
+            text: '解除锁定',
+            iconCls: 'icon-ok',
+            handler: uLockFun
+        }];
+        function LockFun() {
+            var arr = getSelectedArr();
+            if (arr.length > 0) {
+                $.messager.confirm('提示信息', '您确认要锁定选中的用户吗?', function (data) {
+                    if (data) {
+                        $.ajax({
+                            url: '/Manage/User/Lock',
+                            type: 'post',
+                            data: "ID=" + getSelectedID(),
+                            error: function () {
+                                Msgalert('错误', '锁定失败!', 'error');
+                                grid.datagrid('clearSelections');
+                            },
+                            success: function (data) {
+                                if (data.Success) {
+                                    Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                    grid.datagrid('reload');
+                                    grid.datagrid('clearSelections'); //清除所有选中的元素
+                                } else {
+                                    Msgalert('错误', data.Msg, 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            } else {
+                Msgshow('请先选择要锁定的用户。');
+
+            }
+        }
+        function uLockFun() {
+            var arr = getSelectedArr();
+            if (arr.length > 0) {
+                $.messager.confirm('提示信息', '您确认要解除选中用户的锁定状态吗?', function (data) {
+                    if (data) {
+                        $.ajax({
+                            url: '/Manage/User/uLock',
+                            type: 'post',
+                            data: "ID=" + getSelectedID(),
+                            error: function () {
+                                Msgalert('错误', '解除锁定失败!', 'error');
+                                grid.datagrid('clearSelections');
+                            },
+                            success: function (data) {
+                                if (data.Success) {
+                                    Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                    grid.datagrid('reload');
+                                    grid.datagrid('clearSelections'); //清除所有选中的元素
+                                } else {
+                                    Msgalert('错误', data.Msg, 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            } else {
+                Msgshow('请先选择要锁定的用户。');
+
+            }
+        }
+        function stylerFun(value, row, index) {
+            if (value == 1) {
+                return 'background-color:#ffee00;color:red;';
+            }
+        }
+        function formatSex(value, rec, index) {
+            if (value == 0) {
+                return "男";
+            }
+            if (value == 1) {
+                return "女";
+            }
+            return "未识别的性别";
+        }
+        function formatLock(value, rec, index) {
+            if (value == 0) {
+
+                return "正常";
+            }
+            if (value == 1) {
+                return "<span style='color:#ff0000'>锁定</span>";
+            }
+            return value;
+        }
+        function formatMoney(value, rec, index) {
+            return "￥" + value;
+        }
+        $(function () {
+            grid = $("#grid");
+            dlg_Edit = $("#dlg-edit").dialog();
+            dlg_Edit_form = dlg_Edit.find('form');
+        })
+        //保存数据
+        function saveData() {
+            dlg_Edit_form.form('submit', {
+                url: dlg_Edit_form.url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: successCallback
+            });
+        }
+
+        function doSearch() {
+            $("#grid").datagrid('load', {
+                tel: $("#tel").val(),
+                createStartDate: $("input[name$='createStartDate']").val(),
+                createEndDate: $("input[name$='createEndDate']").val(),
+                status: $("#status").combobox("getValue")
+            });
+        }
+    </script>

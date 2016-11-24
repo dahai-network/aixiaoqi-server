@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "../Shared/_Layout.cshtml";
+}
+    <table id="grid" class="easyui-datagrid" title="后台管理员设置" style="width:100%;height:100%"
+			data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/ManageUser/GetList',method:'get',toolbar:toolbar,pagination:true,onDblClickRow:onDbOpenDialog">
+		<thead>
+			<tr>
+				<th data-options="field:'LoginName',width:150">登录名</th>
+				<th data-options="field:'TrueName',width:150">真是姓名</th>
+                <th data-options="field:'CreateDate',width:150">创建时间</th>
+				<th data-options="field:'Lock4',width:60,formatter:formatLock,styler:stylerFun">是否锁定</th>
+			</tr>
+		</thead>
+	</table>
+    <div id="dlg-edit" class="easyui-dialog" title="添加管理员" style="width:500px;height:300px;padding:20px"
+            data-options="
+                iconCls: 'icon-save',
+                closed:true,
+                buttons: [{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    handler:saveData
+                }]
+            ">
+            <form method="post" id="Form" data-options="novalidate:true">
+            <input type="hidden" value="" id="ID" name="ID" />
+            <table cellpadding="5" class="tb_form">
+                <tr>
+                    <td style="text-align:right" width="100">
+                        用户名：
+                    </td>
+                    <td>
+                        <input type="text" name="LoginName" id="LoginName" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength="50" /> &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right">
+                        密码：
+                    </td>
+                    <td>
+                        <input type="password" name="PassWord" id="PassWord" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    </td>
+                </tr>
+                 <tr>
+                    <td style="text-align:right">
+                        真实姓名：
+                    </td>
+                    <td>
+                        <input type="text" name="TrueName" id="TrueName" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    </td>
+                </tr>
+            </table>
+            </form>
+    </div>
+	<script type="text/javascript">
+	    var grid;
+	    var dlg_Edit;
+	    var dlg_Edit_form;
+
+		var toolbar = [{
+			text:'添加管理员',
+			iconCls:'icon-add',
+			handler: function () {
+			    dlg_Edit_form.form('clear');
+			    dlg_Edit.dialog('open');
+			    dlg_Edit.dialog('setTitle', '添加管理员');
+			    $("#LoginName").removeAttr("readonly"); //移除只读   
+			    dlg_Edit_form.url = '/Manage/ManageUser/Add/';
+			}
+		},{
+			text:'删除管理员',
+			iconCls:'icon-cut',
+			handler: del
+		}];
+		function stylerFun(value, row, index) {
+		    if (value ==1) {
+		        return 'background-color:#ffee00;color:red;';
+		    }
+		}
+		function formatLock(value, rec, index) {
+		    if (value == 0) {
+
+		        return "正常";
+		    }
+		    if (value == 1) {
+		        return "<span style='color:#ff0000'>锁定</span>";
+		    }
+		    return value;
+		}
+		
+		$(function () {
+		    grid = $("#grid");
+		    dlg_Edit = $("#dlg-edit").dialog();
+		    dlg_Edit_form = dlg_Edit.find('form');
+		})
+		function onDbOpenDialog(index, rowData, value) {
+		    dlg_Edit.dialog('open');
+		    dlg_Edit_form.form('clear'); //清除之前面选中的表单
+		    dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.LoginName + " 的信息");
+		    $("#LoginName").attr("readonly", "readonly"); //用户设置只读   
+		    dlg_Edit_form.form('load', rowData); //加载到表单的控件上 
+
+		    dlg_Edit_form.url = '/Manage/ManageUser/Update';
+		}
+        //保存数据
+		function saveData() {
+		    dlg_Edit_form.form('submit', {
+		        url: dlg_Edit_form.url,
+		        onSubmit: function () {
+		            return $(this).form('validate');
+		        },
+		        success: successCallback
+		    });
+		}
+        //删除数据
+		function del() {
+		    var arr = getSelectedArr();
+		    if (arr.length > 0) {
+		        $.messager.confirm('提示信息', '您确认要删除选中的记录吗?', function (data) {
+		            if (data) {
+		                $.ajax({
+		                    url:  '/Manage/ManageUser/Delete',
+		                    type: 'post',
+		                    data:"ID="+getSelectedID(),
+		                    error: function () {
+		                        Msgalert('错误', '删除失败!', 'error');
+		                        grid.datagrid('clearSelections');
+		                    },
+		                    success: function (data) {
+		                        if (data.Success) {
+		                            Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+		                            grid.datagrid('reload');
+		                            grid.datagrid('clearSelections'); //清除所有选中的元素
+		                        } else {
+		                            Msgalert('错误', data.Msg, 'error');
+		                        }
+		                    }
+		                });
+		            }
+		        });
+		    } else {
+		        Msgshow('请先选择要删除的记录。');
+
+		    }
+		}
+		
+		
+	</script>

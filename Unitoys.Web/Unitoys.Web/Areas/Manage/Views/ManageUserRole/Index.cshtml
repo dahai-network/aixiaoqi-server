@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "角色&权限管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+<div id="userList" class="easyui-layout" fit="true" style="overflow-y: hidden">
+    <div data-options="region:'west',title:'管理员列表',split:false,collapsible:false" style="width:150px;">
+        <ul class="navlist"></ul>
+    </div>
+
+    <style>
+        .role_tab {
+            padding: 0px;
+            margin: 0px;
+            width: 100%;            
+        }
+
+            .role_tab td {
+                border-top: solid 1px #95B8E7;
+                border-left: solid 1px #95B8E7;
+                border-bottom: solid 1px #95B8E7;
+                border-right: solid 1px #95B8E7;
+                height: 45px;
+            }
+
+                .role_tab td.left {
+                    border-left: solid 1px #95B8E7;
+                    font-size: 14px;
+                    width: 80px;
+                    font-weight: bold;
+                    text-align: center;
+                }
+
+                .role_tab td label {
+                    margin-right: 15px;
+                    font-size: 13px;
+                    margin-left: 10px;
+                }
+    </style>
+
+    <div data-options="region:'center',title:'角色列表'" style="padding:5px;background:#eee;overflow-y:hidden">
+        <div id="roleList" class="easyui-panel" style="width:100%;height:100%;padding:10px;">
+            <div id="selectedManageUserText">您目前没有选中管理员</div><br />
+            <table class="role_tab" cellpadding="0" cellspacing="0">
+                <tr>
+                </tr>
+            </table>
+            <br />
+            <a id="saveBtn" href="#" class="easyui-linkbutton" iconcls="icon-ok">保存</a>
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    //global property
+    var selectedManageUser;
+
+    $(function () {
+        getAllManageUser();
+        
+        $("#saveBtn").hide();
+    });
+
+    function getAllManageUser() {
+        $.ajax({
+            type: "GET",
+            url: "/Manage/ManageUser/GetAllManageUser",
+            success: function (data) {
+
+                getAllRole();
+
+                if (data != null && data.length > 0 && Array.isArray(data)) {
+                    var ul = $("#userList .navlist");
+
+                    for (var i = 0; i < data.length; i++) {
+                        var li = "<li>" +
+                                    "<div class=''>" +
+                                        "<a ref='12' href='#' rel='' value='" + data[i].ID + "'>" +
+                                            "<span class='icon icon-users'>" + "&nbsp;" +
+                                            "</span>" +
+                                            "<span class='nav'>" + data[i].LoginName +
+                                            "</span>"
+                                        "</a>"
+                                     "</div>"
+                                  "</li>";
+                        ul.append(li);
+                    }
+
+                    //绑定a标签事件。
+                    $("#userList .navlist a").click(function () {
+                        selectedManageUser = $(this).attr("value");
+                        getRoleListByUserId($(this).attr("value"));
+                    });
+                }
+            }
+        });
+    };
+
+    function getAllRole() {
+        $.ajax({
+            type: "GET",
+            url: "/Manage/Role/GetAllRole",
+            success: function (data) {
+                if (data != null && data.length > 0 && Array.isArray(data)) {
+                    var tr = $(".role_tab tr");
+                    var td = document.createElement("td");
+
+                    for (var i = 0; i < data.length; i++) {
+                        var label = "<label>" + data[i].Description +
+                                        "<input type='checkbox' name='roleObj' value='" + data[i].ID + "' />" +
+                                    "</label>";
+                        $(td).append(label);
+                    }
+                    tr.append(td);
+
+                    $("#saveBtn").show();
+                    $("#saveBtn").click(save);
+                }
+            }
+        });
+    };
+
+    function getRoleListByUserId(userId) {
+        $("#userList .navlist a[value!='" + userId + "'] .nav").css("font-weight", "normal");
+        $("#userList .navlist a[value$='" + userId + "'] .nav").css("font-weight", "bold");
+
+        $("#selectedManageUserText").text("您当前选中的管理员是：" + $("#userList .navlist a[value$='" + userId + "'] .nav").text());
+
+        $.ajax({
+            type: "GET",
+            url: "/Manage/ManageUserRole/GetRoleListByUserId",
+            data: { userId: userId },
+            success: function (data) {
+                $("input[name$='roleObj']").attr("checked", false);
+                if (data != null && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("input[value$='" + data[i] + "']").attr("checked", true);
+                    }
+                }
+            }
+        });
+    };
+
+    function save() {
+
+        if (selectedManageUser == null || selectedManageUser == "") {
+            alert('请先选择管理员！');
+            return;
+        }
+
+        var selectedIds = new Array();
+        var unselectedIds = new Array();
+
+        //获取权限列表的value
+        var checkboxs = document.getElementsByName("roleObj");
+
+        for (var i = 0; i < checkboxs.length; i++) {
+            if (checkboxs[i].checked) {
+                selectedIds.push(checkboxs[i].value);
+            }
+            else {
+                unselectedIds.push(checkboxs[i].value);
+            }
+        }
+
+        $("#saveBtn").linkbutton('disable');
+        $.ajax({
+            type: "POST",
+            url: "/Manage/ManageUserRole/ModifyManageUserRole",
+            data: { userId: selectedManageUser, selectedIds: selectedIds, unselectedIds: unselectedIds },
+            success: function (data) {
+                $("#saveBtn").linkbutton('enable');
+                if (data) {
+                    alert('保存成功');
+                }
+            }
+        });
+    }
+
+</script>

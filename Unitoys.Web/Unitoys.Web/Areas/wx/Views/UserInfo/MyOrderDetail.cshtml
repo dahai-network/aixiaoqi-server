@@ -1,0 +1,33 @@
+﻿@model Unitoys.Model.UT_Order
+@{
+    ViewBag.Title = "订单详情";
+}
+
+<div class="user_order_detail">
+    <div class="box">
+        <div class="pic">
+            <img src="@ViewBag.LogoPic" />
+        </div>
+        <div class="rb">
+            <p class="title">@Model.PackageName</p>
+            <p class="expiredays">最晚激活时间：@ViewBag.LastCanActivationDate</p>
+            <p class="price_num"><span class="rmb">￥</span><span class="price">@Model.TotalPrice</span> <span class="quantity">x<b>@Model.Quantity</b></span></p>
+        </div>
+    </div>
+    <div class="box1">
+        <ul>
+            <li>套餐状态：@ViewBag.OrderStatus</li>
+            <li>@ViewBag.ExpireDays</li>
+        </ul>
+    </div>
+    <div class="box1">
+        <div class="title">订单信息</div>
+        <ul>
+            <li>订单编号：<span class="rc">@Model.OrderNum</span></li>
+            <li>下单时间：<span class="rc">@ViewBag.OrderDate</span></li>
+            <li>支付方式：<span class="rc">@ViewBag.PaymentMethod</span></li>
+            <li>总价：<span class="rc">@Model.TotalPrice</span></li>
+        </ul>
+    </div>
+</div>
+

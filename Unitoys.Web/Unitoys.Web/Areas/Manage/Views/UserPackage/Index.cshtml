@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "用户订单管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+    <table id="grid" class="easyui-datagrid" title="用户订单列表" style="width:100%;height:100%"
+			data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/UserPackage/GetList',method:'get',toolbar:toolbar,pagination:true">
+		<thead>
+			<tr>
+                <th data-options="field:'LoginName',width:80">用户名</th>
+				<th data-options="field:'PackageName',width:150">套餐名称</th>
+                <th data-options="field:'TotalFlow',width:50">套餐包含流量/KB</th>
+                <th data-options="field:'UsedFlow',width:50">已用的流量/KB</th>
+                <th data-options="field:'CreateDate',width:100">订购日期</th>
+                <th data-options="field:'StartDate',width:100">套餐开始使用时间</th>
+                <th data-options="field:'ExpireDays',width:50">有效天数</th>
+                <th data-options="field:'Status',width:60,formatter:formatLock,styler:stylerFun">状态</th>
+			</tr>
+		</thead>
+	</table>
+	<script type="text/javascript">
+
+
+		var toolbar = [{
+		    text: '待开发的功能',
+		    iconCls: 'icon-lock',
+		    handler: function(){}
+		}, {
+		    text: '待开发的功能',
+		    iconCls: 'icon-ok',
+		    handler: function () { }
+		}];
+		function stylerFun(value, row, index) {
+		    if (value == 1) {
+		        //return 'background-color:#ffee00;color:red;';
+		    }
+		}
+		function formatLock(value, rec, index) {
+		    if (value == 0) {
+		        return "未激活";
+		    }
+		    if (value == 1) {
+		        return "使用中";
+		    }
+		    if (value == 2) {
+		        return "已使用&已过期";
+		    }
+		    if (value == 3) {
+		        return "已退订";
+		    }
+		    return value;
+		}
+		
+		
+	</script>

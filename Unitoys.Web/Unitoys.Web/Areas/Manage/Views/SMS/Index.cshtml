@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height: 110px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:110px;padding:10px;">
+            <form id="ff" method="post">
+                <span>用户:</span>
+                <input id="tel" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>接收号码:</span>
+                <input id="to" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>状态:</span>
+                <select id="smsStatus" class="easyui-combobox" name="smsStatus" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">处理中</option>
+                    <option value="1">成功</option>
+                    <option value="2">失败</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+                <br />
+                <span>时间:</span>
+                <input id="beginSMSTime" type="text" class="easyui-datebox" name="beginSMSTime" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="endSMSTime" type="text" class="easyui-datebox" name="endSMSTime" data-options="showSeconds:false" style="height:25px;" />
+                <a href="#" class="easyui-linkbutton " onclick="setDateRange('d',-1)">昨天</a>
+                <a href="#" class="easyui-linkbutton " onclick="setDateRange('d',0)">今天</a>
+                <a href="#" class="easyui-linkbutton " onclick="setDateRange('w',-1)">近一周</a>
+                <a href="#" class="easyui-linkbutton " onclick="setDateRange('m',-1)">近一月</a>
+                <a href="#" class="easyui-linkbutton " onclick="setDateRange('m', -3)">近三月</a>
+
+
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="短信收发记录列表" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/SMS/GetList',method:'get',pagination:true,nowrap:false">
+            <thead>
+                <tr>
+                    <th data-options="field:'Tel',width:80">用户名</th>
+                    <th data-options="field:'Fm',width:80">发送号码</th>
+                    <th data-options="field:'To',width:80">接收号码</th>
+                    <th data-options="field:'SMSTime',width:80,formatter:formatDateTimeInt">时间</th>
+                    <th data-options="field:'SMSContent',width:200">短信内容</th>
+                    <th data-options="field:'IsSend',width:60,formatter:formatIsSend">类型</th>
+                    <th data-options="field:'IsRead',width:60,formatter:formatIsRead">已读未读</th>
+                    <th data-options="field:'Status',width:60,formatter:formatStatus,styler:stylerIsReadFun">状态</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    function formatStatus(value, row, index) {
+        if (value == 0) {
+            return "处理中";
+        }
+        if (value == 1) {
+            return "成功";
+        }
+        if (value == 2) {
+            return "失败";
+        }
+        return value;
+    }
+    function stylerIsReadFun(value, row, index) {
+        if (value == 2) {
+            return 'background-color:#ffee00;color:red;';
+        }
+        if (value == 0) {
+            return 'color:red;';
+        }
+        return value;
+    }
+    function formatIsSend(value, rec, index) {
+        if (value == 0) {
+            return "接收";
+        }
+        if (value == 1) {
+            return "发送";
+        }
+        return value;
+    }
+    function formatIsRead(value, rec, index) {
+        if (value == 0) {
+            return "未读";
+        }
+        if (value == 1) {
+            return "已读";
+        }
+        return value;
+    }
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            tel: $("#tel").val() == null ? "" : $("#tel").val(),
+            to: $("#to").val() == null ? "" : $("#paymentNum").val(),
+            beginSMSTime: $("input[name$='beginSMSTime']").val(),
+            endSMSTime: $("input[name$='endSMSTime']").val(),
+            smsStatus: $("#smsStatus").combobox("getValue")
+        });
+    }
+    function setDateRange(interval, number) {
+        var today = new Date();
+        var dateEnd = DateAdd(interval, number, today);
+
+        var year = dateEnd.getFullYear();
+        var month = dateEnd.getMonth() + 1;
+        var date = dateEnd.getDate();
+
+        $('#endSMSTime').datebox('setValue', today.toLocaleString());
+        $('#beginSMSTime').datebox('setValue', year + '-' + month + '-' + date);
+        doSearch();
+    }
+
+    /*
+        *---------------Begin  DateAdd(interval,number,date)  -----------------
+        *  DateAdd(interval,number,date)
+        *  功能:实现JavaScript的DateAdd功能.
+        *  参数:interval,字符串表达式，表示要添加的时间间隔.
+        *  参数:number,数值表达式，表示要添加的时间间隔的个数.
+        *  参数:date,时间对象.
+        *  返回:新的时间对象.
+        *  var  now  =  new  Date();
+        *  var  newDate  =  DateAdd("d",5,now);
+        *---------------End  DateAdd(interval,number,date)  -----------------
+        */
+    function DateAdd(interval, number, date) {
+
+        switch (interval) {
+            case "y": {
+                date.setFullYear(date.getFullYear() + number);
+                return date;
+                break;
+            }
+            case "q": {
+                date.setMonth(date.getMonth() + number * 3);
+                return date;
+                break;
+            }
+            case "m": {
+                date.setMonth(date.getMonth() + number);
+                return date;
+                break;
+            }
+            case "w": {
+                date.setDate(date.getDate() + number * 7);
+                return date;
+                break;
+            }
+            case "d": {
+                date.setDate(date.getDate() + number);
+                return date;
+                break;
+            }
+            case "h": {
+                date.setHours(date.getHours() + number);
+                return date;
+                break;
+            }
+            case "m": {
+                date.setMinutes(date.getMinutes() + number);
+                return date;
+                break;
+            }
+            case "s": {
+                date.setSeconds(date.getSeconds() + number);
+                return date;
+                break;
+            }
+            default: {
+                date.setDate(date.getDate() + number);
+                return date;
+                break;
+            }
+        }
+    }
+</script>

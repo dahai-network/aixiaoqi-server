@@ -1,0 +1,62 @@
+﻿@model Senparc.Weixin.MP.Helpers.JsSdkUiPackage
+@{
+    ViewBag.Title = "账户充值";
+}
+
+<div class="pay_balance">
+    <div class="balance_ipt">
+        <label>金额</label><input type="text" placeholder="请输入充值金额" id="ipt_amount" />
+    </div>
+    <div class="btnbox">
+        <a href="javascript:;" class="btn_pay">充值</a>
+    </div>
+</div>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+    wx.config({
+        debug: false,
+        appId:  '@Model.AppId',
+        timestamp:  '@Model.Timestamp',
+        nonceStr: '@Model.NonceStr',
+        signature: '@Model.Signature',
+        jsApiList: [
+        'chooseWXPay'
+        ]
+    });
+    var isstep = false;
+    $(".btn_pay").bind("click", function () {
+        var reg = /^[0-9]*(\.[0-9]{1,2})?$/;
+        var amount = $("#ipt_amount").val();
+        if (amount == "" || !reg.test(amount)) {
+            alert("请输入正确的金额！");
+            return false;
+        }
+        if (isstep) return;
+        isstep = true;
+        $.ajax({
+            url: "/wx/wxpay/createpayamount",
+            data: "amount=" + $("#ipt_amount").val(),
+            type: "POST",
+            success: function (data) {
+                if (data.status == 1) {
+                    wx.chooseWXPay({
+                        timestamp: data.data.timestamp,
+                        nonceStr: data.data.noncestr,
+                        package: data.data.package,
+                        signType: 'MD5', // 注意：新版支付接口使用 MD5 加密
+                        paySign: data.data.sign,
+                        success: function (res) {
+                            location.href = "/wx/wxpay/paysuccess?amount=" + $("#ipt_amount").val();
+                        }
+                    });
+                } else {
+                    alert(data.msg);
+                }
+                isstep = false;
+            }
+        })
+        
+    });
+    
+</script>
+

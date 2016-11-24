@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Unitoys.Model.UT_UserBill>
+@using Unitoys.Core
+@{
+    ViewBag.Title = "余额明细";
+}
+
+<div class="bill_list">
+    <ul>
+        @foreach (var item in Model)
+        { 
+        <li>
+            <div class="lc">
+                <p class="title">@item.Descr</p>
+                <p class="date">@CommonHelper.GetTime(@item.CreateDate.ToString()).ToString("yyyy-MM-dd HH:mm:ss") </p>
+            </div>
+            <div class="rc">
+                @if(item.BillType == 1){
+                    <span class="in">+￥@item.Amount</span>
+                }
+                else
+                {
+                    <span class="out">-￥@item.Amount</span>
+                }
+            </div>
+        </li>
+        }
+    </ul>
+</div>
+

@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "用户账单管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>用户名:</span>
+                <input id="loginName" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>账单类型:</span>
+                <select id="billType" class="easyui-combobox" name="state" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">支出</option>
+                    <option value="1">收入</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="用户账单管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/UserBill/GetUserBills',method:'get',pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'LoginName',width:80">用户名</th>
+                    <th data-options="field:'Amount',width:60">金额</th>
+                    <th data-options="field:'UserAmount',width:60">用户完成交易余额</th>
+                    <th data-options="field:'CreateDate',width:80,formatter:formatDateTimeInt">创建时间</th>
+                    <th data-options="field:'BillType',width:50,formatter:formatBillType">账单类型</th>
+                    <th data-options="field:'PayType',width:50,formatter:formatPayType">消费类型</th>
+                    <th data-options="field:'Descr',width:100">描述</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    function formatBillType(value, rec, index) {
+        if (value == 0) {
+            return "支出";
+        }
+        if (value == 1) {
+            return "收入";
+        }
+        return "未识别的账单类型";
+    }
+
+    function formatPayType(value, rec, index) {
+        if (value == 0) {
+            return "充值";
+        }
+        else if (value == 1) {
+            return "在线支付";
+        }
+        else if (value == 2) {
+            return "余额支付";
+        }
+        else if (value == 3) {
+            return "赠送";
+        }
+        else if (value == 4) {
+            return "扣除话费";
+        }
+        else if (value == 5) {
+            return "取消订单";
+        }
+        else if (value == 6) {
+            return "订单余额支付";
+        }
+        else if (value == 7) {
+            return "订单退款";
+        }
+        return "未识别的消费类型";
+    }
+
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            loginName: $("#loginName").val() == null ? "" : $("#loginName").val(),
+            billType: $("#billType").combobox("getValue"),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
+        });
+    }
+</script>

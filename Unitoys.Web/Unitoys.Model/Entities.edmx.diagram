@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="08e8f5a672fc42f3bb4d68fff8900487" Name="Diagram1">
+        <EntityTypeShape EntityType="UnitoysModel.UT_Country" Width="1.5" PointX="7.75" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_ManageUsers" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_SMS" Width="1.5" PointX="5.25" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_SpeakRecord" Width="1.5" PointX="5.25" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_UserLoginInfo" Width="1.5" PointX="5.25" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_Users" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_UsersGroup" Width="1.5" PointX="0.75" PointY="6.625" IsExpanded="true" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_SMS_UT_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_SpeakRecord_UT_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_UserLoginInfo_UT_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_Users_UT_UsersGroup" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_Package" Width="1.5" PointX="10" PointY="0.875" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_Package_UT_Country" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_UserPackage" Width="1.5" PointX="5.25" PointY="11" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_UserPackage_UT_Users1" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_PayRecord" Width="1.5" PointX="5.25" PointY="15.375" />
+        <EntityTypeShape EntityType="UnitoysModel.UT_UserBill" Width="1.5" PointX="7.375" PointY="4.75" />
+        <AssociationConnector Association="UnitoysModel.FK_UT_PayRecord_UT_Users" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

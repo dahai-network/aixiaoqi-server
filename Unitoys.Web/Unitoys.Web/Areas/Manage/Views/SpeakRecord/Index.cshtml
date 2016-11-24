@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "通话记录管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:110px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width: 100%; height: 110px; padding: 10px;">
+            <form id="ff" method="post">
+                <span>主叫号码:</span>
+                <input id="deviceName" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>被叫号码:</span>
+                <input id="calledTelNum" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>开始拨打时间:</span>
+                <input id="callStartBeginTime" type="text" class="easyui-datetimebox" name="callStartBeginTime" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="callStartEndTime" type="text" class="easyui-datetimebox" name="callStartEndTime" data-options="showSeconds:false" style="height:25px;" />
+                <br />
+                <span>通话时间(秒):</span>
+                <input id="callSessionBeginTime" type="text" class="easyui-numberbox" name="callSessionBeginTime" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="callSessionEndTime" type="text" class="easyui-numberbox" name="callSessionEndTime" data-options="showSeconds:false" style="height:25px;" />
+                <span>接通情况:</span>
+                <select id="isCallConnected" class="easyui-combobox" name="isCallConnected" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="1">已接通</option>
+                    <option value="0">未接通</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="通话记录管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/SpeakRecord/GetSpeakRecords',method:'get',pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'DeviceName',width:60">主叫号码</th>
+                    <th data-options="field:'CalledTelNum',width:80">被叫号码</th>
+                    <th data-options="field:'CallStartTime',width:60">开始拨打时间</th>
+                    <th data-options="field:'CallStopTime',width:60">结束通话时间</th>
+                    <th data-options="field:'CallSessionTime',width:30">通话时间</th>
+                    <th data-options="field:'CallAgoRemainingCallSeconds',width:50">拨打前剩余秒数</th>
+                    <th data-options="field:'CallSourceIp',width:50">拨打源IP</th>
+                    <th data-options="field:'CallServerIp',width:50">服务器IP</th>
+                    <th data-options="field:'Acctterminatedirection',width:40,formatter:formatAcct">挂断方</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function formatAcct(value, rec, index) {
+        if (value == "source") {
+            return "主叫";
+        }
+        if (value == "dest") {
+            return "被叫";
+        }
+        return value;
+    }
+
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            deviceName: $("#deviceName").val() == null ? "" : $("#deviceName").val(),
+            calledTelNum: $("#calledTelNum").val() == null ? "" : $("#calledTelNum").val(),
+            callStartBeginTime: $("input[name$='callStartBeginTime']").val(),
+            callStartEndTime: $("input[name$='callStartEndTime']").val(),
+            callSessionBeginTime: $("#callSessionBeginTime").val() == null ? "" : $("#callSessionBeginTime").val(),
+            callSessionEndTime: $("#callSessionEndTime").val() == null ? "" : $("#callSessionEndTime").val(),
+            isCallConnected: $("#isCallConnected").combobox("getValue"),
+        });
+    }
+</script>

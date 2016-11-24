@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "账号绑定";
+}
+
+<div class="loginbox">
+    <div class="logo"><img src="/content/images/wx/logo.png" /></div>
+    <div class="from">
+        <p class="tel"><input type="text" id="ipt_tel" placeholder="请输入您的电话号码" /></p>
+        <p class="pwd"><input type="password" id="ipt_passWord" placeholder="请输入您的密码" /></p>
+        <p><a href="javascript:;" id="btn_bindUser" class="btn_bindUser" >绑定</a></p>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#btn_bindUser").bind("click", function () {
+        var status = $(this).html();
+        if (status == "绑定") {
+            var tel = $("#ipt_tel").val();
+            var password = $("#ipt_passWord").val();
+            if (tel == "") {
+                alert("请输入您的电话号码");
+                return;
+            }
+            if (password == "") {
+                alert("请输入您的密码");
+                return;
+            }
+            $(this).html("正在绑定...");
+            $.ajax({
+                url: "/wx/OAuth2/UserBindWx",
+                data: "tel=" + tel + "&password=" + password,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        location.href = "/wx/userinfo";
+                    } else {
+                        $("#btn_bindUser").html("绑定");
+                       alert(data);
+                    }
+                }
+            });
+        }
+    });
+
+   
+</script>

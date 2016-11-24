@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{749B8FAF-FB9B-485C-9295-F3FFFCF15B8B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Unitoys.Model</RootNamespace>
+    <AssemblyName>Unitoys.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\PageShowConfiguration.cs" />
+    <Compile Include="Configuration\UsersConfigConfiguration.cs" />
+    <Compile Include="Configuration\BannerConfiguration.cs" />
+    <Compile Include="Configuration\AlarmClockConfiguration.cs" />
+    <Compile Include="Configuration\SportConfiguration.cs" />
+    <Compile Include="Configuration\SportTimePeriodConfiguration.cs" />
+    <Compile Include="Configuration\UserWxConfiguration.cs" />
+    <Compile Include="Configuration\UserShapeConfiguration.cs" />
+    <Compile Include="Configuration\PaymentCardConfiguration.cs" />
+    <Compile Include="Configuration\CountryConfiguration.cs" />
+    <Compile Include="Configuration\DeviceGoipConfiguration.cs" />
+    <Compile Include="Configuration\DeviceBraceletConfiguration.cs" />
+    <Compile Include="Configuration\FeedbackConfiguration.cs" />
+    <Compile Include="Configuration\MessageCommentConfiguration.cs" />
+    <Compile Include="Configuration\CallTransferNumConfiguration.cs" />
+    <Compile Include="Configuration\MessageConfiguration.cs" />
+    <Compile Include="Configuration\MessageLikeConfiguration.cs" />
+    <Compile Include="Configuration\MessagePhotoConfiguration.cs" />
+    <Compile Include="Configuration\OrderConfiguration.cs" />
+    <Compile Include="Configuration\OrderUsageConfiguration.cs" />
+    <Compile Include="Configuration\PermissionConfiguration.cs" />
+    <Compile Include="Configuration\PhoneCallbackConfiguration.cs" />
+    <Compile Include="Configuration\RoleConfiguration.cs" />
+    <Compile Include="Configuration\RolePermissionConfiguration.cs" />
+    <Compile Include="Configuration\SMSConfirmationConfiguration.cs" />
+    <Compile Include="Configuration\UserBillConfiguration.cs" />
+    <Compile Include="Configuration\SpeakRecordConfiguration.cs" />
+    <Compile Include="Configuration\SMSConfiguration.cs" />
+    <Compile Include="Configuration\UserLoginRecordConfiguration.cs" />
+    <Compile Include="Configuration\UsersGroupConfiguration.cs" />
+    <Compile Include="Configuration\UsersConfiguration.cs" />
+    <Compile Include="Configuration\PaymentConfiguration.cs" />
+    <Compile Include="Configuration\PackageConfiguration.cs" />
+    <Compile Include="Configuration\ManageUsersConfiguration.cs" />
+    <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
+    <Compile Include="Entity\UT_PageShow.cs" />
+    <Compile Include="Entity\UT_UsersConfig.cs" />
+    <Compile Include="Entity\UT_Banner.cs" />
+    <Compile Include="Entity\UT_AlarmClock.cs" />
+    <Compile Include="Entity\UT_SportTimePeriod.cs" />
+    <Compile Include="Entity\UT_Sport.cs" />
+    <Compile Include="Entity\UT_UsersWx.cs" />
+    <Compile Include="Entity\UT_UserShape.cs" />
+    <Compile Include="Entity\UT_CallTransferNum.cs" />
+    <Compile Include="Entity\UT_Feedback.cs" />
+    <Compile Include="Entity\UT_MessageLike.cs" />
+    <Compile Include="Entity\UT_MessageComment.cs" />
+    <Compile Include="Entity\UT_DeviceGoip.cs" />
+    <Compile Include="Entity\UT_Country.cs" />
+    <Compile Include="Entity\UT_DeviceBracelet.cs" />
+    <Compile Include="Entity\UT_Entity.cs" />
+    <Compile Include="Entity\UT_ManageUsers.cs" />
+    <Compile Include="Entity\UT_Message.cs" />
+    <Compile Include="Entity\UT_MessagePhoto.cs" />
+    <Compile Include="Entity\UT_Order.cs" />
+    <Compile Include="Entity\UT_OrderUsage.cs" />
+    <Compile Include="Entity\UT_Package.cs" />
+    <Compile Include="Entity\UT_Payment.cs" />
+    <Compile Include="Entity\UT_Permission.cs" />
+    <Compile Include="Entity\UT_PhoneCallback.cs" />
+    <Compile Include="Entity\UT_Role.cs" />
+    <Compile Include="Entity\UT_RolePermission.cs" />
+    <Compile Include="Entity\UT_SMS.cs" />
+    <Compile Include="Entity\UT_SMSConfirmation.cs" />
+    <Compile Include="Entity\UT_PaymentCard.cs" />
+    <Compile Include="Entity\UT_SpeakRecord.cs" />
+    <Compile Include="Entity\UT_UserBill.cs" />
+    <Compile Include="Entity\UT_UserLoginRecord.cs" />
+    <Compile Include="Entity\UT_Users.cs" />
+    <Compile Include="Entity\UT_UsersGroup.cs" />
+    <Compile Include="Entity\UT_ManageUsersRole.cs" />
+    <Compile Include="InfoModel\AuthQuery.cs" />
+    <Compile Include="InfoModel\JsonAjaxResult.cs" />
+    <Compile Include="InfoModel\LoginUserInfo.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitoysEntities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

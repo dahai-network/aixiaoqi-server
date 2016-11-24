@@ -1,0 +1,297 @@
+﻿@{
+    ViewBag.Title = "国家费率管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<script src="~/Content/js/uploadify/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/js/uploadify/uploadify.css">
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>国家名称:</span>
+                <input id="countryName" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>国家代码:</span>
+                <input id="countryCode" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>所属大洲:</span>
+                <select id="continents" class="easyui-combobox" name="continents" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">亚洲</option>
+                    <option value="1">非洲</option>
+                    <option value="2">欧洲</option>
+                    <option value="3">北美洲</option>
+                    <option value="4">南美洲</option>
+                    <option value="5">大洋洲</option>
+                    <option value="6">南极洲</option>
+                </select>
+                <span>是否热门:</span>
+                <select id="isHot" class="easyui-combobox" name="continents" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true">热门</option>
+                    <option value="false">非人们</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="国家费率列表管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/Country/GetList',method:'get',toolbar:toolbar,pagination:true,onDblClickRow:onDbOpenDialog">
+            <thead>
+                <tr>
+                    <th data-options="field:'CountryName',width:100">国家</th>
+                    <th data-options="field:'CountryCode',width:100">国家代码</th>
+                    <th data-options="field:'Rate',width:100">费率标准</th>
+                    <th data-options="field:'IsHot',width:60,formatter:formatIsHot">是否热门</th>
+                    <th data-options="field:'DisplayOrder',width:60">显示顺序</th>
+                    <th data-options="field:'Pic',width:100,formatter:formatPic">国旗</th>
+                    <th data-options="field:'LogoPic',width:100,formatter:formatPic">Logo</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="dlg-edit" class="easyui-dialog" title="添加管理员" style="width:500px;height:330px;padding:20px"
+     data-options="
+                iconCls: 'icon-save',
+                closed:true,
+                buttons: [{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    handler:saveData
+                }]
+            ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right">
+                    所属大洲：
+                </td>
+                <td>
+                    <select id="Continents" name="Continents" class="easyui-combobox" style="width:100px">
+                        <option value="0">亚洲</option>
+                        <option value="1">非洲</option>
+                        <option value="2">欧洲</option>
+                        <option value="3">北美洲</option>
+                        <option value="4">南美洲</option>
+                        <option value="5">大洋洲</option>
+                        <option value="6">南极洲</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right" width="100">
+                    国家名称：
+                </td>
+                <td>
+                    <input type="text" name="CountryName" id="CountryName" class="easyui-textbox" style="width: 200px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right" width="100">
+                    国家代码：
+                </td>
+                <td>
+                    <input type="text" name="CountryCode" id="CountryCode" class="easyui-textbox" style="width: 200px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    费率标准：
+                </td>
+                <td>
+                    <input type="text" name="Rate" id="Rate" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 /> $/MB
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    显示顺序：
+                </td>
+                <td>
+                    <input type="text" name="DisplayOrder" id="DisplayOrder" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    是否热门：
+                </td>
+                <td>
+                    @*<input type="checkbox" name="Rate" id="Rate" class="easyui-checkbox" style="width: 100px;height:33px;" maxlength=50 />*@
+                    <input type="checkbox" id="IsHot" name="IsHot" value="true" />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    logo图片：
+                </td>
+                <td>
+                    <input type="hidden" name="LogoPic" id="LogoPic" maxlength=50 />
+                    <input type="file" name="logofile_upload" id="logofile_upload" /> <div id="logo_j_UploadResult"></div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#logofile_upload').uploadify({
+                                'height': 25,
+                                'width': 100,
+                                'buttonText': '上传图片',
+                                'swf': '/Content/js/uploadify/uploadify.swf',
+                                'uploader': '/Manage/Home/UploadImgAsync',
+                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
+                                    $("#logo_j_UploadResult").html(errorString).css({ color: "#CC0033" });
+                                },
+                                'onUploadSuccess': function (file, data, response) {
+                                    if (data == -1) {
+                                        $("#logo_j_UploadResult").html("请选择您要上传的文件！").css({ color: "#CC0033" });
+                                    } else if (data == -2) {
+                                        $("#logo_j_UploadResult").html("上传图片格式不正确！").css({ color: "#CC0033" });
+                                    } else if (data == -3) {
+                                        $("#logo_j_UploadResult").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
+                                    } else {
+                                        $("#logo_j_UploadResult").html("图片上传成功！").css({ color: "#006633" });
+                                        $("#LogoPic").val(data);
+                                    }
+
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align:right">
+                    图片：
+                </td>
+                <td>
+                    <input type="hidden" name="Pic" id="Pic" maxlength=50 />
+                    <input type="file" name="file_upload" id="file_upload" /> <div id="j_UploadResult"></div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#file_upload').uploadify({
+                                'height': 25,
+                                'width': 100,
+                                'buttonText': '上传图片',
+                                'swf': '/Content/js/uploadify/uploadify.swf',
+                                'uploader': '/Manage/Home/UploadImgAsync',
+                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
+                                    $("#j_UploadResult").html(errorString).css({ color: "#CC0033" });
+                                },
+                                'onUploadSuccess': function (file, data, response) {
+                                    if (data == -1) {
+                                        $("#j_UploadResult").html("请选择您要上传的文件！").css({ color: "#CC0033" });
+                                    } else if (data == -2) {
+                                        $("#j_UploadResult").html("上传图片格式不正确！").css({ color: "#CC0033" });
+                                    } else if (data == -3) {
+                                        $("#j_UploadResult").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
+                                    } else {
+                                        $("#j_UploadResult").html("图片上传成功！").css({ color: "#006633" });
+                                        $("#Pic").val(data);
+                                    }
+
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    var toolbar = [{
+        text: '添加国家费率',
+        iconCls: 'icon-add',
+        handler: function () {
+            dlg_Edit_form.form('clear');
+            dlg_Edit.dialog('open');
+            dlg_Edit.dialog('setTitle', '添加国家费率');
+            dlg_Edit_form.url = '/Manage/Country/Add/';
+            $("#j_UploadResult").html("");
+        }
+    }, {
+        text: '删除',
+        iconCls: 'icon-cancel',
+        handler: Del
+    }];
+
+    function Del() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要删除选中的国家率吗?如果套餐存在该国家的引用则无法删除', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/Country/Delete',
+                        type: 'post',
+                        data: "ID=" + getSelectedID(),
+                        error: function () {
+                            Msgalert('错误', '删除失败!，可能在套餐列表中存在引用关系！', 'error');
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要删除的套餐。');
+
+        }
+    }
+    function formatPic(value, rec, index) {
+        if (value != "") {
+            return "<img height='60' src='" + value + "' />";
+        }
+        return value;
+    }
+    function formatIsHot(value, rec, index) {
+        if (value == 0) {
+            return "非热门";
+        }
+        if (value == 1) {
+            return "热门";
+        }
+        return value;
+    }
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            countryName: $("#countryName").val() == null ? "" : $("#countryName").val(),
+            countryCode: $("#countryCode").val() == null ? "" : $("#countryCode").val(),
+            continents: $("#continents").combobox("getValue"),
+            isHot: $("#isHot").combobox("getValue"),
+        });
+    }
+    $(function () {
+        grid = $("#grid").datagrid();
+        dlg_Edit = $("#dlg-edit").dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+    })
+    function onDbOpenDialog(index, rowData, value) {
+        dlg_Edit.dialog('open');
+        dlg_Edit_form.form('clear'); //清除之前面选中的表单
+        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.CountryName + "的费率信息");
+        dlg_Edit_form.form('load', rowData); //加载到表单的控件上
+        dlg_Edit_form.url = '/Manage/Country/Update';
+        $("#j_UploadResult").html("");
+    }
+    //保存数据
+    function saveData() {
+        dlg_Edit_form.form('submit', {
+            url: dlg_Edit_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: successCallback
+        });
+    }
+</script>

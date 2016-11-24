@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title - Unitoys后台管理系统</title>
+    <link rel="stylesheet" href="@Url.Content("~/Content/css/default.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/js/themes/default/easyui.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/js/themes/icon.css")" type="text/css" />
+    <script type="text/javascript" src="@Url.Content("~/Content/js/jquery-1.7.2.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/js/jquery.easyui.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/js/locale/easyui-lang-zh_CN.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/js/MyEasyUIcommmon.js")"></script>
+    @RenderSection("header", false)
+</head>
+<body class="easyui-layout">
+     @RenderBody()
+</body>
+</html>

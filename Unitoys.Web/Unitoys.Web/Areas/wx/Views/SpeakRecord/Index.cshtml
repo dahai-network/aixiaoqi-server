@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Unitoys.Model.UT_SpeakRecord>
+@using Unitoys.Core
+@{
+    ViewBag.Title = "通话账单";
+}
+
+<div class="bill_list">
+    <ul>
+        @foreach (var item in Model)
+        { 
+        <li>
+            <div class="lc">
+                <p class="title">@item.CalledTelNum <span>(@item.CallSessionTime<span>秒</span>)</span></p>
+                <p class="date">@item.CallStartTime.ToString("yyyy-MM-dd HH:mm:ss") </p>
+            </div>
+            <div class="rc">
+                <span class="out">-￥@item.TotalAmount</span>
+            </div>
+        </li>
+        }
+    </ul>
+</div>
+

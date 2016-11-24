@@ -1,0 +1,204 @@
+﻿@{
+    ViewBag.Title = "充值卡管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<script src="~/Content/js/uploadify/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/js/uploadify/uploadify.css">
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>充值卡:</span>
+                <input id="cardNum" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>状态:</span>
+                <select id="status" class="easyui-combobox" name="state" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">未使用</option>
+                    <option value="1">已使用</option>
+                    <option value="2">失效</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="充值卡列表管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/PaymentCard/GetList',method:'get',toolbar:toolbar,pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'CardNum',width:150">充值卡</th>
+                    <th data-options="field:'CardPwd',width:150">充值卡密码</th>
+                    <th data-options="field:'CreateDate',width:100">创建时间</th>
+                    <th data-options="field:'CreateManageUsersName',width:100">创建管理员</th>
+                    <th data-options="field:'PaymentDate',width:100,formatter:formatDateTimeInt">充值时间</th>
+                    <th data-options="field:'Tel',width:100">充值用户</th>
+                    <th data-options="field:'Price',width:60">金额</th>
+                    <th data-options="field:'Status',width:60,formatter:formatStatus">状态</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="dlg-edit" class="easyui-dialog" title="添加充值卡" style="width:300px;height:220px;padding:20px"
+     data-options="
+                iconCls: 'icon-save',
+                closed:true,
+                buttons: [{
+                    text:'生成',
+                    iconCls:'icon-ok',
+                    handler:saveData
+                }]
+            ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right">
+                    数量：
+                </td>
+                <td>
+                    <input type="text" name="Qty" id="Qty" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    金额：
+                </td>
+                <td>
+                    <input type="text" name="Price" id="Price" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 /> $
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    var toolbar = [{
+        text: '添加充值卡',
+        iconCls: 'icon-add',
+        handler: function () {
+            dlg_Edit_form.form('clear');
+            dlg_Edit.dialog('open');
+            dlg_Edit.dialog('setTitle', '添加充值卡');
+            dlg_Edit_form.url = '/Manage/PaymentCard/Add/';
+        }
+    }, {
+        text: '失效充值卡',
+        iconCls: 'icon-lock',
+        handler: Invalid
+    }, {
+        text: '删除充值卡',
+        iconCls: 'icon-cut',
+        handler: del
+    }];
+
+    $(function () {
+        grid = $("#grid").datagrid();
+        dlg_Edit = $("#dlg-edit").dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+    })
+    function formatStatus(value, rec, index) {
+        if (value == 0) {
+            return "未使用";
+        }
+        if (value == 1) {
+            return "已使用";
+        }
+        if (value == 2) {
+            return "失效";
+        }
+        return value;
+    }
+    //保存数据
+    function saveData() {
+        dlg_Edit_form.form('submit', {
+            url: dlg_Edit_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: successCallback
+        });
+    }
+
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            cardNum: $("#cardNum").val() == null ? "" : $("#cardNum").val(),
+            status: $("#status").combobox("getValue"),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
+        });
+    }
+
+    //删除数据
+    function del() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要删除选中的记录吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/PaymentCard/Delete',
+                        type: 'post',
+                        data: "ID=" + getSelectedID(),
+                        error: function () {
+                            Msgalert('错误', '删除失败!', 'error');
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要删除的记录。');
+
+        }
+    }
+    //失效
+    function Invalid() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要失效选中的充值卡吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/PaymentCard/Invalid',
+                        type: 'post',
+                        data: "ID=" + getSelectedID(),
+                        error: function () {
+                            Msgalert('错误', '失效失败!', 'error');
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要失效的充值卡。');
+
+        }
+    }
+</script>

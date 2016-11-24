@@ -1,0 +1,665 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Http;
+using Unitoys.Core;
+using Unitoys.Core.Util;
+using Unitoys.IServices;
+using Unitoys.Model;
+using Unitoys.WebApi.Models;
+
+namespace Unitoys.WebApi.Controllers
+{
+    public class OrderController : ApiController
+    {
+        private IOrderService _orderService;
+        private IPaymentService _paymentService;
+        private IUserService _userService;
+        private IPackageService _packageService;
+
+        public OrderController(IOrderService orderService, IPaymentService paymentService, IUserService userService, IPackageService packageService)
+        {
+            this._orderService = orderService;
+            this._paymentService = paymentService;
+            this._userService = userService;
+            this._packageService = packageService;
+        }
+
+        /// <summary>
+        /// 创建订单
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Add([FromBody]AddBindingModel model)
+        {
+            string errorMsg = "";
+
+            var currentUser = WebUtil.GetApiUserSession();
+            //System.Web.Http.ModelBinding.DefaultActionValueBinder
+            if (model.PackageID == Guid.Empty)
+            {
+                errorMsg = "套餐ID不能为空！";
+            }
+            else if (model.Quantity <= 0)
+            {
+                //errorMsg = "包月订单只能购买一个，待后续业务需求是否需要调整！";
+                errorMsg = "无效的值";
+            }
+            else if (!Enum.IsDefined(typeof(PaymentMethodType), model.PaymentMethod))
+            {
+                errorMsg = "无效的支付方式！";
+            }
+            else
+            {
+                UT_Order order = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod);
+                if (order != null)
+                {
+                    //重新封装，去掉不必要的参数
+                    //UT_Order resultModel = new UT_Order();
+                    //resultModel.ID = order.ID;
+                    //resultModel.OrderNum = order.OrderNum;
+                    //resultModel.OrderDate = order.OrderDate;
+                    //resultModel.PackageId = order.PackageId;
+                    //resultModel.PackageName = order.PackageName;
+                    //resultModel.Quantity = order.Quantity;
+                    //resultModel.UnitPrice = order.UnitPrice;
+                    //resultModel.TotalPrice = order.TotalPrice;
+                    //resultModel.ExpireDays = order.ExpireDays;
+                    //resultModel.Flow = order.Flow;
+                    //resultModel.RemainingCallMinutes = order.RemainingCallMinutes;
+                    //resultModel.PayUserAmount = order.PayUserAmount;
+                    //resultModel.IsPayUserAmount = order.IsPayUserAmount;
+                    var resultModel = new
+                    {
+                        OrderID = order.ID,
+                        OrderNum = order.OrderNum,
+                        OrderDate = order.OrderDate.ToString(),
+                        PackageId = order.PackageId,
+                        PackageName = order.PackageName,
+                        Quantity = order.Quantity.ToString(),
+                        UnitPrice = order.UnitPrice,
+                        TotalPrice = order.TotalPrice,
+                        ExpireDays = GetExpireDaysDescr(order),
+                        Flow = order.Flow + "",
+                        RemainingCallMinutes = order.RemainingCallMinutes + "",
+                        //PayUserAmount = order.PayUserAmount,
+                        //IsPayUserAmount = order.IsPayUserAmount + "",
+                        PaymentMethod = (int)order.PaymentMethod + ""
+                    };
+                    return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
+                }
+                else
+                {
+                    errorMsg = "订单创建失败！";
+                }
+            }
+            return Ok(new { status = 0, msg = errorMsg });
+        }
+
+        /// <summary>
+        /// 取消订单
+        /// </summary>
+        /// <param name="orderid"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Cancel([FromBody]PayOrderByUserAmountBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            string errorMsg = "";
+
+            if (model.OrderID == Guid.Empty)
+            {
+                return Ok(new { status = 0, msg = "订单ID格式错误！" });
+            }
+            else
+            {
+                int resultNum = await _orderService.CancelOrder(currentUser.ID, model.OrderID);
+
+                if (resultNum == 0)
+                {
+                    return Ok(new { status = 1, msg = "取消成功！" });
+                }
+                else if (resultNum == -2)
+                {
+                    errorMsg = "订单已经被取消！";
+                }
+                else if (resultNum == -3)
+                {
+                    errorMsg = "此订单不属于该用户！";
+                }
+                else if (resultNum == -4)
+                {
+                    errorMsg = "订单已被使用！";
+                }
+                else
+                {
+                    errorMsg = "取消失败！";
+                }
+                //2.取消订单
+                return Ok(new { status = 0, msg = errorMsg });
+            }
+        }
+
+        /// <summary>
+        /// 根据条件查询订单，分页
+        /// </summary>
+        /// <param name="queryModel">订单查询模型</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserOrderList([FromUri]GetUserOrderListBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            //赋值当前用户ID给queryModel
+            model.UserID = currentUser.ID;
+
+            //查询Expression
+            //Expression<Func<UT_Order, bool>> exp = GetOrderSearchExpression<UT_Order>(model);
+
+            //如果pageNumber和pageSize为null，则设置默认值。
+            model.PageNumber = model.PageNumber ?? 1;
+            model.PageSize = model.PageSize ?? 10;
+
+            //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
+            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment);
+
+            var totalRows = searchOrders.Key;
+
+            var result = from i in searchOrders.Value
+                         select new
+                         {
+                             OrderID = i.ID,
+                             OrderNum = i.OrderNum,
+                             UserId = i.UserId,
+                             PackageName = i.PackageName,
+                             Flow = i.Flow + "",
+                             Quantity = i.Quantity.ToString(),
+                             UnitPrice = i.UnitPrice,
+                             TotalPrice = i.TotalPrice,
+                             ExpireDays = GetExpireDaysDescr(i),
+                             OrderDate = i.OrderDate.ToString(),
+                             PayDate = i.PayDate.HasValue ? i.PayDate.Value.ToString() : "",
+                             PayStatus = (int)i.PayStatus + "",
+                             OrderStatus = (int)i.OrderStatus + "",
+                             RemainingCallMinutes = i.RemainingCallMinutes + "",
+                             EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
+                             ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
+                             //PayUserAmount = i.PayUserAmount,
+                             //IsPayUserAmount = i.IsPayUserAmount.ToString(),
+                             LogoPic = i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl()
+                         };
+
+            return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });
+        }
+
+        /// <summary>
+        /// 根据条件查询订单，分页
+        /// </summary>
+        /// <param name="queryModel">订单查询模型</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserOrderListIOS([FromUri]GetUserOrderListBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            //赋值当前用户ID给queryModel
+            model.UserID = currentUser.ID;
+
+            //查询Expression
+            //Expression<Func<UT_Order, bool>> exp = GetOrderSearchExpression<UT_Order>(model);
+
+            //如果pageNumber和pageSize为null，则设置默认值。
+            model.PageNumber = model.PageNumber ?? 1;
+            model.PageSize = model.PageSize ?? 10;
+
+            //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
+            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment);
+
+            var totalRows = searchOrders.Key;
+
+            var result = from i in searchOrders.Value
+                         select new
+                         {
+                             //OrderID = i.ID,
+                             //OrderNum = i.OrderNum,
+                             //UserId = i.UserId,
+                             PackageName = i.PackageName,
+                             //Flow = i.Flow + "",
+                             //Quantity = i.Quantity.ToString(),
+                             //UnitPrice = i.UnitPrice.ToString(),
+                             //TotalPrice = i.TotalPrice.ToString(),
+                             //ExpireDays = GetExpireDaysDescr(i),
+                             //OrderDate = i.OrderDate.ToString(),
+                             //PayDate = i.PayDate.HasValue ? i.PayDate.Value.ToString() : "",
+                             //PayStatus = (int)i.PayStatus + "",
+                             //OrderStatus = (int)i.OrderStatus + "",
+                             //RemainingCallMinutes = i.RemainingCallMinutes + "",
+                             //EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
+                             //ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
+                             //PayUserAmount = i.PayUserAmount.ToString(),
+                             //IsPayUserAmount = i.IsPayUserAmount.ToString(),
+                             LogoPic = i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl()
+                         };
+
+            return Ok(new { status = 1, totalRows = totalRows, data = result });
+        }
+
+        /// <summary>
+        /// 获取订单有效天数的描述
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        private string GetExpireDaysDescr(UT_Order i)
+        {
+            if (i.OrderStatus == OrderStatusType.Unactivated)
+            {
+                return "有效天数：" + (i.ExpireDays * i.Quantity).ToString() + "天";
+            }
+            else if (i.OrderStatus == OrderStatusType.Cancel)
+            {
+                return "订单已取消";
+            }
+            else if (i.OrderStatus == OrderStatusType.Used || i.OrderStatus == OrderStatusType.UnactivatError)
+            {
+                return string.Format("有效期：{0} {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), (i.ExpireDays * i.Quantity).ToString() + "天");
+            }
+            else if (i.OrderStatus == OrderStatusType.HasExpired)
+            {
+                return "订单已过期";
+            }
+            return i.OrderStatus == OrderStatusType.UnactivatError
+                                         ? (i.ExpireDays * i.Quantity).ToString()
+                                         : CommonHelper.GetTime(i.EffectiveDate.Value.ToString()) + " " + (i.ExpireDays * i.Quantity).ToString();
+        }
+
+        /// <summary>
+        /// 根据ID查询用户订单
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> GetByID(Guid id)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+            var packageResult = await _orderService.GetEntityAndPackageByIdAsync(id);
+
+            if (packageResult == null)
+            {
+                return Ok(new { status = 0, msg = "信息异常！" });
+            }
+            else if (packageResult.UserId != currentUser.ID)
+            {
+                return Ok(new { status = 0, msg = "订单不属于此用户！" });
+            }
+
+            var data = new
+            {
+                OrderID = packageResult.ID,
+                OrderNum = packageResult.OrderNum,
+                UserId = packageResult.UserId,
+                PackageName = packageResult.PackageName,
+                Flow = packageResult.Flow,
+                Quantity = packageResult.Quantity.ToString(),
+                UnitPrice = packageResult.UnitPrice,
+                TotalPrice = packageResult.TotalPrice,
+                ExpireDays = GetExpireDaysDescr(packageResult),
+                ExpireDaysInt = (packageResult.ExpireDays * packageResult.Quantity).ToString(),
+                OrderDate = packageResult.OrderDate.ToString(),
+                PayDate = packageResult.PayDate.HasValue ? packageResult.PayDate.Value.ToString() : "",
+                PayStatus = (int)packageResult.PayStatus + "",
+                OrderStatus = (int)packageResult.OrderStatus + "",
+                RemainingCallMinutes = packageResult.RemainingCallMinutes.ToString(),
+                EffectiveDate = packageResult.EffectiveDate.HasValue ? packageResult.EffectiveDate.Value.ToString().ToString() : "",
+                ActivationDate = packageResult.ActivationDate.HasValue ? packageResult.ActivationDate.Value.ToString() : "",
+                //PayUserAmount = packageResult.PayUserAmount,
+                //IsPayUserAmount = packageResult.IsPayUserAmount.ToString(),
+                LogoPic = packageResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl(),
+                PaymentMethod = (int)packageResult.PaymentMethod + "",
+                LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(packageResult.OrderDate.ToString()).AddMonths(6)).ToString()
+            };
+            return Ok(new { status = 1, data = new { list = data } });
+        }
+
+        /// <summary>
+        /// 激活套餐
+        /// 获取订单卡数据
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Activation([FromBody]ActivationBindingModel model)
+        {
+            if (model.BeginTime == 0)
+            {
+                return Ok(new { status = 0, msg = "激活失败！时间格式错误！" });
+            }
+            if (model.OrderID != Guid.Empty)
+            {
+
+                var currentUser = WebUtil.GetApiUserSession();
+
+                UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
+                if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
+                {
+                    var LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(6));
+
+                    if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
+                    {
+                        return Ok(new { status = 0, msg = "激活失败！超过最晚激活日期！" });
+                    }
+
+                    if (order.OrderStatus == 0)
+                    {
+                        //1.购买产品
+                        UT_Package package = await _packageService.GetEntityByIdAsync(order.PackageId);
+                        UT_Users user = await _userService.GetEntityByIdAsync(order.UserId);
+
+                        try
+                        {
+                            //2.购买订单卡
+                            var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
+
+                            //3.保存订单卡数据
+                            order.PackageOrderId = result.orderid;
+                            order.PackageOrderData = result.data;
+                            order.EffectiveDate = model.BeginTime;
+                            order.OrderStatus = OrderStatusType.UnactivatError;//默认是激活失败
+                            order.ActivationDate = CommonHelper.GetDateTimeInt();
+                            if (!await _orderService.UpdateAsync(order))
+                            {
+                                return Ok(new { status = 0, msg = "更新订单失败！" });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggerHelper.Error(ex.Message, ex);
+                            throw;
+                        }
+                    }
+
+                    //4.返回订单卡数据
+                    return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                }
+
+                return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
+            }
+            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+        }
+
+        private Byte[] hexToBytes(String s)
+        {
+            Byte[] bytes;
+            bytes = new Byte[s.Length / 2];
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                String temp_sub = s.Substring(2 * i, 2);
+                bytes[i] = (Byte)Convert.ToInt32(temp_sub, 16);
+            }
+            return bytes;
+        }
+
+        /// <summary>
+        /// 查询订单卡数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> QueryOrderData([FromBody]ActivationBindingModel model)
+        {
+            if (model.OrderID != Guid.Empty)
+            {
+                var currentUser = WebUtil.GetApiUserSession();
+
+                UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
+                if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
+                {
+                    if (order.OrderStatus == OrderStatusType.UnactivatError || order.OrderStatus == OrderStatusType.Used)
+                    {
+                        //Byte[] resultData = hexToBytes(order.PackageOrderData);
+                        //string dataB64 = Convert.ToBase64String(resultData);
+                        //3.返回订单卡数据
+                        return Ok(new { status = 1, data = new { OrderID = order.ID, Data = StringToHexString(Convert.ToBase64String(hexToBytes(order.PackageOrderData)), Encoding.UTF8).ToUpper() } });
+                    }
+                }
+
+                return Ok(new { status = 0, msg = "无有效订单卡数据！" });
+            }
+            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+        }
+
+        private static string StringToHexString(string s, Encoding encode)
+        {
+            byte[] b = encode.GetBytes(s);//按照指定编码将string编程字节数组
+            string result = string.Empty;
+            for (int i = 0; i < b.Length; i++)//逐字节变为16进制字符
+            {
+                result += Convert.ToString(b[i], 16);
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// 订单套餐激活本地完成
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> ActivationLocalCompleted([FromBody]ActivationBindingModel model)
+        {
+            if (model.OrderID != Guid.Empty)
+            {
+                var currentUser = WebUtil.GetApiUserSession();
+
+                UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
+                if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment && order.OrderStatus == OrderStatusType.UnactivatError)
+                {
+                    //3.保存订单卡数据
+                    order.OrderStatus = OrderStatusType.Used;
+                    if (!await _orderService.UpdateAsync(order))
+                    {
+                        return Ok(new { status = 0, msg = "更新订单失败！" });
+                    }
+
+                    //4.返回订单卡数据
+                    return Ok(new { status = 1, data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                }
+
+                return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
+            }
+            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+        }
+
+        /// <summary>
+        /// 通过用户余额支付套餐订单
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> PayOrderByUserAmount([FromBody]PayOrderByUserAmountBindingModel model)
+        {
+            string errorMsg = "";
+
+            var currentUser = WebUtil.GetApiUserSession();
+
+            if (currentUser == null)
+            {
+                errorMsg = "当前用户不能为空！";
+            }
+            else
+            {
+                int resultNum = await _orderService.PayOrderByUserAmount(currentUser.ID, model.OrderID);
+
+                if (resultNum == 0)
+                {
+                    return Ok(new { status = 1, msg = "支付成功！" });
+                }
+                else if (resultNum == -2)
+                {
+                    errorMsg = "此订单已经支付成功，不能再支付！";
+                }
+                else if (resultNum == -3)
+                {
+                    errorMsg = "此订单不属于该用户！";
+                }
+                else if (resultNum == -4)
+                {
+                    errorMsg = "用户余额不足！";
+                }
+                else if (resultNum == -5)
+                {
+                    errorMsg = "支付方式异常！";
+                }
+                else
+                {
+                    errorMsg = "支付失败！";
+                }
+            }
+            return Ok(new { status = 0, msg = errorMsg });
+        }
+
+        /// <summary>
+        /// app调用支付成功返回的接口
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [NoAuthenticate]
+        public async Task<IHttpActionResult> PayNotifyAsync([FromBody]PayNotifyAsyncBindingModel model)
+        {
+
+            var token = System.Web.HttpContext.Current.Request.Headers["token"];
+            //todo 由于测试api中header发送有问题，暂时使用此种方式进行测试
+            if (System.Web.HttpContext.Current.Request.QueryString["expires"] == "1471316792")
+            {
+                token = System.Web.HttpContext.Current.Request.QueryString["token"];
+            }
+
+            string reckonKey = SecureHelper.MD5(String.Format("{0}{1}{2}{3}{4}", token, model.Amount, model.OrderNum, model.PayDate, "f378qh87"));
+
+            //判断请求是否合法
+            if (reckonKey.Equals(model.Key))
+            {
+
+                var orderOrPayment = model.OrderNum;
+
+                if (orderOrPayment.StartsWith("8022", StringComparison.OrdinalIgnoreCase))
+                {
+                    //处理订单完成。
+                    //if (await _orderService.OnAfterOrderSuccess(orderOrPayment))
+                    //{
+                    //    return Ok(new { status = 1, msg = "支付成功！" });
+                    //}
+                }
+                else if (orderOrPayment.StartsWith("9022", StringComparison.OrdinalIgnoreCase))
+                {
+                    //处理付款完成。
+                    //if (await _paymentService.OnAfterPaymentSuccess(orderOrPayment))
+                    //{
+                    //    return Ok(new { status = 1, msg = "充值成功！" });
+                    //}
+                }
+                return Ok(new { status = 0, msg = "订单处理失败！" });
+            }
+            else
+            {
+                return Ok(new { status = 0, msg = "非法请求！" });
+            }
+
+
+        }
+
+
+        #region 获取查询的Expression表达式
+        /// <summary>
+        /// 获取查询表达式
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        private Expression<Func<TEntity, bool>> GetOrderSearchExpression<TEntity>(GetUserOrderListBindingModel model)
+        {
+            Expression expression = null;
+            ParameterExpression parameter = Expression.Parameter(typeof(TEntity), "entity");
+
+            try
+            {
+                Expression searchExpression = null;
+                Expression inExpression;
+                MemberExpression left = null;
+                ConstantExpression right;
+
+                if (model.UserID != Guid.Empty)
+                {
+                    left = Expression.Property(parameter, "UserId");
+                    right = Expression.Constant(model.UserID, typeof(Guid));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.PackageName != null)
+                {
+                    left = Expression.Property(parameter, "PackageName");
+                    right = Expression.Constant(model.PackageName, typeof(string));
+                    inExpression = Expression.Call(left, typeof(string).GetMethod("Contains"), right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.OrderStartDate != DateTime.MinValue)
+                {
+                    left = Expression.Property(parameter, "OrderDate");
+                    right = Expression.Constant(model.OrderStartDate, typeof(DateTime));
+                    inExpression = Expression.GreaterThanOrEqual(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.OrderEndDate != DateTime.MinValue)
+                {
+                    left = Expression.Property(parameter, "OrderDate");
+                    right = Expression.Constant(model.OrderEndDate, typeof(DateTime));
+                    inExpression = Expression.LessThanOrEqual(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.PayStartDate != DateTime.MinValue)
+                {
+                    left = Expression.Property(parameter, "PayDate");
+                    right = Expression.Constant(model.PayStartDate, typeof(DateTime?));
+                    inExpression = Expression.GreaterThanOrEqual(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.PayEndDate != DateTime.MinValue)
+                {
+                    left = Expression.Property(parameter, "PayDate");
+                    right = Expression.Constant(model.PayEndDate, typeof(DateTime?));
+                    inExpression = Expression.LessThanOrEqual(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.PayStatus != null)
+                {
+                    left = Expression.Property(parameter, "PayStatus");
+                    right = Expression.Constant(model.PayStatus, typeof(int));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.OrderStatus != null)
+                {
+                    left = Expression.Property(parameter, "OrderStatus");
+                    right = Expression.Constant(model.OrderStatus, typeof(int));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+
+                expression = expression == null ? searchExpression : Expression.And(expression, searchExpression);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return expression == null ? x => true : Expression.Lambda<Func<TEntity, bool>>(expression, parameter);
+        }
+        #endregion
+
+    }
+}
