@@ -142,6 +142,11 @@
                     "menuname": "页面展示管理",
                     "icon": "icon-users",
                     "url": "/Manage/PageShow"
+                }, {
+                    "menuid": "22",
+                    "menuname": "系统配置管理",
+                    "icon": "icon-users",
+                    "url": "/Manage/Config"
                 }]
             },
             {
@@ -285,7 +290,6 @@
             })
         }
     </script>
-
 </head>
 <body class="easyui-layout" style="overflow-y: hidden" fit="true" scroll="no">
     <noscript>
@@ -300,7 +304,7 @@
     </div>
     <div region="north" border="false" style="overflow: hidden; height: 70px; background: #2c4569 ; line-height: 20px; color: #fff; font-family: Verdana">
         <span style="float:right; padding-right:20px;" class="head">欢迎 xxx <a href="#" id="editpass">修改密码</a> <a href="#" id="loginOut">安全退出</a></span>
-        <span style="padding-left:10px; font-size: 16px; "><img src="/content/images/logo.png"  height="50" align="absmiddle" /> 爱小器后台管理系统</span>
+        <span style="padding-left:10px; font-size: 16px; "><img src="/content/images/logo.png" height="50" align="absmiddle" /> 爱小器后台管理系统</span>
     </div>
     <!--
     <div region="south" style="height: 0px; background: #D2E0F2; ">
@@ -326,7 +330,6 @@
                 <button id="btnPackagePlanActivate">PackagePlanActivate</button>
                 <button id="btnPackagePlanQuery">PackagePlanQuery</button>
                 <button id="btnPackagePlanDelete">PackagePlanDelete</button>
-
                 <br />
                 开关订阅<input type="text" id="txtactionCode" value="1" placeholder="1或者2" />
                 <button id="btnSubscriptionUpdate">SubscriptionUpdate</button>
@@ -335,7 +338,6 @@
                 <button id="btnKeepAlive">KeepAlive</button>
                 <br />
                 alertType<input type="text" id="txtalertType" value="21%Balance" />
-
                 <button id="btnBalanceRemind">BalanceRemind</button>
                 authenticationTime<input type="text" id="txtauthenticationTime" value="2015-07-02 15:00:00" />
                 <button id="btnDataActivationTimeRemind">DataActivationTimeRemind</button>

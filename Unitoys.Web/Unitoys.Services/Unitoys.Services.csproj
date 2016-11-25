@@ -53,6 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OrderByZCService.cs" />
+    <Compile Include="ZCSelectionNumberService.cs" />
+    <Compile Include="OrderByZCSelectionNumberService.cs" />
     <Compile Include="PageShowService.cs" />
     <Compile Include="UsersConfigService.cs" />
     <Compile Include="BaseService.cs" />

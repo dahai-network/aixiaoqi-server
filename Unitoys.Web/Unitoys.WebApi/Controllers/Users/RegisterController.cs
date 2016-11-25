@@ -85,6 +85,12 @@ namespace Unitoys.WebApi.Controllers
                         model.Score = 0;
                         model.UserHead = "/Unitoys/2015/12/1512291755292460937.png";
 
+                        //注册赠送金额
+                        if (UTConfig.SiteConfig.IsOpenRegGift == "1")
+                        {
+                            model.Amount = UTConfig.SiteConfig.RegGiftAmount;
+                        }
+
                         switch (PhoneServerByMySqlServices.SetSip_Buddies(model.Tel))
                         {
                             case 2:
@@ -161,7 +167,7 @@ namespace Unitoys.WebApi.Controllers
             return Ok(new { status = 0, msg = errorMsg });
         }
 
-        
+
     }
 
     public class QueryRegUser

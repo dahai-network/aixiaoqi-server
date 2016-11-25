@@ -66,6 +66,9 @@ namespace Unitoys.Model
         public DbSet<UT_AlarmClock> UT_AlarmClock { get; set; }
         public DbSet<UT_UsersConfig> UT_UsersConfig { get; set; }
         public DbSet<UT_PageShow> UT_PageShow { get; set; }
+        public DbSet<UT_OrderByZC> UT_OrderByZC { get; set; }
+        public DbSet<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
+        public DbSet<UT_ZCSelectionNumber> UT_ZCSelectionNumber { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             //注册配置
@@ -102,6 +105,9 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new AlarmClockConfiguration());
             modelBuilder.Configurations.Add(new UsersConfigConfiguration());
             modelBuilder.Configurations.Add(new PageShowConfiguration());
+            modelBuilder.Configurations.Add(new OrderByZCConfiguration());
+            modelBuilder.Configurations.Add(new OrderByZCSelectionNumberConfiguration());
+            modelBuilder.Configurations.Add(new ZCSelectionNumberConfiguration());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();  //表中都统一设置禁用一对多级联删除
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>(); //表中都统一设置禁用多对多级联删除

@@ -69,6 +69,9 @@ namespace Unitoys.Ioc
             Kernel.Bind<IAlarmClockService>().To<AlarmClockService>();
             Kernel.Bind<IUsersConfigService>().To<UsersConfigService>();
             Kernel.Bind<IPageShowService>().To<PageShowService>();
+            Kernel.Bind<IOrderByZCService>().To<OrderByZCService>();
+            Kernel.Bind<IOrderByZCSelectionNumberService>().To<OrderByZCSelectionNumberService>();
+            Kernel.Bind<IZCSelectionNumberService>().To<ZCSelectionNumberService>();
         }
 
         private static void AddFilterBindings()

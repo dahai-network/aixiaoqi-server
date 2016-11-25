@@ -45,6 +45,11 @@ namespace Unitoys.Core
             }
         }
 
+        public static void SetSiteConfig(SiteConfigInfo config)
+        {
+            _siteconfiginfo = config;
+        }
+
         /// <summary>
         /// 手环固件OTA信息
         /// </summary>
@@ -65,6 +70,11 @@ namespace Unitoys.Core
 
                 return _deviceBraceletOTAconfiginfo;
             }
+        }
+
+        public static void SetDeviceBraceletOTAConfig(DeviceBraceletOTAConfigInfo config)
+        {
+            _deviceBraceletOTAconfiginfo = config;
         }
     }
 }

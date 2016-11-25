@@ -200,6 +200,15 @@ namespace Unitoys.Core.Security
 
         #endregion
 
+        #region Config
+
+        public const string Can_Add_Config = "Can_Add_Config";
+        public const string Can_View_Config = "Can_View_Config";
+        public const string Can_Modify_Config = "Can_Modify_Config";
+        public const string Can_Delete_Config = "Can_Delete_Config";
+
+        #endregion
+
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -313,6 +322,11 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_PageShow = new Tuple<string, string, int>("Can_Modify_PageShow", "修改PageShow", 21);
                 Tuple<string, string, int> Can_Delete_PageShow = new Tuple<string, string, int>("Can_Delete_PageShow", "删除PageShow", 21);
 
+                Tuple<string, string, int> Can_Add_Config = new Tuple<string, string, int>("Can_Add_Config", "添加Config", 22);
+                Tuple<string, string, int> Can_View_Config = new Tuple<string, string, int>("Can_View_Config", "查看Config", 22);
+                Tuple<string, string, int> Can_Modify_Config = new Tuple<string, string, int>("Can_Modify_Config", "修改Config", 22);
+                Tuple<string, string, int> Can_Delete_Config = new Tuple<string, string, int>("Can_Delete_Config", "删除Config", 22);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -412,6 +426,16 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_Banner);
                 returnList.Add(Can_Modify_Banner);
                 returnList.Add(Can_Delete_Banner);
+
+                returnList.Add(Can_Add_PageShow);
+                returnList.Add(Can_View_PageShow);
+                returnList.Add(Can_Modify_PageShow);
+                returnList.Add(Can_Delete_PageShow);
+
+                returnList.Add(Can_Add_Config);
+                returnList.Add(Can_View_Config);
+                returnList.Add(Can_Modify_Config);
+                returnList.Add(Can_Delete_Config);
                 #endregion
 
                 return returnList;

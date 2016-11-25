@@ -104,6 +104,14 @@ namespace Unitoys.Core.Config
         /// Ios版本号
         /// </summary>
         public string IosVersion { get; set; }
+        /// <summary>
+        /// 是否开启赠送用户金额
+        /// </summary>
+        public string IsOpenRegGift { get; set; }
+        /// <summary>
+        /// 注册赠送用户金额
+        /// </summary>
+        public decimal RegGiftAmount { get; set; }
 
     }
 }
