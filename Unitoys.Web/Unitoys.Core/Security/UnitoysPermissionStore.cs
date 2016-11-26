@@ -209,6 +209,23 @@ namespace Unitoys.Core.Security
 
         #endregion
 
+        #region OrderByZC
+
+        public const string Can_Add_OrderByZC = "Can_Add_OrderByZC";
+        public const string Can_View_OrderByZC = "Can_View_OrderByZC";
+        public const string Can_Modify_OrderByZC = "Can_Modify_OrderByZC";
+        public const string Can_Delete_OrderByZC = "Can_Delete_OrderByZC";
+
+        #endregion
+
+        #region ZCSelectionNumber
+
+        public const string Can_Add_ZCSelectionNumber = "Can_Add_ZCSelectionNumber";
+        public const string Can_View_ZCSelectionNumber = "Can_View_ZCSelectionNumber";
+        public const string Can_Modify_ZCSelectionNumber = "Can_Modify_ZCSelectionNumber";
+        public const string Can_Delete_ZCSelectionNumber = "Can_Delete_ZCSelectionNumber";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -327,6 +344,16 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_Config = new Tuple<string, string, int>("Can_Modify_Config", "修改Config", 22);
                 Tuple<string, string, int> Can_Delete_Config = new Tuple<string, string, int>("Can_Delete_Config", "删除Config", 22);
 
+                Tuple<string, string, int> Can_Add_OrderByZC = new Tuple<string, string, int>("Can_Add_OrderByZC", "添加众筹订单", 23);
+                Tuple<string, string, int> Can_View_OrderByZC = new Tuple<string, string, int>("Can_View_OrderByZC", "查看众筹订单", 23);
+                Tuple<string, string, int> Can_Modify_OrderByZC = new Tuple<string, string, int>("Can_Modify_OrderByZC", "修改众筹订单", 23);
+                Tuple<string, string, int> Can_Delete_OrderByZC = new Tuple<string, string, int>("Can_Delete_OrderByZC", "删除众筹订单", 23);
+
+                Tuple<string, string, int> Can_Add_ZCSelectionNumber = new Tuple<string, string, int>("Can_Add_ZCSelectionNumber", "添加众筹选号", 24);
+                Tuple<string, string, int> Can_View_ZCSelectionNumber = new Tuple<string, string, int>("Can_View_ZCSelectionNumber", "查看众筹选号", 24);
+                Tuple<string, string, int> Can_Modify_ZCSelectionNumber = new Tuple<string, string, int>("Can_Modify_ZCSelectionNumber", "修改众筹选号", 24);
+                Tuple<string, string, int> Can_Delete_ZCSelectionNumber = new Tuple<string, string, int>("Can_Delete_ZCSelectionNumber", "删除众筹选号", 24);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -436,6 +463,16 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_Config);
                 returnList.Add(Can_Modify_Config);
                 returnList.Add(Can_Delete_Config);
+
+                returnList.Add(Can_Add_OrderByZC);
+                returnList.Add(Can_View_OrderByZC);
+                returnList.Add(Can_Modify_OrderByZC);
+                returnList.Add(Can_Delete_OrderByZC);
+
+                returnList.Add(Can_Add_ZCSelectionNumber);
+                returnList.Add(Can_View_ZCSelectionNumber);
+                returnList.Add(Can_Modify_ZCSelectionNumber);
+                returnList.Add(Can_Delete_ZCSelectionNumber);
                 #endregion
 
                 return returnList;

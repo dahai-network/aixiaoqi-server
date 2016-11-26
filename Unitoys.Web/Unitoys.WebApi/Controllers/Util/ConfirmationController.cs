@@ -40,7 +40,7 @@ namespace Unitoys.WebApi.Controllers.Util
             {
                 errorMsg = "手机号码错误！";
             }
-            else if (model.Type != 1 && model.Type != 2)
+            else if (model.Type != 1 && model.Type != 2 && model.Type != 3)
             {
                 errorMsg = "验证类型错误！";
             }
@@ -86,7 +86,6 @@ namespace Unitoys.WebApi.Controllers.Util
 
                     if (await _smsConfirmationService.InsertAsync(smsConfirmation))
                     {
-                        //dicSendSMSTime
                         return Ok(new { status = 1, msg = "发送成功" });
                     }
                     errorMsg = "信息发送成功,验证码保存";

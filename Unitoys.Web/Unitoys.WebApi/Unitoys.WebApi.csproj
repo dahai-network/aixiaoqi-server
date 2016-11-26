@@ -71,6 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ClientApi\PhoneServerByMySqlServices.cs" />
+    <Compile Include="Controllers\OrderByZCController.cs" />
+    <Compile Include="Controllers\OrderByZCSelectionNumberController.cs" />
     <Compile Include="Controllers\UsersConfigController.cs" />
     <Compile Include="Controllers\DeviceGoipController.cs" />
     <Compile Include="Controllers\AlarmClockController.cs" />
@@ -113,6 +115,8 @@
     <Compile Include="Controllers\Util\ESIMController.cs" />
     <Compile Include="Controllers\Util\WeatherController.cs" />
     <Compile Include="Models\ConfigBindingModels.cs" />
+    <Compile Include="Models\OrderByZCSelectionNumberBindingModel.cs" />
+    <Compile Include="Models\OrderZCBindingModels.cs" />
     <Compile Include="Models\UsersConfigBindingModels.cs" />
     <Compile Include="Models\ContinentsCountryBindingResponseModels.cs" />
     <Compile Include="Models\AddSportAndTimePeriodBindingModel.cs" />

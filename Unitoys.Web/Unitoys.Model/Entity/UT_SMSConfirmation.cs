@@ -32,7 +32,7 @@ namespace Unitoys.Model
         /// </summary>
         public DateTime? ConfirmDate { get; set; }
         /// <summary>
-        /// 验证类型, 1:注册 2:忘记密码
+        /// 验证类型, 1:注册 2:忘记密码 3:众筹订单绑定增加号码
         /// </summary>
         public int Type { get; set; }
         /// <summary>

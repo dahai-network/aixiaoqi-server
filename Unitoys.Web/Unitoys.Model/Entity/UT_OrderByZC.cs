@@ -41,9 +41,21 @@ namespace Unitoys.Model
         /// </summary>
         public int OrderDate { get; set; }
         /// <summary>
-        /// 订单付款时间
+        /// 收货姓名
         /// </summary>
-        public int? PayDate { get; set; }
+        public string Name { get; set; }
+        /// <summary>
+        /// 联系号码
+        /// </summary>
+        public string CallPhone { get; set; }
+        /// <summary>
+        /// 地址
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// 回报属性
+        /// </summary>
+        public string GiftProperties { get; set; }
         public virtual UT_Users UT_Users { get; set; }
         public virtual ICollection<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
         /// <summary>

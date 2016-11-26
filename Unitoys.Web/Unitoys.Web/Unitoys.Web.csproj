@@ -140,6 +140,9 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manage\Controllers\ConfigController.cs" />
+    <Compile Include="Areas\Manage\Controllers\OrderByZCController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Areas\Manage\Controllers\PageShowController.cs" />
     <Compile Include="Areas\Manage\Controllers\BaseController.cs" />
     <Compile Include="Areas\Manage\Controllers\BannerController.cs" />
@@ -166,6 +169,9 @@
     <Compile Include="Areas\Manage\Controllers\UserLoginRecordController.cs" />
     <Compile Include="Areas\Manage\Controllers\UserController.cs" />
     <Compile Include="Areas\Manage\Controllers\UserPackageController.cs" />
+    <Compile Include="Areas\Manage\Controllers\ZCSelectionNumberController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Areas\Manage\ManageAreaRegistration.cs" />
     <Compile Include="Areas\wx\Controllers\CacheController.cs" />
     <Compile Include="Areas\wx\Controllers\SpeakRecordController.cs" />
@@ -1041,6 +1047,8 @@
     <Content Include="Content\js\ckeditor\README.md" />
     <Content Include="Content\js\ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Manage\Views\Config\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\OrderByZC\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\ZCSelectionNumber\Index.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>

@@ -24,6 +24,14 @@ namespace Unitoys.Model
         /// 手机号码
         /// </summary>
         public string MobileNumber { get; set; }
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public decimal Price { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public int CreateDate { get; set; }
 
         public virtual UT_OrderByZCSelectionNumber UT_OrderByZCSelectionNumber { get; set; }
     }

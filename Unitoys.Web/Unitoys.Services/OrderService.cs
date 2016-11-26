@@ -333,7 +333,7 @@ namespace Unitoys.Services
             {
                 var query = db.UT_Order.Include(x => x.UT_Users).Include(x => x.UT_Package);
 
-                if (!string.IsNullOrEmpty(tel))
+                if (!string.IsNullOrEmpty(orderNum))
                 {
                     query = query.Where(x => x.OrderNum.Contains(orderNum));
                 }

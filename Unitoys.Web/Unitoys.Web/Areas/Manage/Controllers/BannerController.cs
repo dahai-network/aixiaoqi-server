@@ -28,7 +28,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         }
 
         /// <summary>
-        /// 获取设备手环列表
+        /// 获取Banner列表
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rows"></param>
@@ -103,7 +103,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        /// 更新套餐
+        /// 更新Banner
         /// </summary>
         /// <param name="modal"></param>
         /// <returns></returns>
@@ -142,7 +142,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         }
 
         /// <summary>
-        /// 删除GOIP
+        /// 删除Banner
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
