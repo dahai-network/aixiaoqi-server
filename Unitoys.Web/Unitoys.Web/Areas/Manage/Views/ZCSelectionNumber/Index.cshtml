@@ -9,11 +9,11 @@
         <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
             <form id="ff" method="post">
                 <span>省:</span>
-                <input id="ProvinceName" type="text" class="easyui-textbox" style="height:25px;" />
+                <input id="provinceName" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>市:</span>
-                <input id="CityName" type="text" class="easyui-textbox" style="height:25px;" />
+                <input id="cityName" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>手机号码:</span>
-                <input id="MobileNumber" type="text" class="easyui-textbox" style="height:25px;" />
+                <input id="mobileNumber" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>用户手机:</span>
                 <input id="userTel" type="text" class="easyui-textbox" style="height:25px;" />
 
@@ -22,16 +22,16 @@
         </div>
     </div>
     <div data-options="region:'center',border:false">
-        <table id="grid" class="easyui-datagrid" title="手环设备列表管理" style="width:100%;height:100%"
+        <table id="grid" class="easyui-datagrid" title="众筹选号列表管理" style="width:100%;height:100%"
                data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/ZCSelectionNumber/GetList',method:'get',toolbar:toolbar,pagination:true,onDblClickRow:onDbOpenDialog">
             <thead>
                 <tr>
-                    <th data-options="field:'MobileNumber',width:150">手机号码</th>
+                    <th data-options="field:'MobileNumber',width:50">手机号码</th>
                     <th data-options="field:'ProvinceName',width:50">省</th>
-                    <th data-options="field:'CityName'">市</th>
-                    <th data-options="field:'Price'">市</th>
-                    <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">创建时间</th>
-                    <th data-options="field:'Tel',width:100">用户</th>
+                    <th data-options="field:'CityName',width:50">市</th>
+                    <th data-options="field:'Price',width:50">价格</th>
+                    <th data-options="field:'CreateDate',width:50,formatter:formatDateTimeInt">创建时间</th>
+                    <th data-options="field:'Tel',width:50">用户</th>
 
                 </tr>
             </thead>
@@ -83,7 +83,7 @@
                     <input type="text" name="Price" id="Price" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
                 </td>
             </tr>
-            
+
         </table>
     </form>
 </div>
@@ -134,8 +134,10 @@
 
     function doSearch() {
         $("#grid").datagrid('load', {
-            title: $("#title").val() == null ? "" : $("#title").val(),
-            url: $("#url").val() == null ? "" : $("#url").val(),
+            provinceName: $("#provinceName").val() == null ? "" : $("#provinceName").val(),
+            cityName: $("#cityName").val() == null ? "" : $("#cityName").val(),
+            mobileNumber: $("#mobileNumber").val() == null ? "" : $("#mobileNumber").val(),
+            userTel: $("#userTel").val() == null ? "" : $("#userTel").val(),
             //createStartDate: $("input[name$='createStartDate']").val(),
             //createEndDate: $("input[name$='createEndDate']").val(),
         });

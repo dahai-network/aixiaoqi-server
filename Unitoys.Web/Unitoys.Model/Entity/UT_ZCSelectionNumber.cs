@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,11 @@ namespace Unitoys.Model
         /// 创建时间
         /// </summary>
         public int CreateDate { get; set; }
+        /// <summary>
+        /// 乐观并发
+        /// </summary>
+        [Timestamp]
+        public Byte[] RowVersion { get; set; }
 
         public virtual UT_OrderByZCSelectionNumber UT_OrderByZCSelectionNumber { get; set; }
     }

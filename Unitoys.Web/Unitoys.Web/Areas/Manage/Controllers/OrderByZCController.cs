@@ -73,22 +73,22 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             if (model.OrderByZCNum.Trim() == "")
             {
                 result.Success = false;
-                result.Msg = "OrderByZCNum不能为空！";
+                result.Msg = "订单号不能为空！";
             }
             else if (model.UnitPrice == 0)
             {
                 result.Success = false;
-                result.Msg = "UnitPrice不能为空！";
+                result.Msg = "单价不能为空！";
             }
             else if (model.Quantity == 0)
             {
                 result.Success = false;
-                result.Msg = "Quantity不能为空！";
+                result.Msg = "数量不能为空！";
             }
             else if (model.TotalPrice == 0)
             {
                 result.Success = false;
-                result.Msg = "TotalPrice不能为空！";
+                result.Msg = "总价不能为空！";
             }
             else if (model.Name.Trim() == "")
             {
@@ -157,22 +157,22 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             if (model.OrderByZCNum.Trim() == "")
             {
                 result.Success = false;
-                result.Msg = "OrderByZCNum不能为空！";
+                result.Msg = "订单号不能为空！";
             }
             else if (model.UnitPrice == 0)
             {
                 result.Success = false;
-                result.Msg = "UnitPrice不能为空！";
+                result.Msg = "单价不能为空！";
             }
             else if (model.Quantity == 0)
             {
                 result.Success = false;
-                result.Msg = "Quantity不能为空！";
+                result.Msg = "数量不能为空！";
             }
             else if (model.TotalPrice == 0)
             {
                 result.Success = false;
-                result.Msg = "TotalPrice不能为空！";
+                result.Msg = "总价不能为空！";
             }
             else if (model.Name.Trim() == "")
             {

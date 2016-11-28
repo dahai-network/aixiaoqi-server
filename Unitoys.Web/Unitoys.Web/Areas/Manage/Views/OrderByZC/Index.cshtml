@@ -8,25 +8,41 @@
     <div data-options="region:'north',border:false" style="height:90px">
         <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
             <form id="ff" method="post">
-                <span>标题:</span>
-                <input id="title" type="text" class="easyui-textbox" style="height:25px;" />
-                <span>链接地址:</span>
-                <input id="url" type="text" class="easyui-textbox" style="height:25px;" />
-                @*<span>创建时间:</span>
-                    <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
-                    <span>-</span>
-                    <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />*@
+                <span>订单号:</span>
+                <input id="orderNum" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>收货姓名:</span>
+                <input id="name" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>联系电话:</span>
+                <input id="callPhone" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>地址:</span>
+                <input id="address" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>付款状态:</span>
+                <select id="payStatus" class="easyui-combobox" name="payStatus" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">未付款</option>
+                    <option value="1">已付款</option>
+                    <option value="-1">异常付款</option>
+                </select>
+                @*<span>订单状态:</span>
+                <select id="orderStatus" class="easyui-combobox" name="orderStatus" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">未激活</option>
+                    <option value="1">正在使用</option>
+                    <option value="2">已过期</option>
+                    <option value="3">已取消</option>
+                    <option value="4">激活失败</option>
+                </select>*@
                 <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
             </form>
         </div>
     </div>
     <div data-options="region:'center',border:false">
-        <table id="grid" class="easyui-datagrid" title="手环设备列表管理" style="width:100%;height:100%"
+        <table id="grid" class="easyui-datagrid" title="众筹订单列表管理" style="width:100%;height:100%"
                data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/OrderByZC/GetList',method:'get',toolbar:toolbar,pagination:true,onDblClickRow:onDbOpenDialog">
             <thead>
                 <tr>
                     <th data-options="field:'OrderByZCNum',width:60">订单号</th>
-                    <th data-options="field:'OrderDate',width:60">订单日期</th>
+                    <th data-options="field:'OrderDate',width:60,formatter:formatDateTimeInt">订单日期</th>
                     <th data-options="field:'Tel',width:60">用户手机</th>
                     <th data-options="field:'Quantity',width:40">订购数量</th>
                     <th data-options="field:'UnitPrice',width:35">单价</th>
@@ -199,8 +215,12 @@
 
     function doSearch() {
         $("#grid").datagrid('load', {
-            title: $("#title").val() == null ? "" : $("#title").val(),
-            url: $("#url").val() == null ? "" : $("#url").val(),
+            tel: $("#tel").val(),
+            orderNum: $("#orderNum").val(),
+            callPhone: $("#callPhone").val(),
+            address: $("#address").val(),
+            payStatus: $("#payStatus").combobox("getValue"),
+            name: $("#name").val(),
             //createStartDate: $("input[name$='createStartDate']").val(),
             //createEndDate: $("input[name$='createEndDate']").val(),
         });

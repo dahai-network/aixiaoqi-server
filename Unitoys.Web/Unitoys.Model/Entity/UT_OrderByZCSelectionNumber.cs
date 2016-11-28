@@ -17,6 +17,18 @@ namespace Unitoys.Model
         /// </summary>
         public Guid OrderByZCId { get; set; }
         /// <summary>
+        /// 订单项数量
+        /// </summary>
+        public int Quantity { get; set; }
+        /// <summary>
+        /// 订单项单价
+        /// </summary>
+        public Decimal UnitPrice { get; set; }
+        /// <summary>
+        /// 订单项总价
+        /// </summary>
+        public Decimal TotalPrice { get; set; }
+        /// <summary>
         /// 订单编号/交易号
         /// </summary>
         public string OrderByZCSelectionNumberNum { get; set; }
@@ -41,6 +53,10 @@ namespace Unitoys.Model
         /// </summary>
         public PayStatusType PayStatus { get; set; }
         /// <summary>
+        /// 订单付款时间
+        /// </summary>
+        public int? PayDate { get; set; }
+        /// <summary>
         /// 支付方式
         /// </summary>
         public PaymentMethodType? PaymentMethod { get; set; }
@@ -56,6 +72,7 @@ namespace Unitoys.Model
         public virtual UT_ZCSelectionNumber UT_ZCSelectionNumber { get; set; }
 
         public virtual UT_OrderByZC UT_OrderByZC { get; set; }
+        public string Remark { get; set; }
     }
     public enum OrderByZCSelectionNumberStatusType
     {
