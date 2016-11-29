@@ -40,18 +40,18 @@ namespace Unitoys.WebApi.Controllers
 
             var currentUser = WebUtil.GetApiUserSession();
 
-            if (!ValidateHelper.IsMobile(model.tel))
+            if (!ValidateHelper.IsMobile(model.Tel))
             {
                 errorMsg = "手机号码格式不正确！";
             }
-            else if (!ValidateHelper.IsNumeric(model.smsVerCode))
+            else if (!ValidateHelper.IsNumeric(model.SmsVerCode))
             {
                 errorMsg = "验证码无效！";
             }
             else
             {
                 //判断手机验证码是否正确。
-                UT_SMSConfirmation smsConfirmation = await _smsConfirmationService.GetEntityAsync(x => x.Tel == model.tel && x.Code == model.smsVerCode && x.Type == 3 && !x.IsConfirmed);
+                UT_SMSConfirmation smsConfirmation = await _smsConfirmationService.GetEntityAsync(x => x.Tel == model.Tel && x.Code == model.SmsVerCode && x.Type == 3 && !x.IsConfirmed);
 
                 //判断当前时间是否到达验证码过期时间。
                 if (smsConfirmation != null)
@@ -62,10 +62,9 @@ namespace Unitoys.WebApi.Controllers
                     }
                     else
                     {
-
-                        switch (_orderByZCService.BindOrder(currentUser.ID, model.tel).ToString())
+                        var result = await _orderByZCService.BindOrder(currentUser.ID, model.Tel);
+                        switch (result.ToString())
                         {
-
                             case "0":
                                 errorMsg = "订单绑定失败";
                                 break;
@@ -102,11 +101,13 @@ namespace Unitoys.WebApi.Controllers
         {
             var currentUser = WebUtil.GetApiUserSession();
 
+            model = model ?? new GetUserOrderZCListBindingModel();
+
             //如果pageNumber和pageSize为null，则设置默认值。
             model.PageNumber = model.PageNumber ?? 1;
             model.PageSize = model.PageSize ?? 10;
 
-            var searchOrderByZCs = await _orderByZCService.GetUserOrderByZCList((int)model.PageNumber, (int)model.PageSize, currentUser.ID);
+            var searchOrderByZCs = await _orderByZCService.GetUserOrderByZCList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, model.CallPhone);
 
             var totalRows = searchOrderByZCs.Key;
 
@@ -119,6 +120,7 @@ namespace Unitoys.WebApi.Controllers
                              UnitPrice = i.UnitPrice,
                              TotalPrice = i.TotalPrice,
                              OrderDate = i.OrderDate.ToString(),
+                             CallPhone = i.CallPhone,
                              SelectionedNumberList = i.UT_OrderByZCSelectionNumber
                              .Select(x => new
                              {
@@ -132,7 +134,7 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
-        /// 根据ID查询用户订单
+        /// 根据ID查询用户众筹订单选号
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -158,6 +160,7 @@ namespace Unitoys.WebApi.Controllers
                 UnitPrice = modelResult.UnitPrice,
                 TotalPrice = modelResult.TotalPrice,
                 OrderDate = modelResult.OrderDate.ToString(),
+                CallPhone = modelResult.CallPhone,
                 SelectionedNumberList = modelResult.UT_OrderByZCSelectionNumber
                 .Select(x => new
                 {

@@ -34,8 +34,9 @@ namespace Unitoys.IServices
         /// <param name="page">页码</param>
         /// <param name="row">页数</param>
         /// <param name="userId">用户</param>
+        /// <param name="CallPhone">联系号码</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_OrderByZC>>> GetUserOrderByZCList(int page, int row, Guid userId);
+        Task<KeyValuePair<int, List<UT_OrderByZC>>> GetUserOrderByZCList(int page, int row, Guid userId, string CallPhone);
         /// <summary>
         /// 根据ID获取订单和订单中的选号订单
         /// </summary>

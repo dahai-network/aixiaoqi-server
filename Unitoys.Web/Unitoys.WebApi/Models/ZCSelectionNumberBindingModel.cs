@@ -6,15 +6,12 @@ using System.Threading.Tasks;
 
 namespace Unitoys.WebApi.Models
 {
-    public class OrderZCBindingModels
+    public class ZCSelectionNumberGetBindingModel
     {
-        public string Tel { get; set; }
-        public string SmsVerCode { get; set; }
-    }
-    public class GetUserOrderZCListBindingModel
-    {
+        public string Province { get; set; }
+        public string City { get; set; }
+        public string MobileNumber { get; set; }
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
-        public string CallPhone { get; set; }
     }
 }

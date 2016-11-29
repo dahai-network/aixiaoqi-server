@@ -296,6 +296,13 @@ namespace Unitoys.Core
                 SmsTemplateCode = "SMS_13266056";
                 SmsParam = "{\"code\":\"" + code + "\"}";
             }
+            else if (type == 3)
+            {
+                //找回密码
+                SmsFreeSignName = "爱小器";
+                SmsTemplateCode = "SMS_13266056";
+                SmsParam = "{\"code\":\"" + code + "\"}";
+            }
             ITopClient client = new DefaultTopClient(requestUri, appkey, secret);
             AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
             req.Extend = toNum;

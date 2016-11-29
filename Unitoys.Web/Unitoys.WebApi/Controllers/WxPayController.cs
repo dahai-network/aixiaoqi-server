@@ -23,10 +23,12 @@ namespace Unitoys.WebApi.Controllers
     {
         private IOrderService _orderService;
         private IPaymentService _paymentService;
-        public WxPayController(IOrderService orderService, IPaymentService paymentService)
+        private IOrderByZCSelectionNumberService _orderByZCSelectionNumberService;
+        public WxPayController(IOrderService orderService, IPaymentService paymentService, IOrderByZCSelectionNumberService orderByZCSelectionNumberService)
         {
             this._orderService = orderService;
             this._paymentService = paymentService;
+            this._orderByZCSelectionNumberService = orderByZCSelectionNumberService;
         }
 
         /**
@@ -107,7 +109,19 @@ namespace Unitoys.WebApi.Controllers
 
                 data.SetValue("body", "爱小器-账户充值");//商品描述
             }
+            else if (model.orderOrPayment.StartsWith("1022", StringComparison.OrdinalIgnoreCase))
+            {
+                UT_OrderByZCSelectionNumber orderByZCSelectionNumber = await _orderByZCSelectionNumberService.GetEntityAndOrderByZCAsync(x => x.OrderByZCSelectionNumberNum == out_trade_no);
 
+                //2.验证当前TOKEN是否为订单用户
+                if (orderByZCSelectionNumber == null || currentUser == null || !currentUser.ID.Equals(orderByZCSelectionNumber.UT_OrderByZC.UserId))
+                {
+                    return Ok(new { status = 0, msg = "调用信息错误！" });
+                }
+                TotalPrice = orderByZCSelectionNumber.TotalPrice;
+
+                data.SetValue("body", "爱小器-众筹订单选号");//商品描述
+            }
 
             //3.调用微信支付,传递相关订单信息
 
@@ -249,6 +263,28 @@ namespace Unitoys.WebApi.Controllers
                         if (await _paymentService.OnAfterPaymentSuccess(orderOrPayment, totalFee / 100))
                         {
                             //result_msg = "success";
+                        }
+                    }
+
+                    else if (orderOrPayment.StartsWith("1022", StringComparison.OrdinalIgnoreCase))
+                    {
+                        //2.判断订单是否已经处理(已支付)
+                        UT_OrderByZCSelectionNumber order = await _orderByZCSelectionNumberService.GetEntityAsync(a => a.OrderByZCSelectionNumberNum == orderOrPayment);
+                        if (order == null)
+                        {
+                            PayDataResult.SetValue("return_code", "FAIL");
+                            PayDataResult.SetValue("return_msg", "订单号不存在");
+                        }
+                        if (order.PayStatus == PayStatusType.YesPayment)
+                        {
+                            PayDataResult.SetValue("return_code", "FAIL");
+                            PayDataResult.SetValue("return_msg", "订单已支付");
+                        }
+                        //3.微信支付成功
+                        //处理订单完成。
+                        if (await _orderByZCSelectionNumberService.OnAfterOrderSuccess(orderOrPayment, totalFee / 100))
+                        {
+
                         }
                     }
                 }

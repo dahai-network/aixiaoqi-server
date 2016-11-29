@@ -20,10 +20,12 @@ namespace Unitoys.WebApi.Controllers
     {
         private IOrderService _orderService;
         private IPaymentService _paymentService;
-        public AliPayController(IOrderService orderService, IPaymentService paymentService)
+        private IOrderByZCSelectionNumberService _orderByZCSelectionNumberService;
+        public AliPayController(IOrderService orderService, IPaymentService paymentService, IOrderByZCSelectionNumberService orderByZCSelectionNumberService)
         {
             this._orderService = orderService;
             this._paymentService = paymentService;
+            this._orderByZCSelectionNumberService = orderByZCSelectionNumberService;
         }
 
         /// <summary>
@@ -87,6 +89,14 @@ namespace Unitoys.WebApi.Controllers
                         {
                             //处理付款完成。
                             if (await _paymentService.OnAfterPaymentSuccess(orderOrPayment, total_amount))
+                            {
+                                result_msg = "success";
+                            }
+                        }
+                        else if (orderOrPayment.StartsWith("1022", StringComparison.OrdinalIgnoreCase))
+                        {
+                            //处理订单完成。
+                            if (await _orderByZCSelectionNumberService.OnAfterOrderSuccess(orderOrPayment, total_amount))
                             {
                                 result_msg = "success";
                             }

@@ -65,5 +65,57 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
+
+        /// <summary>
+        /// 通过用户余额支付众筹选号订单
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> PayOrderByZCSelectionNumberByUserAmount([FromBody]PayOrderByZCSelectionNumberByUserAmountBindingModel model)
+        {
+            string errorMsg = "";
+
+            var currentUser = WebUtil.GetApiUserSession();
+
+            if (currentUser == null)
+            {
+                errorMsg = "当前用户不能为空！";
+            }
+            else
+            {
+                int resultNum = await _orderByZCSelectionNumberService.PayOrderByUserAmount(currentUser.ID, model.OrderByZCId);
+
+                if (resultNum == 0)
+                {
+                    return Ok(new { status = 1, msg = "支付成功！" });
+                }
+                else if (resultNum == -2)
+                {
+                    errorMsg = "此订单已经支付成功，不能再支付！";
+                }
+                else if (resultNum == -3)
+                {
+                    errorMsg = "此订单不属于该用户！";
+                }
+                else if (resultNum == -4)
+                {
+                    errorMsg = "用户余额不足！";
+                }
+                else if (resultNum == -5)
+                {
+                    errorMsg = "支付方式异常！";
+                }
+                else if (resultNum == -6)
+                {
+                    errorMsg = "号码已被选择！";
+                }
+                else
+                {
+                    errorMsg = "支付失败！";
+                }
+            }
+            return Ok(new { status = 0, msg = errorMsg });
+        }
     }
 }

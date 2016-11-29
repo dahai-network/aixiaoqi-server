@@ -14,4 +14,9 @@ namespace Unitoys.WebApi.Models
         public string MobileNumber { get; set; }
         public Unitoys.Model.PaymentMethodType? PaymentMethod { get; set; }
     }
+
+    public class PayOrderByZCSelectionNumberByUserAmountBindingModel
+    {
+        public Guid OrderByZCId { get; set; }
+    }
 }

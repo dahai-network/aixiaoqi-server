@@ -102,14 +102,20 @@ namespace Unitoys.Services
         /// <param name="page">页码</param>
         /// <param name="row">页数</param>
         /// <param name="userId">用户</param>
+        /// <param name="CallPhone">联系号码</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<int, List<UT_OrderByZC>>> GetUserOrderByZCList(int page, int row, Guid userId)
+        public async Task<KeyValuePair<int, List<UT_OrderByZC>>> GetUserOrderByZCList(int page, int row, Guid userId, string CallPhone)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
                 var query = db.UT_OrderByZC.Include(x => x.UT_Users).Include(x => x.UT_OrderByZCSelectionNumber).Where(x => true);
 
                 query = query.Where(x => x.UserId == userId);
+
+                if (!string.IsNullOrEmpty(CallPhone))
+                {
+                    query = query.Where(x => x.CallPhone.Contains(CallPhone));
+                }
 
                 var result = await query.OrderByDescending(x => x.OrderDate).Skip((page - 1) * row).Take(row).ToListAsync();
 

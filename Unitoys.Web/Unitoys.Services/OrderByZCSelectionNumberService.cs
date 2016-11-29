@@ -316,5 +316,18 @@ namespace Unitoys.Services
             db.UT_ZCSelectionNumber.Attach(zcSelectionNumber);
             db.Entry<UT_ZCSelectionNumber>(zcSelectionNumber).State = EntityState.Modified;
         }
+
+
+        /// <summary>
+        /// 根据条件获取订单选号和订单
+        /// </summary>
+        /// <returns></returns>
+        public async Task<UT_OrderByZCSelectionNumber> GetEntityAndOrderByZCAsync(System.Linq.Expressions.Expression<Func<UT_OrderByZCSelectionNumber, bool>> exp)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                return await db.UT_OrderByZCSelectionNumber.Include(x => x.UT_OrderByZC).FirstOrDefaultAsync(exp);
+            }
+        }
     }
 }
