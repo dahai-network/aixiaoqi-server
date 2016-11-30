@@ -29,8 +29,9 @@ namespace Unitoys.Services
             {
                 UT_ZCSelectionNumber zcSelectionNumber = await db.UT_ZCSelectionNumber.FirstOrDefaultAsync(x => x.MobileNumber == MobileNumber && x.OrderByZCSelectionNumberId == null);
                 UT_OrderByZC orderZC = await db.UT_OrderByZC.FirstOrDefaultAsync(x => x.ID == orderByZCId);
+                UT_OrderByZCConfirmation orderByZCConfirmation = await db.UT_OrderByZCConfirmation.FirstOrDefaultAsync(x => x.Tel == MobileNumber && x.UserId == userId);
 
-                if (zcSelectionNumber != null && orderZC != null && orderZC.UserId == userId)
+                if (zcSelectionNumber != null && orderZC != null && orderByZCConfirmation != null)
                 {
                     //1. 先添加OrderByZCSelectionNumber实体。
                     UT_OrderByZCSelectionNumber order = new UT_OrderByZCSelectionNumber();
@@ -78,7 +79,6 @@ namespace Unitoys.Services
                 //1. 根据用户ID和订单ID获取相应的Entity。
                 UT_Users payUser = await db.UT_Users.FindAsync(userId);
                 UT_OrderByZCSelectionNumber payOrder = await db.UT_OrderByZCSelectionNumber.Include(x => x.UT_OrderByZC).Where(a => a.ID == orderId).SingleOrDefaultAsync();
-
                 if (payUser != null && payOrder != null)
                 {
                     UT_ZCSelectionNumber zcSelectionNumber = await db.UT_ZCSelectionNumber.FirstOrDefaultAsync(x => x.MobileNumber == payOrder.SelectionNumber);
@@ -88,6 +88,7 @@ namespace Unitoys.Services
                     {
                         return -6;
                     }
+
                     //判断此订单是否为余额支付，如果不是则返回-5
                     if (payOrder.PaymentMethod != PaymentMethodType.Balance)
                     {
@@ -99,7 +100,7 @@ namespace Unitoys.Services
                         return -2;
                     }
                     //判断此订单的用户ID，如果不属于该用户的订单则返回-3。
-                    else if (payOrder.UT_OrderByZC.UserId != payUser.ID)
+                    else if (payOrder.UserId != payUser.ID)
                     {
                         return -3;
                     }
@@ -169,7 +170,7 @@ namespace Unitoys.Services
                 if (order != null)
                 {
                     //根据order的UserId获取User。
-                    UT_Users user = await db.UT_Users.FindAsync(order.UT_OrderByZC.UserId);
+                    UT_Users user = await db.UT_Users.FindAsync(order.UserId);
                     UT_ZCSelectionNumber zcSelectionNumber = await db.UT_ZCSelectionNumber.FirstOrDefaultAsync(x => x.MobileNumber == order.SelectionNumber);
 
                     //订单应在线支付金额

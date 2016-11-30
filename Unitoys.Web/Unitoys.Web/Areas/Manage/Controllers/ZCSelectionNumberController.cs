@@ -50,7 +50,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                CityName = i.CityName,
                                MobileNumber = i.MobileNumber,
                                Price = i.Price,
-                               Tel = i.OrderByZCSelectionNumberId != null ? i.UT_OrderByZCSelectionNumber.UT_OrderByZC.UT_Users.Tel : ""
+                               Tel = i.OrderByZCSelectionNumberId != null ? i.UT_OrderByZCSelectionNumber.UT_Users.Tel : ""
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };

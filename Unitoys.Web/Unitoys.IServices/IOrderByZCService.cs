@@ -10,13 +10,6 @@ namespace Unitoys.IServices
     public interface IOrderByZCService : IBaseService<UT_OrderByZC>
     {
         /// <summary>
-        /// 绑定众筹订单
-        /// </summary>
-        /// <param name="userId">用户ID</param>
-        /// <param name="callPhone">联系电话</param>
-        /// <returns>0失败/1成功/2不存在/3已被绑定</returns>
-        Task<int> BindOrder(Guid userId, string callPhone);
-        /// <summary>
         /// 查询
         /// </summary>
         /// <param name="page">页码</param>

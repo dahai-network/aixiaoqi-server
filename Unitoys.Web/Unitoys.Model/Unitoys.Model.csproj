@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\OrderByZCConfirmationConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCSelectionNumberConfiguration.cs" />
     <Compile Include="Configuration\ZCSelectionNumberConfiguration.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
     <Compile Include="Entity\UT_OrderByZC.cs" />
+    <Compile Include="Entity\UT_OrderByZCConfirmation.cs" />
     <Compile Include="Entity\UT_ZCSelectionNumber.cs" />
     <Compile Include="Entity\UT_OrderByZCSelectionNumber.cs" />
     <Compile Include="Entity\UT_PageShow.cs" />

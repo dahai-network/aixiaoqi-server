@@ -21,10 +21,6 @@ namespace Unitoys.Model
         /// </summary>
         public string OrderByZCNum { get; set; }
         /// <summary>
-        /// 用户ID
-        /// </summary>
-        public Guid? UserId { get; set; }
-        /// <summary>
         /// 订单项数量
         /// </summary>
         public int Quantity { get; set; }
@@ -56,7 +52,6 @@ namespace Unitoys.Model
         /// 回报属性
         /// </summary>
         public string GiftProperties { get; set; }
-        public virtual UT_Users UT_Users { get; set; }
         public virtual ICollection<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
         /// <summary>
         /// 备注

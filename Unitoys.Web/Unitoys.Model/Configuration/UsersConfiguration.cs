@@ -54,6 +54,10 @@ namespace Unitoys.Model
             this.HasMany(t => t.UT_AlarmClock).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
             //用户配置1对多
             this.HasMany(t => t.UT_UsersConfig).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
+            //众筹订单表1对多
+            //this.HasMany(t => t.UT_OrderByZC).WithOptional(t => t.UT_Users).HasForeignKey(t => t.UserId);
+            //众筹订单号码确认表1对多
+            this.HasMany(t => t.UT_OrderByZCSelectionNumber).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
             this.Property(t => t.PassWord).HasMaxLength(32).IsRequired();
 
             this.Property(t => t.NickName).HasMaxLength(20).IsOptional();

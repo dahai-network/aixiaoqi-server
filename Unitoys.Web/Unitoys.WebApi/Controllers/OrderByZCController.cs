@@ -19,13 +19,14 @@ namespace Unitoys.WebApi.Controllers
         private IPaymentService _paymentService;
         private IUserService _userService;
         private ISMSConfirmationService _smsConfirmationService;
-
-        public OrderByZCController(IOrderByZCService orderByZCService, IPaymentService paymentService, IUserService userService, ISMSConfirmationService smsConfirmationService)
+        private IOrderByZCConfirmationService _orderByZCConfirmationService;
+        public OrderByZCController(IOrderByZCService orderByZCService, IPaymentService paymentService, IUserService userService, ISMSConfirmationService smsConfirmationService, IOrderByZCConfirmationService orderByZCConfirmationService)
         {
             this._orderByZCService = orderByZCService;
             this._paymentService = paymentService;
             this._userService = userService;
             this._smsConfirmationService = smsConfirmationService;
+            this._orderByZCConfirmationService = orderByZCConfirmationService;
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace Unitoys.WebApi.Controllers
                     }
                     else
                     {
-                        var result = await _orderByZCService.BindOrder(currentUser.ID, model.Tel);
+                        var result = await _orderByZCConfirmationService.Bind(currentUser.ID, model.Tel);
                         switch (result.ToString())
                         {
                             case "0":
@@ -71,13 +72,10 @@ namespace Unitoys.WebApi.Controllers
                             case "1":
                                 return Ok(new { status = 1, msg = "订单绑定成功！" });
                             case "2":
-                                errorMsg = "无有效订单";
-                                break;
-                            case "3":
-                                errorMsg = "订单已被绑定";
+                                errorMsg = "号码已绑定";
                                 break;
                             default:
-                                errorMsg = "订单信息错误";
+                                errorMsg = "信息错误";
                                 break;
                         }
 
@@ -97,7 +95,7 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="queryModel">订单查询模型</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> GetUserOrderByZCList(GetUserOrderZCListBindingModel model)
+        public async Task<IHttpActionResult> GetUserOrderByZCList([FromUri]GetUserOrderZCListBindingModel model)
         {
             var currentUser = WebUtil.GetApiUserSession();
 
@@ -117,15 +115,15 @@ namespace Unitoys.WebApi.Controllers
                              OrderByZCID = i.ID,
                              OrderByZCNum = i.OrderByZCNum,
                              Quantity = i.Quantity.ToString(),
-                             UnitPrice = i.UnitPrice,
-                             TotalPrice = i.TotalPrice,
-                             OrderDate = i.OrderDate.ToString(),
+                             //UnitPrice = i.UnitPrice.ToString(),
+                             //TotalPrice = i.TotalPrice.ToString(),
+                             //OrderDate = i.OrderDate.ToString(),
                              CallPhone = i.CallPhone,
-                             SelectionedNumberList = i.UT_OrderByZCSelectionNumber
+                             SelectionedNumberList = i.UT_OrderByZCSelectionNumber.Where(x => x.ZCSelectionNumberId != null)
                              .Select(x => new
                              {
-                                 ProvinceName = x.UT_ZCSelectionNumber.ProvinceName,
-                                 CityName = x.UT_ZCSelectionNumber.CityName,
+                                 //ProvinceName = x.UT_ZCSelectionNumber.ProvinceName,
+                                 //CityName = x.UT_ZCSelectionNumber.CityName,
                                  MobileNumber = x.UT_ZCSelectionNumber.MobileNumber,
                              })
                          };
@@ -147,21 +145,20 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "信息异常！" });
             }
-            else if (modelResult.UserId != currentUser.ID)
+            else if (!await _orderByZCConfirmationService.CheckUserTelExist(currentUser.ID, modelResult.CallPhone))
             {
                 return Ok(new { status = 0, msg = "订单不属于此用户！" });
             }
 
             var data = new
             {
-                OrderByZCID = modelResult.ID,
                 OrderByZCNum = modelResult.OrderByZCNum,
                 Quantity = modelResult.Quantity.ToString(),
-                UnitPrice = modelResult.UnitPrice,
-                TotalPrice = modelResult.TotalPrice,
-                OrderDate = modelResult.OrderDate.ToString(),
+                //UnitPrice = modelResult.UnitPrice.ToString(),
+                //TotalPrice = modelResult.TotalPrice.ToString(),
+                //OrderDate = modelResult.OrderDate.ToString(),
                 CallPhone = modelResult.CallPhone,
-                SelectionedNumberList = modelResult.UT_OrderByZCSelectionNumber
+                SelectionedNumberList = modelResult.UT_OrderByZCSelectionNumber.OrderByDescending(x => x.OrderDate).Where(x => x.ZCSelectionNumberId != null)
                 .Select(x => new
                 {
                     Name = x.Name,
@@ -169,7 +166,8 @@ namespace Unitoys.WebApi.Controllers
                     ProvinceName = x.UT_ZCSelectionNumber.ProvinceName,
                     CityName = x.UT_ZCSelectionNumber.CityName,
                     MobileNumber = x.UT_ZCSelectionNumber.MobileNumber,
-                    Location = x.UT_ZCSelectionNumber.ProvinceName + x.UT_ZCSelectionNumber.CityName
+                    //Location = x.UT_ZCSelectionNumber.ProvinceName + x.UT_ZCSelectionNumber.CityName,
+                    Price = x.UT_ZCSelectionNumber.Price.ToString()
                 })
             };
             return Ok(new { status = 1, data = new { list = data } });

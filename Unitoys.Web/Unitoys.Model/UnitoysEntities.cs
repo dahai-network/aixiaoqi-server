@@ -67,6 +67,7 @@ namespace Unitoys.Model
         public DbSet<UT_UsersConfig> UT_UsersConfig { get; set; }
         public DbSet<UT_PageShow> UT_PageShow { get; set; }
         public DbSet<UT_OrderByZC> UT_OrderByZC { get; set; }
+        public DbSet<UT_OrderByZCConfirmation> UT_OrderByZCConfirmation { get; set; }
         public DbSet<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
         public DbSet<UT_ZCSelectionNumber> UT_ZCSelectionNumber { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -106,6 +107,7 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new UsersConfigConfiguration());
             modelBuilder.Configurations.Add(new PageShowConfiguration());
             modelBuilder.Configurations.Add(new OrderByZCConfiguration());
+            modelBuilder.Configurations.Add(new OrderByZCConfirmationConfiguration());
             modelBuilder.Configurations.Add(new OrderByZCSelectionNumberConfiguration());
             modelBuilder.Configurations.Add(new ZCSelectionNumberConfiguration());
 

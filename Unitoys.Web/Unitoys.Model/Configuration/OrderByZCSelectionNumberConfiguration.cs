@@ -15,7 +15,7 @@ namespace Unitoys.Model
         public OrderByZCSelectionNumberConfiguration()
         {
             //众筹订单选号绑定选号1对1
-            this.HasRequired(t => t.UT_ZCSelectionNumber).WithMany().HasForeignKey(t => t.ZCSelectionNumberId);
+            this.HasOptional(t => t.UT_ZCSelectionNumber).WithMany().HasForeignKey(t => t.ZCSelectionNumberId);
         }
     }
 }

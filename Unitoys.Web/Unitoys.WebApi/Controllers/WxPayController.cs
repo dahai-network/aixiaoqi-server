@@ -114,7 +114,7 @@ namespace Unitoys.WebApi.Controllers
                 UT_OrderByZCSelectionNumber orderByZCSelectionNumber = await _orderByZCSelectionNumberService.GetEntityAndOrderByZCAsync(x => x.OrderByZCSelectionNumberNum == out_trade_no);
 
                 //2.验证当前TOKEN是否为订单用户
-                if (orderByZCSelectionNumber == null || currentUser == null || !currentUser.ID.Equals(orderByZCSelectionNumber.UT_OrderByZC.UserId))
+                if (orderByZCSelectionNumber == null || currentUser == null || !currentUser.ID.Equals(orderByZCSelectionNumber.UserId))
                 {
                     return Ok(new { status = 0, msg = "调用信息错误！" });
                 }

@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IOrderByZCConfirmationService.cs" />
     <Compile Include="IOrderByZCService.cs" />
     <Compile Include="IZCSelectionNumberService.cs" />
     <Compile Include="IOrderByZCSelectionNumberService.cs" />

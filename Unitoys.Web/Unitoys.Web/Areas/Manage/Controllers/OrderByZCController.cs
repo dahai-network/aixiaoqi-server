@@ -45,8 +45,6 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                            select new
                            {
                                ID = i.ID,
-                               UserId = i.UserId,
-                               Tel = i.UT_Users == null ? "" : i.UT_Users.Tel,
                                OrderDate = i.OrderDate.ToString(),
                                OrderByZCNum = i.OrderByZCNum,
                                Quantity = i.Quantity,

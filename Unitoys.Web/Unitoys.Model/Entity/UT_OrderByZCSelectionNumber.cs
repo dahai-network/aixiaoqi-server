@@ -68,6 +68,11 @@ namespace Unitoys.Model
         /// 选择的号码
         /// </summary>
         public string SelectionNumber { get; set; }
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public Guid UserId { get; set; }
+        public virtual UT_Users UT_Users { get; set; }
 
         public virtual UT_ZCSelectionNumber UT_ZCSelectionNumber { get; set; }
 

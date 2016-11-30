@@ -38,6 +38,7 @@ namespace Unitoys.Model
         /// </summary>
         [Timestamp]
         public Byte[] RowVersion { get; set; }
+       
 
         public virtual UT_OrderByZCSelectionNumber UT_OrderByZCSelectionNumber { get; set; }
     }

@@ -51,7 +51,7 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="queryModel">订单查询模型</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> Get(ZCSelectionNumberGetBindingModel model)
+        public async Task<IHttpActionResult> Get([FromUri]ZCSelectionNumberGetBindingModel model)
         {
             Expression<Func<UT_ZCSelectionNumber, bool>> exp = x => x.OrderByZCSelectionNumberId == null;
 
@@ -83,10 +83,10 @@ namespace Unitoys.WebApi.Controllers
                          select new
                          {
                              MobileNumber = i.MobileNumber,
-                             Price = i.Price,
+                             Price = i.Price.ToString(),
                          };
 
-            return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });
+            return Ok(new { status = 1, data = new { totalRows =await totalRows, list = result } });
         }
 
     }

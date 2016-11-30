@@ -13,38 +13,7 @@ namespace Unitoys.Services
 {
     public class OrderByZCService : BaseService<UT_OrderByZC>, IOrderByZCService
     {
-        /// <summary>
-        /// 绑定众筹订单
-        /// </summary>
-        /// <param name="userId">用户ID</param>
-        /// <param name="callPhone">联系电话</param>
-        /// <returns>0失败/1成功/2不存在/3已被绑定</returns>
-        public async Task<int> BindOrder(Guid userId, string callPhone)
-        {
-            using (UnitoysEntities db = new UnitoysEntities())
-            {
-                var orderZCList = db.UT_OrderByZC.Where(x => x.CallPhone == callPhone).ToList();
-
-                //不存在
-                if (orderZCList.Count == 0)
-                {
-                    return 2;
-                }
-                //已被其他用户绑定
-                if (orderZCList.Where(x => x.UserId != null && x.UserId != userId).Count() > 0)
-                {
-                    return 3;
-                }
-
-                foreach (var orderZC in orderZCList)
-                {
-                    db.UT_OrderByZC.Attach(orderZC);
-                    db.Entry<UT_OrderByZC>(orderZC).State = EntityState.Modified;
-                }
-
-                return db.SaveChanges() > 0 ? 1 : 0;
-            }
-        }
+        
 
         /// <summary>
         /// 查询
@@ -61,7 +30,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var query = db.UT_OrderByZC.Include(x => x.UT_Users).Include(x => x.UT_OrderByZCSelectionNumber);
+                var query = db.UT_OrderByZC.Include(x => x.UT_OrderByZCSelectionNumber);
 
                 if (!string.IsNullOrEmpty(orderNum))
                 {
@@ -108,9 +77,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var query = db.UT_OrderByZC.Include(x => x.UT_Users).Include(x => x.UT_OrderByZCSelectionNumber).Where(x => true);
-
-                query = query.Where(x => x.UserId == userId);
+                var query = db.UT_OrderByZC.Include("UT_OrderByZCSelectionNumber.UT_ZCSelectionNumber").Where(x => true);
 
                 if (!string.IsNullOrEmpty(CallPhone))
                 {
@@ -133,7 +100,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                return await db.UT_OrderByZC.Include(x => x.UT_OrderByZCSelectionNumber).FirstOrDefaultAsync(x => x.ID == ID);
+                return await db.UT_OrderByZC.Include("UT_OrderByZCSelectionNumber.UT_ZCSelectionNumber").FirstOrDefaultAsync(x => x.ID == ID);
             }
         }
     }

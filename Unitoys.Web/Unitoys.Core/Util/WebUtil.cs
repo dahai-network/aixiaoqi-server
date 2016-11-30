@@ -300,7 +300,7 @@ namespace Unitoys.Core
             {
                 //找回密码
                 SmsFreeSignName = "爱小器";
-                SmsTemplateCode = "SMS_13266056";
+                SmsTemplateCode = "SMS_31695052";
                 SmsParam = "{\"code\":\"" + code + "\"}";
             }
             ITopClient client = new DefaultTopClient(requestUri, appkey, secret);

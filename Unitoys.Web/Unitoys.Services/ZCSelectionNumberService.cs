@@ -15,7 +15,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var query = db.UT_ZCSelectionNumber.Where(x => true).Include(x => x.UT_OrderByZCSelectionNumber);
+                var query = db.UT_ZCSelectionNumber.Include(x => x.UT_OrderByZCSelectionNumber.UT_Users).Where(x => true);
 
                 if (!string.IsNullOrEmpty(provinceName))
                 {
@@ -33,7 +33,7 @@ namespace Unitoys.Services
                 }
                 if (!string.IsNullOrEmpty(userTel))
                 {
-                    query = query.Where(x => x.OrderByZCSelectionNumberId != null && x.UT_OrderByZCSelectionNumber.UT_OrderByZC.UT_Users.Tel.Contains(userTel));
+                    query = query.Where(x => x.OrderByZCSelectionNumberId != null && x.UT_OrderByZCSelectionNumber.UT_Users.Tel.Contains(userTel));
                 }
                 var result = await query.OrderByDescending(x => x.CreateDate).Skip((page - 1) * rows).Take(rows).ToListAsync();
 

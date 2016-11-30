@@ -31,7 +31,9 @@ namespace Unitoys.Model
             this.UT_SportTimePeriod = new HashSet<UT_SportTimePeriod>();
             //this.UT_UsersWx = new UT_UsersWx();
             this.UT_UsersConfig = new HashSet<UT_UsersConfig>();
-            this.UT_OrderByZC = new HashSet<UT_OrderByZC>();
+            this.UT_OrderByZCConfirmation = new HashSet<UT_OrderByZCConfirmation>();
+            this.UT_OrderByZCSelectionNumber = new HashSet<UT_OrderByZCSelectionNumber>();
+            
         }
         /// <summary>
         /// 手机号码（需要短信验证）
@@ -114,7 +116,9 @@ namespace Unitoys.Model
         public virtual ICollection<UT_UserShape> UT_UserShape { get; set; }
         public virtual ICollection<UT_PaymentCard> UT_PaymentCard { get; set; }
         public virtual ICollection<UT_DeviceGoip> UT_DeviceGoip { get; set; }
-        public virtual ICollection<UT_OrderByZC> UT_OrderByZC { get; set; }
+        //public virtual ICollection<UT_OrderByZC> UT_OrderByZC { get; set; }
+        public virtual ICollection<UT_OrderByZCConfirmation> UT_OrderByZCConfirmation { get; set; }
+        public virtual ICollection<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
         public virtual UT_UsersWx UT_UsersWx { get; set; }
 
     }

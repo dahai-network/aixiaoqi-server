@@ -51,7 +51,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     var resultModel = new
                     {
-                        OrderID = order.ID,
+                        OrderByZCSelectionNumberID = order.ID,
                         OrderByZCSelectionNumberNum = order.OrderByZCSelectionNumberNum,
                         OrderDate = order.OrderDate.ToString(),
                         PaymentMethod = (int)order.PaymentMethod + ""
