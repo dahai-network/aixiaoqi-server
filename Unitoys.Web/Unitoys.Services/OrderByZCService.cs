@@ -13,7 +13,7 @@ namespace Unitoys.Services
 {
     public class OrderByZCService : BaseService<UT_OrderByZC>, IOrderByZCService
     {
-        
+
 
         /// <summary>
         /// 查询
@@ -71,13 +71,15 @@ namespace Unitoys.Services
         /// <param name="page">页码</param>
         /// <param name="row">页数</param>
         /// <param name="userId">用户</param>
+        /// <param name="Tel">用户手机号</param>
         /// <param name="CallPhone">联系号码</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<int, List<UT_OrderByZC>>> GetUserOrderByZCList(int page, int row, Guid userId, string CallPhone)
+        public async Task<KeyValuePair<int, List<UT_OrderByZC>>> GetUserOrderByZCList(int page, int row, Guid userId, string Tel, string CallPhone)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
                 var query = db.UT_OrderByZC.Include("UT_OrderByZCSelectionNumber.UT_ZCSelectionNumber").Where(x => true);
+                query = query.Where(x => x.CallPhone == Tel || db.UT_OrderByZCConfirmation.Where(a => a.UserId == userId).Select(a => a.Tel).Contains(x.CallPhone));
 
                 if (!string.IsNullOrEmpty(CallPhone))
                 {

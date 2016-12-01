@@ -13,13 +13,14 @@ namespace Unitoys.IServices
         /// 添加订单
         /// </summary>
         /// <param name="userId">用户</param>
+        /// <param name="tel">用户手机号</param>
         /// <param name="orderByZCId">订单</param>
         /// <param name="Name">姓名</param>
         /// <param name="IdentityNumber">身份证号</param>
         /// <param name="MobileNumber">选择的号码</param>
         /// <param name="PaymentMethod">支付方式</param>
         /// <returns></returns>
-        Task<UT_OrderByZCSelectionNumber> AddOrder(Guid userId, Guid orderByZCId, string Name, string IdentityNumber, string MobileNumber, PaymentMethodType? PaymentMethod);
+        Task<UT_OrderByZCSelectionNumber> AddOrder(Guid userId, string tel, Guid orderByZCId, string Name, string IdentityNumber, string MobileNumber, PaymentMethodType? PaymentMethod);
 
         /// <summary>
         /// 订单支付成功后调用

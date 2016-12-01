@@ -105,7 +105,12 @@ namespace Unitoys.WebApi.Controllers
             model.PageNumber = model.PageNumber ?? 1;
             model.PageSize = model.PageSize ?? 10;
 
-            var searchOrderByZCs = await _orderByZCService.GetUserOrderByZCList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, model.CallPhone);
+            if (string.IsNullOrEmpty(model.CallPhone))
+            {
+                return Ok(new { status = 0, msg = "联系号码不能为空！" });
+            }
+
+            var searchOrderByZCs = await _orderByZCService.GetUserOrderByZCList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, currentUser.Tel, model.CallPhone);
 
             var totalRows = searchOrderByZCs.Key;
 
@@ -170,7 +175,7 @@ namespace Unitoys.WebApi.Controllers
                     Price = x.UT_ZCSelectionNumber.Price.ToString()
                 })
             };
-            return Ok(new { status = 1, data = new { list = data } });
+            return Ok(new { status = 1, data = data });
         }
 
     }

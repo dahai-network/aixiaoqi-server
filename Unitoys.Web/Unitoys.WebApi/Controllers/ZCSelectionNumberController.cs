@@ -39,7 +39,7 @@ namespace Unitoys.WebApi.Controllers
                          select new
                          {
                              Province = i.Key,
-                             Citys = i.Select(x => x.CityName)
+                             Citys = i.Select(x => x.CityName).Distinct()
                          };
 
             return Ok(new { status = 1, data = result });
@@ -53,20 +53,24 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> Get([FromUri]ZCSelectionNumberGetBindingModel model)
         {
-            Expression<Func<UT_ZCSelectionNumber, bool>> exp = x => x.OrderByZCSelectionNumberId == null;
+            Expression<Func<UT_ZCSelectionNumber, bool>> exp = x =>
+                x.OrderByZCSelectionNumberId == null
+                && x.ProvinceName == model.Province
+                && x.CityName == model.City
+             && (!string.IsNullOrEmpty(model.MobileNumber) ? x.MobileNumber.Contains(model.MobileNumber) : true);
 
-            if (!string.IsNullOrEmpty(model.Province))
-            {
-                exp.And(x => x.ProvinceName.Contains(model.Province));
-            }
-            if (!string.IsNullOrEmpty(model.City))
-            {
-                exp.And(x => x.CityName.Contains(model.City));
-            }
-            if (!string.IsNullOrEmpty(model.MobileNumber))
-            {
-                exp.And(x => x.MobileNumber.Contains(model.MobileNumber));
-            }
+            //if (!string.IsNullOrEmpty(model.Province))
+            //{
+            //    exp.And(x => x.ProvinceName.Contains(model.Province));
+            //}
+            //if (!string.IsNullOrEmpty(model.City))
+            //{
+            //    exp.And(x => x.CityName.Contains(model.City));
+            //}
+            //if (!string.IsNullOrEmpty(model.MobileNumber))
+            //{
+            //    exp.And(x => x.MobileNumber.Contains(model.MobileNumber));
+            //}
 
             //排序Expression
             Expression<Func<UT_ZCSelectionNumber, object>> orderByExp = x => new { x.CreateDate };
@@ -86,7 +90,7 @@ namespace Unitoys.WebApi.Controllers
                              Price = i.Price.ToString(),
                          };
 
-            return Ok(new { status = 1, data = new { totalRows =await totalRows, list = result } });
+            return Ok(new { status = 1, data = new { totalRows = await totalRows, list = result } });
         }
 
     }

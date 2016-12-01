@@ -23,16 +23,25 @@ namespace Unitoys.Services
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
         /// <returns></returns>
-        public async Task<UT_OrderByZCSelectionNumber> AddOrder(Guid userId, Guid orderByZCId, string Name, string IdentityNumber, string MobileNumber, PaymentMethodType? PaymentMethod)
+        public async Task<UT_OrderByZCSelectionNumber> AddOrder(Guid userId, string tel, Guid orderByZCId, string Name, string IdentityNumber, string MobileNumber, PaymentMethodType? PaymentMethod)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
                 UT_ZCSelectionNumber zcSelectionNumber = await db.UT_ZCSelectionNumber.FirstOrDefaultAsync(x => x.MobileNumber == MobileNumber && x.OrderByZCSelectionNumberId == null);
                 UT_OrderByZC orderZC = await db.UT_OrderByZC.FirstOrDefaultAsync(x => x.ID == orderByZCId);
-                UT_OrderByZCConfirmation orderByZCConfirmation = await db.UT_OrderByZCConfirmation.FirstOrDefaultAsync(x => x.Tel == MobileNumber && x.UserId == userId);
 
-                if (zcSelectionNumber != null && orderZC != null && orderByZCConfirmation != null)
+                //下单不能超过当前数量
+                if (zcSelectionNumber != null &&
+                    orderZC != null &&
+                    orderZC.UT_OrderByZCSelectionNumber.Count(x => x.ZCSelectionNumberId != null) < orderZC.Quantity)
                 {
+                    var orderByZCConfirmation = await db.UT_OrderByZCConfirmation.FirstOrDefaultAsync(x => (x.Tel == orderZC.CallPhone && x.UserId == userId));
+                    if (tel != orderZC.CallPhone && orderByZCConfirmation == null)
+                    {
+                        //收货人号码未验证
+                        return null;
+                    }
+
                     //1. 先添加OrderByZCSelectionNumber实体。
                     UT_OrderByZCSelectionNumber order = new UT_OrderByZCSelectionNumber();
                     order.OrderByZCId = orderByZCId;
@@ -47,6 +56,7 @@ namespace Unitoys.Services
                     order.Quantity = 1;
                     order.UnitPrice = zcSelectionNumber.Price;
                     order.TotalPrice = order.UnitPrice * order.Quantity;
+                    order.UserId = userId;
 
                     //不需要付款的号码则直接可用，绑定对应号码
                     if (zcSelectionNumber.Price <= 0)

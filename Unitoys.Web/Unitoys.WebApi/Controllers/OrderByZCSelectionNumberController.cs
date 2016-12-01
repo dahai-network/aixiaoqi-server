@@ -46,7 +46,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                UT_OrderByZCSelectionNumber order = await _orderByZCSelectionNumberService.AddOrder(currentUser.ID, model.OrderByZCId, model.Name, model.IdentityNumber, model.MobileNumber, model.PaymentMethod);
+                UT_OrderByZCSelectionNumber order = await _orderByZCSelectionNumberService.AddOrder(currentUser.ID, currentUser.Tel, model.OrderByZCId, model.Name, model.IdentityNumber, model.MobileNumber, model.PaymentMethod);
                 if (order != null)
                 {
                     var resultModel = new
