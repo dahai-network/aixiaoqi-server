@@ -120,15 +120,12 @@ namespace Unitoys.WebApi.Controllers
                              OrderByZCID = i.ID,
                              OrderByZCNum = i.OrderByZCNum,
                              Quantity = i.Quantity.ToString(),
-                             //UnitPrice = i.UnitPrice.ToString(),
-                             //TotalPrice = i.TotalPrice.ToString(),
-                             //OrderDate = i.OrderDate.ToString(),
+                             //UnitPrice = i.UnitPrice.ToString(),//TotalPrice = i.TotalPrice.ToString(),//OrderDate = i.OrderDate.ToString(),
                              CallPhone = i.CallPhone,
                              SelectionedNumberList = i.UT_OrderByZCSelectionNumber.Where(x => x.ZCSelectionNumberId != null)
                              .Select(x => new
                              {
-                                 //ProvinceName = x.UT_ZCSelectionNumber.ProvinceName,
-                                 //CityName = x.UT_ZCSelectionNumber.CityName,
+                                 //ProvinceName = x.UT_ZCSelectionNumber.ProvinceName,//CityName = x.UT_ZCSelectionNumber.CityName,
                                  MobileNumber = x.UT_ZCSelectionNumber.MobileNumber,
                              })
                          };

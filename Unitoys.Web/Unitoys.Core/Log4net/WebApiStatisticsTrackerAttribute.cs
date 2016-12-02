@@ -27,8 +27,21 @@ namespace Unitoys.Core
             actionContext.Request.Properties[StopwatchKey] = Stopwatch.StartNew();
 
             actionContext.Request.Properties[MonLogKey] = MonLog;
+
+            var curContext = System.Web.HttpContext.Current;
+
+            StringBuilder requestStr = new StringBuilder();
+            requestStr.AppendLine();
+            if (curContext != null)
+            {
+                requestStr.AppendLine("Form ：" + curContext.Request.Form.ToString());
+                requestStr.AppendLine("QueryString ：" + curContext.Request.QueryString.ToString());
+            }
+            requestStr.AppendLine("Content ：" + actionContext.Request.Content.ReadAsStringAsync().Result);
+            requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
+            MonLog.RequestStr = requestStr.ToString();
         }
-        
+
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
             base.OnActionExecuted(actionExecutedContext);
@@ -38,6 +51,9 @@ namespace Unitoys.Core
             WebApiMonitorLog MonLog = actionExecutedContext.Request.Properties[MonLogKey] as WebApiMonitorLog;
             MonLog.ExecuteEndTime = DateTime.Now;
             MonLog.ExecuteElapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+            string responseStr = actionExecutedContext.Response.Content.ReadAsStringAsync().Result;
+            MonLog.ResponseStr = System.Environment.NewLine + responseStr;
 
             LoggerHelper.WebApiMonitor(MonLog.GetLoginfo());
         }
@@ -76,6 +92,8 @@ namespace Unitoys.Core
             set;
         }
 
+        public string RequestStr { get; set; }
+        public string ResponseStr { get; set; }
         /// <summary>
         /// 获取监控指标日志
         /// </summary>
@@ -85,14 +103,16 @@ namespace Unitoys.Core
         {
             string Action = "Action执行时间监控：";
             string Name = "Action";
-            
+
             string Msg = @"
             {0}
             ControllerName：{1}Controller
             {6}Name:{2}
             开始时间：{3}
             结束时间：{4}
-            总 时 间：{5}毫秒";
+            总 时 间：{5}毫秒
+            请求内容：{7}
+            返回内容：{8}";
 
             return string.Format(Msg,
                 Action,
@@ -100,8 +120,10 @@ namespace Unitoys.Core
                 ActionName,
                 ExecuteStartTime,
                 ExecuteEndTime,
-                ExecuteElapsedMilliseconds,             
-                Name);
+                ExecuteElapsedMilliseconds,
+                Name,
+                RequestStr,
+                ResponseStr);
         }
     }
 }
