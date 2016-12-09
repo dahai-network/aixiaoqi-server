@@ -92,7 +92,8 @@ namespace Unitoys.ESIM_263mobile
 
         /// <summary>
         /// 主动通知登网
-        /// 登网通知
+        ///   登网通知
+        ///   用户登网成功后，合作渠道调此接口告知263用户登网成功
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <param name="orderId">订单编号</param>

@@ -14,8 +14,8 @@ namespace UnitTest
     {
         private MVNOServiceApi _MVNOServiceApi = new MVNOServiceApi();
         private static string userId = "18850161016";
-        private static string orderId = "";
-        private static string reactiveOrderId = "";
+        private static string orderId = "2016120611050976235764045";
+        private static string reactiveOrderId = "2016120611073837635765045";
         private static Product product;
         public UnitTestMVNOServiceApi()
         {
@@ -48,7 +48,7 @@ namespace UnitTest
         public async Task TestMethodBuyProduct()
         {
             //1000003续订会提示不可续订
-            var result = await _MVNOServiceApi.BuyProduct(userId, "1000002", "2016-11-27 05:00:00");
+            var result = await _MVNOServiceApi.BuyProduct(userId, "1000002", "2016-12-08 00:00:00", 1, 2);
             Console.WriteLine(JsonConvert.SerializeObject(result));
 
             Assert.AreEqual("00000", result.returnCode);
@@ -65,7 +65,7 @@ namespace UnitTest
         }
 
         /// <summary>
-        /// 主动登网
+        /// 登网通知
         /// </summary>
         /// <returns></returns>
         [TestMethod]
@@ -84,13 +84,11 @@ namespace UnitTest
         [TestMethod]
         public async Task TestMethodReturnProduct()
         {
-            if (!string.IsNullOrEmpty(reactiveOrderId))
-            {
-                var result = await _MVNOServiceApi.ReturnProduct(reactiveOrderId);
-                Console.WriteLine(JsonConvert.SerializeObject(result));
 
-                Assert.AreEqual("00000", result.returnCode);
-            }
+            var result = await _MVNOServiceApi.ReturnProduct(reactiveOrderId);
+            Console.WriteLine(JsonConvert.SerializeObject(result));
+
+            Assert.AreEqual("00000", result.returnCode);
         }
 
         /// <summary>
