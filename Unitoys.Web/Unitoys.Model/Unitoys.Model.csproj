@@ -95,6 +95,8 @@
     <Compile Include="Configuration\PackageConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
+    <Compile Include="Entity\UT_EjoinDev.cs" />
+    <Compile Include="Entity\UT_EjoinDevSlot.cs" />
     <Compile Include="Entity\UT_OrderByZC.cs" />
     <Compile Include="Entity\UT_OrderByZCConfirmation.cs" />
     <Compile Include="Entity\UT_ZCSelectionNumber.cs" />
