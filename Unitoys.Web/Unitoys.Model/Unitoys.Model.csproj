@@ -56,6 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\EjoinDevConfiguration.cs" />
+    <Compile Include="Configuration\EjoinDevSlotConfiguration.cs.cs" />
     <Compile Include="Configuration\OrderByZCConfirmationConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCSelectionNumberConfiguration.cs" />

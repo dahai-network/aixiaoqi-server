@@ -44,6 +44,8 @@ namespace Unitoys.Model
         public DbSet<UT_UsersGroup> UT_UsersGroup { get; set; }
         public DbSet<UT_DeviceGoip> UT_DeviceGoip { get; set; }
         public DbSet<UT_DeviceBracelet> UT_DeviceBracelet { get; set; }
+        public DbSet<UT_EjoinDev> UT_EjoinDev { get; set; }
+        public DbSet<UT_EjoinDevSlot> UT_EjoinDevSlot { get; set; }
         public DbSet<UT_Sport> UT_Sport { get; set; }
         public DbSet<UT_SportTimePeriod> UT_SportTimePeriod { get; set; }
         public DbSet<UT_Order> UT_Order { get; set; }
@@ -86,6 +88,8 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new UserLoginRecordConfiguration());
             modelBuilder.Configurations.Add(new DeviceGoipConfiguration());
             modelBuilder.Configurations.Add(new DeviceBraceletConfiguration());
+            modelBuilder.Configurations.Add(new EjoinDevConfiguration());
+            modelBuilder.Configurations.Add(new EjoinDevSlotConfiguration());
             modelBuilder.Configurations.Add(new OrderConfiguration());
             modelBuilder.Configurations.Add(new OrderUsageConfiguration());
             modelBuilder.Configurations.Add(new MessageConfiguration());

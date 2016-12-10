@@ -31,7 +31,7 @@ namespace Unitoys.Model
         /// <summary>
         /// 注册状态
         /// </summary>
-        public string RegStatus { get; set; }
+        public RegStatusType RegStatus { get; set; }
         /// <summary>
         /// 设备注册IP
         /// </summary>
@@ -57,5 +57,12 @@ namespace Unitoys.Model
         GSM = 0,
         [Description("电信设备")]
         WCDMA = 1
+    }
+    public enum RegStatusType
+    {
+        [Description("注册成功")]
+        SUCCESS = 0,
+        [Description("注册失败")]
+        ERROR = 1
     }
 }

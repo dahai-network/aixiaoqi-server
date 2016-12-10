@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EjoinDevService.cs" />
     <Compile Include="OrderByZCConfirmationService.cs" />
     <Compile Include="OrderByZCService.cs" />
     <Compile Include="ZCSelectionNumberService.cs" />

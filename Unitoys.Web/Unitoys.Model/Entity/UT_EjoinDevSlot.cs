@@ -42,26 +42,26 @@ namespace Unitoys.Model
     public enum DevPortStatus
     {
         [Description("无SIM卡")]
-        NOSIM = "0",
+        NOSIM = 0,
         [Description("有SIM卡，没有注册")]
-        NOREG = "1",
+        NOREG = 1,
         [Description("SIM卡注册中")]
-        REGING = "2",
+        REGING = 2,
         [Description("SIM卡注册成功")]
-        REGSUCCESS = "3",
+        REGSUCCESS = 3,
         [Description("正在呼叫")]
-        CALLING = "4",
+        CALLING = 4,
         [Description("告警")]
-        WARNING = "5",
+        WARNING = 5,
         [Description("注册失败")]
-        REGERROR = "6",
+        REGERROR = 6,
         [Description("设备锁卡")]
-        DEVLOCKCARD = "7",
+        DEVLOCKCARD = 7,
         [Description("运营商锁卡")]
-        OPTLOCKCARD = "8",
+        OPTLOCKCARD = 8,
         [Description("读SIM卡错误")]
-        READERROR = "9",
+        READERROR = 9,
         [Description("端口被用户禁用")]
-        PORTDISABLE = "A"
+        PORTDISABLE = 10
     }
 }
