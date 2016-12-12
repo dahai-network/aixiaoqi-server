@@ -39,6 +39,15 @@ namespace Unitoys.Core
             }
             requestStr.AppendLine("Content ：" + actionContext.Request.Content.ReadAsStringAsync().Result);
             requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
+
+            var user = WebUtil.GetApiUserSession();
+            if (user != null)
+            {
+                requestStr.AppendLine("user：" + user.Tel);
+                requestStr.AppendLine("partner：" + System.Web.HttpContext.Current.Request.Headers["partner"]);
+                requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
+                requestStr.AppendLine("sign：" + System.Web.HttpContext.Current.Request.Headers["sign"]);
+            }
             MonLog.RequestStr = requestStr.ToString();
         }
 
@@ -52,8 +61,20 @@ namespace Unitoys.Core
             MonLog.ExecuteEndTime = DateTime.Now;
             MonLog.ExecuteElapsedMilliseconds = stopwatch.ElapsedMilliseconds;
 
-            string responseStr = actionExecutedContext.Response.Content.ReadAsStringAsync().Result;
-            MonLog.ResponseStr = System.Environment.NewLine + responseStr;
+            if (actionExecutedContext.Response != null)
+            {
+                string responseStr = actionExecutedContext.Response.Content.ReadAsStringAsync().Result;
+                MonLog.ResponseStr = System.Environment.NewLine + responseStr;
+            }
+
+            if (actionExecutedContext.Exception != null)
+            {
+                if (MonLog.ResponseStr == null)
+                {
+                    MonLog.ResponseStr = "";
+                }
+                MonLog.ResponseStr += System.Environment.NewLine + "出现Exception:" + actionExecutedContext.Exception.Message;
+            }
 
             LoggerHelper.WebApiMonitor(MonLog.GetLoginfo());
         }

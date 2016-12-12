@@ -387,7 +387,7 @@ namespace Unitoys.Services
                 query = query.Where(x => x.OrderStatus != OrderStatusType.Cancel);
                 query = query.Where(x => x.UserId == userId);
 
-                var result = await query.OrderByDescending(x => x.OrderDate).Skip((page - 1) * row).Take(row).ToListAsync();
+                var result = await query.OrderByDescending(x => x.OrderDate).OrderByDescending(x => x.OrderStatus != OrderStatusType.HasExpired).Skip((page - 1) * row).Take(row).ToListAsync();
 
                 var count = await query.CountAsync();
 
