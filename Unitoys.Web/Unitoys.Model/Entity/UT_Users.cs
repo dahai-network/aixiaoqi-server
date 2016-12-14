@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +97,11 @@ namespace Unitoys.Model
         /// 出生日期
         /// </summary>
         public int Birthday { get; set; }
+        /// <summary>
+        /// 乐观并发
+        /// </summary>
+        [Timestamp]
+        public Byte[] RowVersion { get; set; }
         public virtual ICollection<UT_Payment> UT_Payment { get; set; }
         public virtual ICollection<UT_SpeakRecord> UT_SpeakRecord { get; set; }
         public virtual ICollection<UT_UserLoginRecord> UT_UserLoginInfo { get; set; }
