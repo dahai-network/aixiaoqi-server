@@ -15,7 +15,7 @@ namespace Unitoys.Model
         public OrderConfiguration()
         {
             //订单项1对多
-            this.HasMany(t => t.UT_OrderUsage).WithRequired(t => t.UT_Order).HasForeignKey(t => t.OrderId);            
+            this.HasMany(t => t.UT_OrderUsage).WithRequired(t => t.UT_Order).HasForeignKey(t => t.OrderId);
 
             this.Property(t => t.PackageName).HasMaxLength(100).IsRequired();
 
@@ -26,6 +26,8 @@ namespace Unitoys.Model
             this.Property(t => t.ExpireDays).IsRequired();
 
             this.Property(t => t.OrderNum).HasMaxLength(30).IsRequired();
+
+            this.Property(p => p.RowVersion).IsRowVersion();
         }
     }
 }

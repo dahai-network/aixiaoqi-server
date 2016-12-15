@@ -16,6 +16,7 @@ namespace Unitoys.Model
         {
             //众筹订单选号绑定选号1对1
             this.HasOptional(t => t.UT_OrderByZCSelectionNumber).WithMany().HasForeignKey(t => t.OrderByZCSelectionNumberId);
+            this.Property(p => p.RowVersion).IsRowVersion();
         }
     }
 }

@@ -226,6 +226,15 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_ZCSelectionNumber = "Can_Delete_ZCSelectionNumber";
 
         #endregion
+
+        #region EjoinDev
+
+        public const string Can_Add_EjoinDev = "Can_Add_EjoinDev";
+        public const string Can_View_EjoinDev = "Can_View_EjoinDev";
+        public const string Can_Modify_EjoinDev = "Can_Modify_EjoinDev";
+        public const string Can_Delete_EjoinDev = "Can_Delete_EjoinDev";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -354,6 +363,11 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_ZCSelectionNumber = new Tuple<string, string, int>("Can_Modify_ZCSelectionNumber", "修改众筹选号", 24);
                 Tuple<string, string, int> Can_Delete_ZCSelectionNumber = new Tuple<string, string, int>("Can_Delete_ZCSelectionNumber", "删除众筹选号", 24);
 
+                Tuple<string, string, int> Can_Add_EjoinDev = new Tuple<string, string, int>("Can_Add_EjoinDev", "添加一正设备", 25);
+                Tuple<string, string, int> Can_View_EjoinDev = new Tuple<string, string, int>("Can_View_EjoinDev", "查看一正设备", 25);
+                Tuple<string, string, int> Can_Modify_EjoinDev = new Tuple<string, string, int>("Can_Modify_EjoinDev", "修改一正设备", 25);
+                Tuple<string, string, int> Can_Delete_EjoinDev = new Tuple<string, string, int>("Can_Delete_EjoinDev", "删除一正设备", 25);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -473,6 +487,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_ZCSelectionNumber);
                 returnList.Add(Can_Modify_ZCSelectionNumber);
                 returnList.Add(Can_Delete_ZCSelectionNumber);
+
+                returnList.Add(Can_Add_EjoinDev);
+                returnList.Add(Can_View_EjoinDev);
+                returnList.Add(Can_Modify_EjoinDev);
+                returnList.Add(Can_Delete_EjoinDev);
                 #endregion
 
                 return returnList;

@@ -146,6 +146,26 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
+        /// 取消订单
+        /// </summary>
+        /// <param name="orderid"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [NoLogin]
+        public async Task<IHttpActionResult> CancelTest([FromBody]PayOrderByUserAmountBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            var entity1 = await _userService.GetEntityAsync(x => x.Tel == "13530749972");
+            var entity2 = await _userService.GetEntityAsync(x => x.Tel == "13530749972");
+            entity1.Amount = 21;
+            entity2.Amount = 25;
+            var aa = await _userService.UpdateAsync(entity1);
+            var bb = await _userService.UpdateAsync(entity2);
+            return Ok(new { test = "test" });
+        }
+
+        /// <summary>
         /// 根据条件查询订单，分页
         /// </summary>
         /// <param name="queryModel">订单查询模型</param>

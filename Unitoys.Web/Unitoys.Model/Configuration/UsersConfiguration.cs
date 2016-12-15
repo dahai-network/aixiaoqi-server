@@ -78,6 +78,8 @@ namespace Unitoys.Model
 
             this.Property(t => t.Status).IsRequired();
 
+            this.Property(p => p.RowVersion).IsRowVersion();
+
         }
     }
 }

@@ -23,15 +23,19 @@ namespace Unitoys.Core
                 requestStr.AppendLine("QueryString ：" + curContext.Request.QueryString.ToString());
             }
             requestStr.AppendLine("Content ：" + context.Request.Content.ReadAsStringAsync().Result);
-            requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
 
-            var user = WebUtil.GetApiUserSession();
-            if (user != null)
+            if (curContext != null)
             {
-                requestStr.AppendLine("user：" + user.Tel);
-                requestStr.AppendLine("partner：" + System.Web.HttpContext.Current.Request.Headers["partner"]);
-                requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
-                requestStr.AppendLine("sign：" + System.Web.HttpContext.Current.Request.Headers["sign"]);
+                requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(curContext.Request.InputStream).ReadToEnd());
+
+                var user = WebUtil.GetApiUserSession();
+                if (user != null)
+                {
+                    requestStr.AppendLine("user：" + user.Tel);
+                    requestStr.AppendLine("partner：" + System.Web.HttpContext.Current.Request.Headers["partner"]);
+                    requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
+                    requestStr.AppendLine("sign：" + System.Web.HttpContext.Current.Request.Headers["sign"]);
+                }
             }
 
             LoggerHelper.Error(ErrorMsg + Environment.NewLine + requestStr.ToString(), context.Exception);

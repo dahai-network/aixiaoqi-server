@@ -1,0 +1,247 @@
+﻿@{
+    ViewBag.Title = "一正设备管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<script src="~/Content/js/uploadify/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/js/uploadify/uploadify.css">
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>设备名:</span>
+                <input id="name" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>最大端口数:</span>
+                <input id="maxPort" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>设备注册IP:</span>
+                <input id="regIp" type="text" class="easyui-textbox" style="height:25px;" />
+                @*<span>注册状态:</span>
+                    <select id="regStatus" class="easyui-combobox" name="regStatus" style="width:200px;">
+                        <option value="">-- 请选择 --</option>
+                        <option value="0">注册成功</option>
+                        <option value="1">注册失败</option>
+                    </select>*@
+                <span>设备类型:</span>
+                <select id="modType" class="easyui-combobox" name="modType" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">移动联通设备</option>
+                    <option value="1">电信设备</option>
+                </select>
+
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="众筹一正设备列表管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/EjoinDev/GetList',method:'get',toolbar:toolbar,pagination:true,onDblClickRow:onDbOpenDialog">
+            <thead>
+                <tr>
+                    <th data-options="field:'Name',width:50">设备名</th>
+                    @*<th data-options="field:'Password',width:50">密码</th>*@
+                    <th data-options="field:'MaxPort',width:50">最大端口数</th>
+                    <th data-options="field:'RegStatus',width:50,formatter:formatRegStatus">注册状态</th>
+                    <th data-options="field:'RegIp',width:50">设备注册IP</th>
+                    <th data-options="field:'Version',width:50">设备软件版本</th>
+                    <th data-options="field:'Mac',width:50">设备MAC地址</th>
+                    <th data-options="field:'ModType',width:50,formatter:formatModType">设备类型</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div id="dlg-edit" class="easyui-dialog" title="添加一正设备" style="width:500px;height:350px;padding:20px"
+     data-options="
+                    iconCls: 'icon-save',
+                    closed:true,
+                    buttons: [{
+                        text:'保存',
+                        iconCls:'icon-ok',
+                        handler:saveData
+                    }]
+                ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right" width="100">
+                    设备名：
+                </td>
+                <td>
+                    <input type="text" name="Name" id="Name" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right" width="100">
+                    密码：
+                </td>
+                <td>
+                    <input type="password" name="Password" id="Password" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    最大端口数：
+                </td>
+                <td>
+                    <input type="text" name="MaxPort" id="MaxPort" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    注册状态：
+                </td>
+                <td>
+                    <select id="RegStatus" name="RegStatus" class="easyui-combobox" style="width:100px" data-options="panelHeight:'auto'">
+                        @*<option value="">-- 请选择 --</option>*@
+                        <option value="0">注册成功</option>
+                        <option value="1">注册失败</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    设备注册IP：
+                </td>
+                <td>
+                    <input type="text" name="RegIp" id="RegIp" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    设备软件版本：
+                </td>
+                <td>
+                    <input type="text" name="Version" id="Version" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    设备MAC地址：
+                </td>
+                <td>
+                    <input type="text" name="Mac" id="Mac" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    设备类型：
+                </td>
+                <td>
+                    <select id="RegStatus" name="RegStatus" class="easyui-combobox" style="width:100px" data-options="panelHeight:'auto'">
+                        @*<option value="">-- 请选择 --</option>*@
+                        <option value="0">移动联通设备</option>
+                        <option value="1">电信设备</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    var toolbar = [{
+        text: '添加一正设备',
+        iconCls: 'icon-add',
+        handler: function () {
+            dlg_Edit_form.form('clear');
+            dlg_Edit.dialog('open');
+            dlg_Edit.dialog('setTitle', '添加一正设备');
+            dlg_Edit_form.url = '/Manage/EjoinDev/Add/';
+        }
+    }, {
+        text: '删除一正设备',
+        iconCls: 'icon-cut',
+        handler: del
+    }
+    ];
+
+    function formatRegStatus(value, rec, index) {
+        if (value == 0) {
+            return "注册成功";
+        }
+        if (value == 1) {
+            return "注册失败";
+        }
+        return "未识别的状态";
+    }
+    function formatModType(value, rec, index) {
+        if (value == 0) {
+            return "移动联通设备";
+        }
+        if (value == 1) {
+            return "电信设备";
+        }
+        return "未识别的设备";
+    }
+
+    $(function () {
+        grid = $("#grid").datagrid();
+        dlg_Edit = $("#dlg-edit").dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+    })
+    function onDbOpenDialog(index, rowData, value) {
+        dlg_Edit.dialog('open');
+        dlg_Edit_form.form('clear'); //清除之前面选中的表单
+        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.MobileNumber + " 的信息");
+        dlg_Edit_form.form('load', rowData); //加载到表单的控件上
+
+        dlg_Edit_form.url = '/Manage/EjoinDev/Update';
+    }
+
+    //保存数据
+    function saveData() {
+        dlg_Edit_form.form('submit', {
+            url: dlg_Edit_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: successCallback
+        });
+    }
+
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            name: $("#name").val() == null ? "" : $("#name").val(),
+            maxPort: $("#maxPort").val() == null ? "" : $("#maxPort").val(),
+            regIp: $("#regIp").val() == null ? "" : $("#regIp").val(),
+            //regStatus: $("#regStatus").combobox("getValue"),
+            modType: $("#modType").combobox("getValue"),
+        });
+    }
+
+    //删除数据
+    function del() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要删除选中的记录吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/EjoinDev/Delete',
+                        type: 'post',
+                        data: "ID=" + getSelectedID(),
+                        error: function () {
+                            Msgalert('错误', '删除失败!', 'error');
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要删除的记录。');
+
+        }
+    }
+
+</script>

@@ -22,13 +22,13 @@ namespace Unitoys.WebApi.Controllers
             {
                 var secret = SecureHelper.MD5(SecureHelper.MD5(SecureHelper.MD5(UTConfig.SiteConfig.PublicKey + userTel) + "voipcc2015"));
 
-                var result = MySqlDBHelper.ExecuteNonQuery(string.Format(@"INSERT INTO sip_buddies (NAME, defaultuser, secret, context,canreinvite, HOST, nat, qualify, TYPE)  VALUES ('{0}', '{0}', '{1}', 'unitoysapp','no', 'dynamic', 'yes', 'no', 'peer')", userTel, secret));
+                var result = MySqlDBHelper.ExecuteNonQuery(string.Format(@"Replace INTO sip_buddies (NAME, defaultuser, secret, context,canreinvite, HOST, nat, qualify, TYPE)  VALUES ('{0}', '{0}', '{1}', 'unitoysapp','no', 'dynamic', 'yes', 'no', 'peer')", userTel, secret));
 
                 if (result <= 0)
                 {
                     LoggerHelper.Error(string.Format("SetSip_Buddies失败，参数，userTel:{0}", userTel));
                 }
-
+                //result > 1//代表删除后新增
                 return result > 0 ? 1 : 0;
             }
             catch (Exception ex)

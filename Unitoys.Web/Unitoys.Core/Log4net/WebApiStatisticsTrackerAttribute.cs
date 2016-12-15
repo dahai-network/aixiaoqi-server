@@ -32,22 +32,29 @@ namespace Unitoys.Core
 
             StringBuilder requestStr = new StringBuilder();
             requestStr.AppendLine();
+
+            requestStr.AppendLine("ActionArguments ：" + Newtonsoft.Json.JsonConvert.SerializeObject(actionContext.ActionArguments));
             if (curContext != null)
             {
                 requestStr.AppendLine("Form ：" + curContext.Request.Form.ToString());
                 requestStr.AppendLine("QueryString ：" + curContext.Request.QueryString.ToString());
             }
             requestStr.AppendLine("Content ：" + actionContext.Request.Content.ReadAsStringAsync().Result);
-            requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
 
-            var user = WebUtil.GetApiUserSession();
-            if (user != null)
+            if (curContext != null)
             {
-                requestStr.AppendLine("user：" + user.Tel);
-                requestStr.AppendLine("partner：" + System.Web.HttpContext.Current.Request.Headers["partner"]);
-                requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
-                requestStr.AppendLine("sign：" + System.Web.HttpContext.Current.Request.Headers["sign"]);
+                requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
+
+                var user = WebUtil.GetApiUserSession();
+                if (user != null)
+                {
+                    requestStr.AppendLine("user：" + user.Tel);
+                    requestStr.AppendLine("partner：" + System.Web.HttpContext.Current.Request.Headers["partner"]);
+                    requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
+                    requestStr.AppendLine("sign：" + System.Web.HttpContext.Current.Request.Headers["sign"]);
+                }
             }
+
             MonLog.RequestStr = requestStr.ToString();
         }
 

@@ -73,6 +73,8 @@ namespace Unitoys.Ioc
             Kernel.Bind<IOrderByZCSelectionNumberService>().To<OrderByZCSelectionNumberService>();
             Kernel.Bind<IZCSelectionNumberService>().To<ZCSelectionNumberService>();
             Kernel.Bind<IOrderByZCConfirmationService>().To<OrderByZCConfirmationService>();
+            Kernel.Bind<IEjoinDevService>().To<EjoinDevService>();
+            
         }
 
         private static void AddFilterBindings()
