@@ -39,11 +39,11 @@ namespace Unitoys.Core
                 requestStr.AppendLine("Form ：" + curContext.Request.Form.ToString());
                 requestStr.AppendLine("QueryString ：" + curContext.Request.QueryString.ToString());
             }
-            requestStr.AppendLine("Content ：" + actionContext.Request.Content.ReadAsStringAsync().Result);
+            //requestStr.AppendLine("Content ：" + actionContext.Request.Content.ReadAsStringAsync().Result);
 
             if (curContext != null)
             {
-                requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
+                //requestStr.AppendLine("InputStream ：" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
 
                 var user = WebUtil.GetApiUserSession();
                 if (user != null)

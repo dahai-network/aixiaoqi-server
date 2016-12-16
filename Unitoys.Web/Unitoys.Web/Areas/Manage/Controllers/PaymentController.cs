@@ -102,7 +102,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                         payment.Status = 1;
                     }
 
-                    if (await _paymentService.UpdateAsync(payment))
+                    if (await _paymentService.OnAfterPaymentSuccess(payment.PaymentNum,payment.Amount))
                     {
                         result.Success = true;
                         result.Msg = "修改成功！";
