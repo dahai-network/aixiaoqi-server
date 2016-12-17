@@ -36,7 +36,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         [HttpGet]
         public async Task<ActionResult> GetList(int page, int rows, string name, int? maxPort, string regIp, RegStatusType? regStatus, ModType? modType)
         {
-            var pageRowsDb = await _ejoinDevService.SearchAsync(page, rows, name, maxPort, regIp,regStatus, modType);
+            var pageRowsDb = await _ejoinDevService.SearchAsync(page, rows, name, maxPort, regIp, regStatus, modType);
 
             int totalNum = pageRowsDb.Key;
 
@@ -93,6 +93,13 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 entity.Version = model.Version;
                 entity.Mac = model.Mac;
                 entity.ModType = model.ModType;
+
+                List<UT_EjoinDevSlot> list = new List<UT_EjoinDevSlot>();
+                for (int i = 0; i < entity.MaxPort; i++)
+                {
+                    list.Add(new UT_EjoinDevSlot() { PortNum = i + 1, EjoinDevId = entity.ID, Status = DevPortStatus.NOSIM });
+                }
+                entity.UT_EjoinDevSlot = list;
 
                 if (await _ejoinDevService.InsertAsync(entity))
                 {

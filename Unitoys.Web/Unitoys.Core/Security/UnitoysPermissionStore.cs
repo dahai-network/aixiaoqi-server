@@ -235,6 +235,16 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_EjoinDev = "Can_Delete_EjoinDev";
 
         #endregion
+
+        #region EjoinDevSlot
+
+        public const string Can_Add_EjoinDevSlot = "Can_Add_EjoinDevSlot";
+        public const string Can_View_EjoinDevSlot = "Can_View_EjoinDevSlot";
+        public const string Can_Modify_EjoinDevSlot = "Can_Modify_EjoinDevSlot";
+        public const string Can_Delete_EjoinDevSlot = "Can_Delete_EjoinDevSlot";
+
+        #endregion
+        
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -368,6 +378,11 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_EjoinDev = new Tuple<string, string, int>("Can_Modify_EjoinDev", "修改一正设备", 25);
                 Tuple<string, string, int> Can_Delete_EjoinDev = new Tuple<string, string, int>("Can_Delete_EjoinDev", "删除一正设备", 25);
 
+                Tuple<string, string, int> Can_Add_EjoinDevSlot = new Tuple<string, string, int>("Can_Add_EjoinDevSlot", "添加一正设备端口", 26);
+                Tuple<string, string, int> Can_View_EjoinDevSlot = new Tuple<string, string, int>("Can_View_EjoinDevSlot", "查看一正设备端口", 26);
+                Tuple<string, string, int> Can_Modify_EjoinDevSlot = new Tuple<string, string, int>("Can_Modify_EjoinDevSlot", "修改一正设备端口", 26);
+                Tuple<string, string, int> Can_Delete_EjoinDevSlot = new Tuple<string, string, int>("Can_Delete_EjoinDevSlot", "删除一正设备端口", 26);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -492,6 +507,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_EjoinDev);
                 returnList.Add(Can_Modify_EjoinDev);
                 returnList.Add(Can_Delete_EjoinDev);
+
+                returnList.Add(Can_Add_EjoinDevSlot);
+                returnList.Add(Can_View_EjoinDevSlot);
+                returnList.Add(Can_Modify_EjoinDevSlot);
+                returnList.Add(Can_Delete_EjoinDevSlot);
                 #endregion
 
                 return returnList;

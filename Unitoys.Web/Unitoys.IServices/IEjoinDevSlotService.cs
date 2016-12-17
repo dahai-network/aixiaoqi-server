@@ -12,7 +12,13 @@ namespace Unitoys.IServices
     /// </summary>
     public interface IEjoinDevSlotService : IBaseService<UT_EjoinDevSlot>
     {
-        
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="EjoinDevId">一正设备</param>
+        /// <returns></returns>
+        Task<KeyValuePair<int, List<UT_EjoinDevSlot>>> SearchAsync(int page, int rows, Guid? EjoinDevId);
     }
 }

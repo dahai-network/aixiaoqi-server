@@ -140,6 +140,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manage\Controllers\ConfigController.cs" />
+    <Compile Include="Areas\Manage\Controllers\EjoinDevSlotController.cs" />
     <Compile Include="Areas\Manage\Controllers\OrderByZCController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -543,6 +544,7 @@
     <Content Include="Content\js\ckeditor\skins\moono\images\refresh.png" />
     <Content Include="Content\js\ckeditor\skins\moono\images\spinner.gif" />
     <Content Include="Content\js\ckeditor\styles.js" />
+    <Content Include="Content\js\datagrid-detailview.js" />
     <Content Include="Content\js\easyloader.js" />
     <Content Include="Content\js\jquery-1.7.2.min.js" />
     <Content Include="Content\js\jquery.easyui.min.js" />
