@@ -35,7 +35,7 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new { status = 0, msg = "反馈信息不能为空！" });
             }
 
-            if (queryModel.Info.Length >= 10)
+            if (queryModel.Info.Length < 10)
             {
                 return Ok(new { status = 0, msg = "反馈信息不能少于10个字！" });
             }

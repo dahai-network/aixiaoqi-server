@@ -47,7 +47,8 @@ namespace Unitoys.WebApi.Controllers
         {
             model.SMSContent = System.Web.HttpUtility.UrlDecode(model.SMSContent, System.Text.Encoding.UTF8);
             long TryParseInt = 0;
-            if (model.To.Length > 11 || !Int64.TryParse(model.To, out TryParseInt))
+
+            if (model.To.Split(',').Any(x => !Int64.TryParse(x, out TryParseInt)))
             {
                 return Ok(new
                 {
