@@ -104,7 +104,7 @@ namespace Unitoys.WebApi.Controllers
                 <FromUserName><![CDATA[" + ToUserName + @"]]></FromUserName>
                 <CreateTime>" + CommonHelper.ConvertDateTimeInt(DateTime.Now) + @"</CreateTime>
                 <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[" + Content + @"]]></Content>
+                <Content><![CDATA[re:" + Content + @"]]></Content>
                 </xml>";
                 }
                 else if (MsgType == "image")
