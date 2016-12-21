@@ -54,7 +54,7 @@ namespace Unitoys.Core
                 LoggerHelper.Error("获取token信息失败:" + ex.Message);
                 return null;
             }
-        } 
+        }
         private void SetSession(string key, LoginUserInfo value)
         {
             if (string.IsNullOrWhiteSpace(key))

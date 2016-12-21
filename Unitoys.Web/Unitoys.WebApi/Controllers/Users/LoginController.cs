@@ -71,28 +71,13 @@ namespace Unitoys.WebApi.Controllers
                         ulr.Entrance = queryModel.LoginTerminal;
                         ulr.LoginDate = DateTime.Now;
                         //建立Task进行异步。
-                        Task<bool> insertTask = _userLoginInfoService.InsertAsync(ulr);
+                        var insertTaskAsync = _userLoginInfoService.InsertAsync(ulr);
 
                         //获取体形数据
-                        var userShape = await _userShapeService.GetUserShapeAsync(user.ID);
-
-                        double? Weight = null;
-                        if (userShape != null)
-                        {
-                            Weight = userShape.Weight;
-                        }
-
-                        LoginUserInfo model = new LoginUserInfo() { ID = user.ID, Tel = user.Tel, Weight = Weight };
-
-                        //生成token，保存登录信息。
-                        var token = CommonHelper.RandomLoginToken();
-                        WebUtil.SetApiUserSession(token, model);
-
-                        //等待异步的完成。
-                        await insertTask;
+                        var userShapeAsync = _userShapeService.GetUserShapeAsync(user.ID);
 
                         //手环设备
-                        var deviceBracelet = await _deviceBraceletService.GetEntityAsync(x => x.UserId == user.ID);
+                        var deviceBraceletAsync =  _deviceBraceletService.GetEntityAsync(x => x.UserId == user.ID);
 
                         //用户配置
                         var dataResult = await _usersConfigService.GetEntitiesAsync(x => x.UserId == user.ID);
@@ -101,6 +86,22 @@ namespace Unitoys.WebApi.Controllers
                         var notificaWeChat = dataResult.FirstOrDefault(x => x.Name == "NotificaWeChat");
                         var notificaQQ = dataResult.FirstOrDefault(x => x.Name == "NotificaQQ");
                         var liftWristLight = dataResult.FirstOrDefault(x => x.Name == "LiftWristLight");
+
+                        //等待异步的完成。
+                        await insertTaskAsync;
+                        var deviceBracelet =await deviceBraceletAsync;
+                        var userShape = await userShapeAsync;
+
+                        double? Weight = null;
+                        if (userShape != null)
+                        {
+                            Weight = userShape.Weight;
+                        }
+
+                        LoginUserInfo model = new LoginUserInfo() { ID = user.ID, Tel = user.Tel, Weight = Weight };
+                        //生成token，保存登录信息。
+                        var token = CommonHelper.RandomLoginToken();
+                        WebUtil.SetApiUserSession(token, model);
 
                         return Ok(new
                         {
