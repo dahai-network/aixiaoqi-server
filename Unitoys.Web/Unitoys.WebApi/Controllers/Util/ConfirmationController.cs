@@ -88,11 +88,21 @@ namespace Unitoys.WebApi.Controllers.Util
                     {
                         return Ok(new { status = 1, msg = "发送成功" });
                     }
-                    errorMsg = "信息发送成功,验证码保存";
+                    else
+                    {
+                        LoggerHelper.Error("发送短信接口错误（短信已发送，保存短信记录到数据库时出错！）");
+                        errorMsg = "短信服务器异常，请联系客服人员！";
+
+                    }
+                    
+                }
+                else if (rsp.code == "15")
+                {
+                    errorMsg = "您发送的太频繁了！";
                 }
                 else
                 {
-                    errorMsg = " sms:{code=" + rsp.code + ",msg:" + rsp.msg + "}";
+                    errorMsg = rsp.msg;
                 }
 
             }
