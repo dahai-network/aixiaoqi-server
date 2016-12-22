@@ -16,7 +16,7 @@ namespace Unitoys.Model
         public CountryConfiguration()
         {
          
-            this.HasMany(t => t.UT_Package).WithRequired(t => t.UT_Country).HasForeignKey(t => t.CountryId);
+            this.HasMany(t => t.UT_Package).WithOptional(t => t.UT_Country).HasForeignKey(t => t.CountryId);
 
             this.Property(t => t.CountryName).HasMaxLength(50).IsRequired();
 

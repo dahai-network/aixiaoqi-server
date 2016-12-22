@@ -20,6 +20,7 @@ namespace Unitoys.Model
             this.Property(t => t.CardPwd).HasMaxLength(16).IsRequired();
 
             this.Property(t => t.UserId).IsOptional();
+            this.Property(p => p.RowVersion).IsRowVersion();
         }
     }
 }

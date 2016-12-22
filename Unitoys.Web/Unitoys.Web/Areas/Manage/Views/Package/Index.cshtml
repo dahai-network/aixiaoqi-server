@@ -12,6 +12,13 @@
                 <input id="packageName" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>运营商:</span>
                 <input id="operators" type="text" class="easyui-textbox" style="height:25px;" />
+                <select id="category" class="easyui-combobox" name="category" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">流量</option>
+                    <option value="1">通话</option>
+                    <option value="2">大王卡</option>
+                    <option value="3">双卡双待</option>
+                </select>
                 <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
             </form>
         </div>
@@ -29,6 +36,7 @@
                     <th data-options="field:'Discount',width:40">折扣</th>
                     <th data-options="field:'ExpireDays',width:50">有效天数</th>
                     <th data-options="field:'Operators',width:45">运营商</th>
+                    <th data-options="field:'CategoryDescr',width:50">类型</th>
                     <th data-options="field:'CountryName',width:50">所属国家</th>
                     <th data-options="field:'DisplayOrder',width:50">显示顺序</th>
                     <th data-options="field:'Lock4',width:50,formatter:formatLock,styler:stylerFun">状态</th>
@@ -37,7 +45,6 @@
         </table>
     </div>
 </div>
-
 <div id="dlg-edit" class="easyui-dialog" title="添加管理员" style="width:550px;height:450px;padding:20px"
      data-options="
                 iconCls: 'icon-save',
@@ -141,6 +148,19 @@
                 </td>
                 <td>
                     <input type="text" name="Operators" id="Operators" class="easyui-textbox" style="width: 250px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    类型：
+                </td>
+                <td>
+                    <select id="Category" name="Category" class="easyui-combobox" style="width:100px">
+                        <option value="0" selected="selected">流量</option>
+                        <option value="1">通话</option>
+                        <option value="2">大王卡</option>
+                        <option value="3">双卡双待</option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -324,7 +344,8 @@
     function doSearch() {
         $("#grid").datagrid('load', {
             packageName: $("#packageName").val() == null ? "" : $("#packageName").val(),
-            operators: $("#operators").val() == null ? "" : $("#operators").val()
+            operators: $("#operators").val() == null ? "" : $("#operators").val(),
+            category: $("#category").combobox("getValue"),
         });
     }
 

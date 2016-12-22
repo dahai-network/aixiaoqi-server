@@ -10,11 +10,11 @@ namespace Unitoys.Services
 {
     public class PackageService : BaseService<UT_Package>, IPackageService
     {
-        public async Task<KeyValuePair<int, List<UT_Package>>> SearchAsync(int page, int rows, string packageName, string countryId, string operators)
+        public async Task<KeyValuePair<int, List<UT_Package>>> SearchAsync(int page, int rows, string packageName, string countryId, string operators, CategoryType? category)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var query = db.UT_Package.Include(x=>x.UT_Country).Where(x => true);
+                var query = db.UT_Package.Include(x => x.UT_Country).Where(x => true);
 
                 if (!string.IsNullOrEmpty(packageName))
                 {
@@ -30,6 +30,12 @@ namespace Unitoys.Services
                 {
                     query = query.Where(x => x.Operators.Contains(operators));
                 }
+
+                if (category.HasValue)
+                {
+                    query = query.Where(x => x.Category == category);
+                }
+
                 query = query.Where(x => x.IsDeleted == false);
                 var result = await query.OrderBy(x => x.DisplayOrder).Skip((page - 1) * rows).Take(rows).ToListAsync();
 

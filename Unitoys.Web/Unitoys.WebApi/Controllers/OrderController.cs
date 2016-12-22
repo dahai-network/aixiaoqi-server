@@ -146,26 +146,6 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
-        /// 取消订单
-        /// </summary>
-        /// <param name="orderid"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [NoLogin]
-        public async Task<IHttpActionResult> CancelTest([FromBody]PayOrderByUserAmountBindingModel model)
-        {
-            var currentUser = WebUtil.GetApiUserSession();
-
-            var entity1 = await _userService.GetEntityAsync(x => x.Tel == "13530749972");
-            var entity2 = await _userService.GetEntityAsync(x => x.Tel == "13530749972");
-            entity1.Amount = 21;
-            entity2.Amount = 25;
-            var aa = await _userService.UpdateAsync(entity1);
-            var bb = await _userService.UpdateAsync(entity2);
-            return Ok(new { test = "test" });
-        }
-
-        /// <summary>
         /// 根据条件查询订单，分页
         /// </summary>
         /// <param name="queryModel">订单查询模型</param>
@@ -197,6 +177,7 @@ namespace Unitoys.WebApi.Controllers
                              OrderNum = i.OrderNum,
                              UserId = i.UserId,
                              PackageName = i.PackageName,
+                             PackageCategory = i.PackageCategory,
                              Flow = i.Flow + "",
                              Quantity = i.Quantity.ToString(),
                              UnitPrice = i.UnitPrice,
@@ -211,62 +192,10 @@ namespace Unitoys.WebApi.Controllers
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
                              //PayUserAmount = i.PayUserAmount,
                              //IsPayUserAmount = i.IsPayUserAmount.ToString(),
-                             LogoPic = i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl()
+                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : ""
                          };
 
             return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });
-        }
-
-        /// <summary>
-        /// 根据条件查询订单，分页
-        /// </summary>
-        /// <param name="queryModel">订单查询模型</param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IHttpActionResult> GetUserOrderListIOS([FromUri]GetUserOrderListBindingModel model)
-        {
-            var currentUser = WebUtil.GetApiUserSession();
-
-            //赋值当前用户ID给queryModel
-            model.UserID = currentUser.ID;
-
-            //查询Expression
-            //Expression<Func<UT_Order, bool>> exp = GetOrderSearchExpression<UT_Order>(model);
-
-            //如果pageNumber和pageSize为null，则设置默认值。
-            model.PageNumber = model.PageNumber ?? 1;
-            model.PageSize = model.PageSize ?? 10;
-
-            //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
-            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment);
-
-            var totalRows = searchOrders.Key;
-
-            var result = from i in searchOrders.Value
-                         select new
-                         {
-                             //OrderID = i.ID,
-                             //OrderNum = i.OrderNum,
-                             //UserId = i.UserId,
-                             PackageName = i.PackageName,
-                             //Flow = i.Flow + "",
-                             //Quantity = i.Quantity.ToString(),
-                             //UnitPrice = i.UnitPrice.ToString(),
-                             //TotalPrice = i.TotalPrice.ToString(),
-                             //ExpireDays = GetExpireDaysDescr(i),
-                             //OrderDate = i.OrderDate.ToString(),
-                             //PayDate = i.PayDate.HasValue ? i.PayDate.Value.ToString() : "",
-                             //PayStatus = (int)i.PayStatus + "",
-                             //OrderStatus = (int)i.OrderStatus + "",
-                             //RemainingCallMinutes = i.RemainingCallMinutes + "",
-                             //EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
-                             //ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
-                             //PayUserAmount = i.PayUserAmount.ToString(),
-                             //IsPayUserAmount = i.IsPayUserAmount.ToString(),
-                             LogoPic = i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl()
-                         };
-
-            return Ok(new { status = 1, totalRows = totalRows, data = result });
         }
 
         /// <summary>
@@ -322,6 +251,7 @@ namespace Unitoys.WebApi.Controllers
                 OrderNum = packageResult.OrderNum,
                 UserId = packageResult.UserId,
                 PackageName = packageResult.PackageName,
+                PackageCategory = packageResult.PackageCategory,
                 Flow = packageResult.Flow,
                 Quantity = packageResult.Quantity.ToString(),
                 UnitPrice = packageResult.UnitPrice,
@@ -359,7 +289,6 @@ namespace Unitoys.WebApi.Controllers
             }
             if (model.OrderID != Guid.Empty)
             {
-
                 var currentUser = WebUtil.GetApiUserSession();
 
                 UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
@@ -371,7 +300,10 @@ namespace Unitoys.WebApi.Controllers
                     {
                         return Ok(new { status = 0, msg = "激活失败！超过最晚激活日期！" });
                     }
-
+                    if (order.PackageCategory != CategoryType.Flow)
+                    {
+                        return Ok(new { status = 0, msg = "激活失败！激活类型异常！" });
+                    }
                     if (order.OrderStatus == 0)
                     {
                         //1.购买产品
@@ -391,6 +323,7 @@ namespace Unitoys.WebApi.Controllers
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
                             if (!await _orderService.UpdateAsync(order))
                             {
+                                LoggerHelper.Error("套餐激活失败,更新数据库失败");
                                 return Ok(new { status = 0, msg = "更新订单失败！" });
                             }
                         }
@@ -403,6 +336,79 @@ namespace Unitoys.WebApi.Controllers
 
                     //4.返回订单卡数据
                     return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                }
+
+                return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
+            }
+            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+        }
+
+        /// <summary>
+        /// 激活大王卡套餐
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> ActivationKindCard([FromBody]ActivationKindCardBindingModel model)
+        {
+            if (!ValidateHelper.IsMobile(model.Tel))
+            {
+                return Ok(new { status = 0, msg = "手机号码格式不正确！" });
+            }
+            if (model.OrderID != Guid.Empty)
+            {
+                var currentUser = WebUtil.GetApiUserSession();
+
+                UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
+                if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
+                {
+                    var LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(6));
+
+                    if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
+                    {
+                        return Ok(new { status = 0, msg = "激活失败！超过最晚激活日期！" });
+                    }
+                    if (order.PackageCategory != CategoryType.KingCard)
+                    {
+                        return Ok(new { status = 0, msg = "激活失败！激活类型异常！" });
+                    }
+                    if (order.OrderStatus == 0)
+                    {
+                        //1.购买产品
+                        UT_Package package = await _packageService.GetEntityByIdAsync(order.PackageId);
+                        UT_Users user = await _userService.GetEntityByIdAsync(order.UserId);
+
+                        try
+                        {
+                            var result = true;
+                            //3.保存订单卡数据
+                            //order.PackageOrderId = result.orderid;
+                            //order.PackageOrderData = result.data;
+                            order.EffectiveDate = CommonHelper.GetDateTimeInt();
+                            order.OrderStatus = OrderStatusType.Used;//充值后为已使用
+                            order.ActivationDate = CommonHelper.GetDateTimeInt();
+                            order.Remark = "充值号码：" + model.Tel;
+                            if (!await _orderService.UpdateAsync(order))
+                            {
+                                LoggerHelper.Error("大王卡激活失败,更新数据库失败");
+                                return Ok(new { status = 0, msg = "更新订单失败！" });
+                            }
+                            else
+                            {
+                                //TODO 为号码充值话费
+                                //2.购买订单卡
+                                //var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggerHelper.Error(ex.Message, ex);
+                            throw;
+                        }
+                    }
+
+                    //4.返回订单卡数据
+                    return Ok(new { status = 1, msg = "激活成功", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                 }
 
                 return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });

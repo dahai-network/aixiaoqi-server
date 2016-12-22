@@ -72,6 +72,8 @@ namespace Unitoys.Model
         public DbSet<UT_OrderByZCConfirmation> UT_OrderByZCConfirmation { get; set; }
         public DbSet<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
         public DbSet<UT_ZCSelectionNumber> UT_ZCSelectionNumber { get; set; }
+        public DbSet<UT_GiftCard> UT_GiftCard { get; set; }
+        
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             //注册配置
@@ -114,6 +116,7 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new OrderByZCConfirmationConfiguration());
             modelBuilder.Configurations.Add(new OrderByZCSelectionNumberConfiguration());
             modelBuilder.Configurations.Add(new ZCSelectionNumberConfiguration());
+            modelBuilder.Configurations.Add(new GiftCardConfiguration());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();  //表中都统一设置禁用一对多级联删除
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>(); //表中都统一设置禁用多对多级联删除

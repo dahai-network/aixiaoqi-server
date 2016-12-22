@@ -147,6 +147,7 @@
     <Compile Include="Areas\Manage\Controllers\PageShowController.cs" />
     <Compile Include="Areas\Manage\Controllers\BaseController.cs" />
     <Compile Include="Areas\Manage\Controllers\BannerController.cs" />
+    <Compile Include="Areas\Manage\Controllers\GiftCardController.cs" />
     <Compile Include="Areas\Manage\Controllers\SportController.cs" />
     <Compile Include="Areas\Manage\Controllers\DeviceGoipController.cs" />
     <Compile Include="Areas\Manage\Controllers\FeedbackController.cs" />
@@ -1053,6 +1054,7 @@
     <Content Include="Areas\Manage\Views\OrderByZC\Index.cshtml" />
     <Content Include="Areas\Manage\Views\ZCSelectionNumber\Index.cshtml" />
     <Content Include="Areas\Manage\Views\EjoinDev\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\GiftCard\Index.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>

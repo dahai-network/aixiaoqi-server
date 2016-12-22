@@ -50,6 +50,7 @@
     <Compile Include="IEjoinDevService.cs" />
     <Compile Include="IOrderByZCConfirmationService.cs" />
     <Compile Include="IOrderByZCService.cs" />
+    <Compile Include="IGiftCardService.cs" />
     <Compile Include="IZCSelectionNumberService.cs" />
     <Compile Include="IOrderByZCSelectionNumberService.cs" />
     <Compile Include="IPageShowService.cs" />

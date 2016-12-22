@@ -244,7 +244,16 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_EjoinDevSlot = "Can_Delete_EjoinDevSlot";
 
         #endregion
-        
+
+        #region GiftCard
+
+        public const string Can_Add_GiftCard = "Can_Add_GiftCard";
+        public const string Can_View_GiftCard = "Can_View_GiftCard";
+        public const string Can_Modify_GiftCard = "Can_Modify_GiftCard";
+        public const string Can_Delete_GiftCard = "Can_Delete_GiftCard";
+
+        #endregion
+
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -383,6 +392,11 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_EjoinDevSlot = new Tuple<string, string, int>("Can_Modify_EjoinDevSlot", "修改一正设备端口", 26);
                 Tuple<string, string, int> Can_Delete_EjoinDevSlot = new Tuple<string, string, int>("Can_Delete_EjoinDevSlot", "删除一正设备端口", 26);
 
+                Tuple<string, string, int> Can_Add_GiftCard = new Tuple<string, string, int>("Can_Add_GiftCard", "添加一正设备端口", 27);
+                Tuple<string, string, int> Can_View_GiftCard = new Tuple<string, string, int>("Can_View_GiftCard", "查看一正设备端口", 27);
+                Tuple<string, string, int> Can_Modify_GiftCard = new Tuple<string, string, int>("Can_Modify_GiftCard", "修改一正设备端口", 27);
+                Tuple<string, string, int> Can_Delete_GiftCard = new Tuple<string, string, int>("Can_Delete_GiftCard", "删除一正设备端口", 27);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -512,6 +526,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_EjoinDevSlot);
                 returnList.Add(Can_Modify_EjoinDevSlot);
                 returnList.Add(Can_Delete_EjoinDevSlot);
+
+                returnList.Add(Can_Add_GiftCard);
+                returnList.Add(Can_View_GiftCard);
+                returnList.Add(Can_Modify_GiftCard);
+                returnList.Add(Can_Delete_GiftCard);
                 #endregion
 
                 return returnList;

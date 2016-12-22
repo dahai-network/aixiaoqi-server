@@ -126,6 +126,7 @@ namespace Unitoys.Model
         public virtual ICollection<UT_OrderByZCConfirmation> UT_OrderByZCConfirmation { get; set; }
         public virtual ICollection<UT_OrderByZCSelectionNumber> UT_OrderByZCSelectionNumber { get; set; }
         public virtual UT_UsersWx UT_UsersWx { get; set; }
+        public virtual ICollection<UT_GiftCard> UT_GiftCard { get; set; }
 
     }
 }

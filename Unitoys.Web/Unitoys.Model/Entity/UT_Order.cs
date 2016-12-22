@@ -38,6 +38,10 @@ namespace Unitoys.Model
         /// </summary>
         public int Flow { get; set; }
         /// <summary>
+        /// 套餐分类
+        /// </summary>
+        public CategoryType PackageCategory { get; set; }
+        /// <summary>
         /// 订单项数量
         /// </summary>
         public int Quantity { get; set; }

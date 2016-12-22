@@ -25,17 +25,17 @@ namespace Unitoys.WebApi.Controllers
         /// 查询套餐列表
         /// </summary>
         /// <returns></returns>
-        public async Task<IHttpActionResult> Get(int? pageNumber, int? pageSize, string key = "")
+        public async Task<IHttpActionResult> Get(int? pageNumber, int? pageSize, CategoryType? category)
         {
             Expression<Func<UT_Package, bool>> exp;
 
-            if (string.IsNullOrEmpty(key))
+            if (!category.HasValue)
             {
                 exp = x => x.Lock4 == 0 && x.IsDeleted == false;
             }
             else
             {
-                exp = x => x.PackageName.Contains(key) && x.Lock4 == 0 && x.IsDeleted == false;
+                exp = x => x.Category == category && x.Lock4 == 0 && x.IsDeleted == false;
             }
 
             //排序Expression
@@ -63,6 +63,7 @@ namespace Unitoys.WebApi.Controllers
                            //Flow = i.Flow,
                            Flow = "不限制流量",
                            Desction = i.Desction,
+                           CallMinutes = i.CallMinutes,
                            Pic = i.Pic.GetPackageCompleteUrl(),
                            ExpireDays = i.ExpireDays.ToString(),
                        };
@@ -82,7 +83,7 @@ namespace Unitoys.WebApi.Controllers
             }
             var packageResult = await _packageService.GetEntitiesAsync(c => c.CountryId.Equals(CountryID) && c.IsDeleted == false);
 
-            var data = from i in  packageResult.OrderBy(x=>x.DisplayOrder)
+            var data = from i in packageResult.OrderBy(x => x.DisplayOrder)
                        select new
                        {
                            PackageId = i.ID,

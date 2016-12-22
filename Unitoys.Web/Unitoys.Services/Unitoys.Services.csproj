@@ -57,6 +57,7 @@
     <Compile Include="EjoinDevService.cs" />
     <Compile Include="OrderByZCConfirmationService.cs" />
     <Compile Include="OrderByZCService.cs" />
+    <Compile Include="GiftCardService.cs" />
     <Compile Include="ZCSelectionNumberService.cs" />
     <Compile Include="OrderByZCSelectionNumberService.cs" />
     <Compile Include="PageShowService.cs" />

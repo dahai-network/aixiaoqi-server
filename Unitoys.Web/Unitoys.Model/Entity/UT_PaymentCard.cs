@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,6 +52,8 @@ namespace Unitoys.Model
         public PaymentCardStatusType Status { get; set; }
         public virtual UT_Users UT_Users { get; set; }
         public virtual UT_ManageUsers UT_ManageUsers { get; set; }
+        [Timestamp]
+        public Byte[] RowVersion { get; set; }
     }
     public enum PaymentCardStatusType
     {

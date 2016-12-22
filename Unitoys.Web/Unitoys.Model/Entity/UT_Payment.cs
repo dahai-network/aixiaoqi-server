@@ -69,5 +69,7 @@ namespace Unitoys.Model
         WxPay = 2,
         [Description("余额")]
         Balance = 3,
+        [Description("官方赠送")]
+        Gift = 4
     }
 }

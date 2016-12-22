@@ -37,6 +37,7 @@ namespace Unitoys.Services
                     order.OrderNum = String.Format("8022{0}", DateTime.Now.ToString("yyyyMMddHHmmssfffffff"));
                     order.PackageId = packageId;
                     order.PackageName = package.PackageName;
+                    order.PackageCategory = package.Category;
                     order.OrderDate = CommonHelper.GetDateTimeInt();
                     order.PayStatus = 0; //添加时付款状态默认为0：未付款。
                     order.Quantity = quantity;
@@ -182,6 +183,12 @@ namespace Unitoys.Services
                     //设置为已付款，付款日期设置为当前，并保存。
                     order.PayDate = CommonHelper.GetDateTimeInt();
                     order.PayStatus = PayStatusType.YesPayment;
+
+                    //如果属于通话套餐或双卡双待套餐则默认激活
+                    if (order.PackageCategory == CategoryType.DualSimStandby || order.PackageCategory == CategoryType.Call)
+                    {
+                        order.OrderStatus = OrderStatusType.Used;
+                    }
 
                     db.UT_Order.Attach(order);
                     db.Entry<UT_Order>(order).State = EntityState.Modified;

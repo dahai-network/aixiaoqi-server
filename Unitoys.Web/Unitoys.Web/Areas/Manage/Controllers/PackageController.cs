@@ -39,9 +39,9 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string packageName, string countryId, string operators)
+        public async Task<ActionResult> GetList(int page, int rows, string packageName, string countryId, string operators, CategoryType? category)
         {
-            var pageRowsDb = await _packageService.SearchAsync(page, rows, packageName, countryId, operators);
+            var pageRowsDb = await _packageService.SearchAsync(page, rows, packageName, countryId, operators, category);
 
             int totalNum = pageRowsDb.Key;
 
@@ -59,11 +59,14 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                ExpireDays = i.ExpireDays,
                                CountryId = i.CountryId,
                                CountryName = i.UT_Country == null ? "" : i.UT_Country.CountryName,
+                               Category = i.Category,
+                               CategoryDescr = i.Category.GetDescription(),
                                Lock4 = i.Lock4,
                                Operators = i.Operators,
                                Features = i.Features,
                                Details = i.Details,
-                               DisplayOrder = i.DisplayOrder
+                               DisplayOrder = i.DisplayOrder,
+                               //Category=i.Category
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -87,7 +90,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "价格错误！";
             }
-            else if (model.Flow <= 0)
+            else if (model.Flow < 0)
             {
                 result.Success = false;
                 result.Msg = "套餐流量错误！";
@@ -124,6 +127,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.Features = model.Features;
                 package.Details = model.Details;
                 package.DisplayOrder = model.DisplayOrder;
+                package.Category = model.Category;
 
                 if (await _packageService.InsertAsync(package))
                 {
@@ -160,7 +164,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "价格错误！";
             }
-            else if (model.Flow <= 0)
+            else if (model.Flow < 0)
             {
                 result.Success = false;
                 result.Msg = "套餐流量错误！";
@@ -198,6 +202,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.Features = model.Features;
                     package.Details = model.Details;
                     package.DisplayOrder = model.DisplayOrder;
+                    package.Category = model.Category;
 
                     if (await _packageService.UpdateAsync(package))
                     {

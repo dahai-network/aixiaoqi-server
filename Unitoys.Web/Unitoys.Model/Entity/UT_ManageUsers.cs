@@ -17,7 +17,7 @@ namespace Unitoys.Model
             this.UT_ManageUsersRole = new HashSet<UT_ManageUsersRole>();
             this.UT_PaymentCard = new HashSet<UT_PaymentCard>();
         }
-        
+
         /// <summary>
         /// 登录名
         /// </summary>
@@ -43,5 +43,6 @@ namespace Unitoys.Model
 
         public virtual ICollection<UT_ManageUsersRole> UT_ManageUsersRole { get; set; }
         public virtual ICollection<UT_PaymentCard> UT_PaymentCard { get; set; }
+        public virtual ICollection<UT_GiftCard> UT_GiftCard { get; set; }
     }
 }

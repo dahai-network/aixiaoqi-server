@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace Unitoys.Model
         /// <summary>
         /// 所属国家
         /// </summary>
-        public Guid CountryId { get; set; }
+        public Guid? CountryId { get; set; }
         /// <summary>
         /// 运营商
         /// </summary>
@@ -76,7 +77,22 @@ namespace Unitoys.Model
         /// 显示顺序
         /// </summary>
         public int DisplayOrder { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public CategoryType Category { get; set; }
         public virtual ICollection<UT_Order> UT_Order { get; set; }
         public virtual UT_Country UT_Country { get; set; }
+    }
+    public enum CategoryType
+    {
+        [Description("流量")]
+        Flow = 0,
+        [Description("通话")]
+        Call = 1,
+        [Description("大王卡")]
+        KingCard = 2,
+        [Description("双卡双待")]
+        DualSimStandby = 3
     }
 }

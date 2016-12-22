@@ -41,6 +41,12 @@ namespace Unitoys.WebApi.Models
         public int BeginTime { get; set; }
     }
 
+    public class ActivationKindCardBindingModel
+    {
+        public Guid OrderID { get; set; }
+        public string Tel { get; set; }
+    }
+
     public class PayOrderByUserAmountBindingModel
     {
         public Guid OrderID { get; set; }
