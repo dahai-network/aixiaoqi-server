@@ -176,8 +176,9 @@ namespace Unitoys.WebApi.Controllers
                              OrderID = i.ID,
                              OrderNum = i.OrderNum,
                              UserId = i.UserId,
+                             PackageId=i.PackageId,
                              PackageName = i.PackageName,
-                             PackageCategory = i.PackageCategory,
+                             PackageCategory = (int)i.PackageCategory + "",
                              Flow = i.Flow + "",
                              Quantity = i.Quantity.ToString(),
                              UnitPrice = i.UnitPrice,
@@ -192,7 +193,7 @@ namespace Unitoys.WebApi.Controllers
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
                              //PayUserAmount = i.PayUserAmount,
                              //IsPayUserAmount = i.IsPayUserAmount.ToString(),
-                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : ""
+                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetCountryPicCompleteUrl()
                          };
 
             return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });
@@ -250,8 +251,9 @@ namespace Unitoys.WebApi.Controllers
                 OrderID = packageResult.ID,
                 OrderNum = packageResult.OrderNum,
                 UserId = packageResult.UserId,
+                PackageId = packageResult.PackageId,
                 PackageName = packageResult.PackageName,
-                PackageCategory = packageResult.PackageCategory,
+                PackageCategory = (int)packageResult.PackageCategory + "",
                 Flow = packageResult.Flow,
                 Quantity = packageResult.Quantity.ToString(),
                 UnitPrice = packageResult.UnitPrice,
@@ -267,7 +269,7 @@ namespace Unitoys.WebApi.Controllers
                 ActivationDate = packageResult.ActivationDate.HasValue ? packageResult.ActivationDate.Value.ToString() : "",
                 //PayUserAmount = packageResult.PayUserAmount,
                 //IsPayUserAmount = packageResult.IsPayUserAmount.ToString(),
-                LogoPic = packageResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl(),
+                LogoPic = packageResult.UT_Package.UT_Country != null ? packageResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.UT_Package.Pic.GetCountryPicCompleteUrl(),
                 PaymentMethod = (int)packageResult.PaymentMethod + "",
                 LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(packageResult.OrderDate.ToString()).AddMonths(6)).ToString()
             };

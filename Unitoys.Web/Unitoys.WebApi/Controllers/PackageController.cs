@@ -81,7 +81,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "传入ID格式错误！" });
             }
-            var packageResult = await _packageService.GetEntitiesAsync(c => c.CountryId.Equals(CountryID) && c.IsDeleted == false);
+            var packageResult = await _packageService.GetEntitiesAsync(c => (c.CountryId != null && c.CountryId == CountryID) && c.IsDeleted == false);
 
             var data = from i in packageResult.OrderBy(x => x.DisplayOrder)
                        select new
@@ -120,8 +120,8 @@ namespace Unitoys.WebApi.Controllers
                            //Flow = packageResult.Flow,
                            Flow = "不限制流量",
                            Desction = packageResult.Desction,
-                           Pic = packageResult.UT_Country.Pic.GetCountryPicCompleteUrl(),
-                           LogoPic = packageResult.UT_Country.LogoPic.GetPackageCompleteUrl(),
+                           Pic = packageResult.UT_Country != null ? packageResult.UT_Country.Pic.GetCountryPicCompleteUrl() : packageResult.Pic.GetCountryPicCompleteUrl(),
+                           LogoPic = packageResult.UT_Country != null ? packageResult.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.Pic.GetCountryPicCompleteUrl(),
                            ExpireDays = packageResult.ExpireDays.ToString(),
                            Features = packageResult.Features,
                            Details = packageResult.Details

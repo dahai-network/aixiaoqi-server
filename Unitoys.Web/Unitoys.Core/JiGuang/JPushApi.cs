@@ -25,12 +25,12 @@ namespace Unitoys.Core.JiGuang
             PushPayload payload = PushObject_All_All_alert(title, dicExtra);
             client.SendPush(payload);
         }
-        public bool Push_alias_alert(string alias, string title, string alert, Dictionary<string, string> dicExtra)
+        public bool Push_ios_alias_alert(string alias, string title, string alert, Dictionary<string, string> dicExtra)
         {
             try
             {
                 JPushClient client = new JPushClient(app_key, master_secret);
-                PushPayload payload = PushObject_all_alias_alert(alias, title, dicExtra);
+                PushPayload payload = PushObject_ios_alias_alert(alias, title, dicExtra);
                 payload.notification.setAlert(alert);
                 client.SendPush(payload);
                 return true;
@@ -52,7 +52,32 @@ namespace Unitoys.Core.JiGuang
             return false;
         }
 
-        public bool Push_alias_message(string alias, string msgContent, string contentType, Dictionary<string, string> dicExtra)
+        public bool Push_android_alias_message(string alias, string msgContent, string contentType, Dictionary<string, string> dicExtra)
+        {
+            try
+            {
+                JPushClient client = new JPushClient(app_key, master_secret);
+                PushPayload payload = PushObject_android_alias_message(alias, msgContent, contentType, dicExtra);
+                client.SendPush(payload);
+                return true;
+            }
+            catch (APIRequestException e)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Error response from JPush server. Should review and fix it. ");
+                sb.AppendLine("HTTP Status: " + e.Status);
+                sb.AppendLine("Error Code: " + e.ErrorCode);
+                sb.AppendLine("Error Message: " + e.ErrorMessage);
+                //throw new Exception(sb.ToString());
+                LoggerHelper.Error(sb.ToString(), e);
+            }
+            catch (APIConnectionException e)
+            {
+                LoggerHelper.Error(e.Message, e);
+            }
+            return false;
+        }
+        public bool Push_all_alias_message(string alias, string msgContent, string contentType, Dictionary<string, string> dicExtra)
         {
             try
             {
@@ -140,6 +165,38 @@ namespace Unitoys.Core.JiGuang
             //                  .AddExtras("key3", false);
             return pushPayload_alias;
         }
+        /// <summary>
+        /// 发送所有平台通知根据别名
+        /// </summary>
+        /// <returns></returns>
+        private static PushPayload PushObject_ios_alias_alert(string alias, string title, Dictionary<string, string> dicExtra)
+        {
+
+            PushPayload pushPayload_alias = new PushPayload();
+            pushPayload_alias.platform = Platform.ios();
+            pushPayload_alias.audience = Audience.s_alias(alias);
+
+            //通知
+            var notification = new Notification().setAlert(ALERT);
+            //notification.AndroidNotification = new cn.jpush.api.push.notification.AndroidNotification();
+            notification.IosNotification = new cn.jpush.api.push.notification.IosNotification();
+            notification.IosNotification.setSound("default");
+            notification.IosNotification.setAlert(title);
+            //notification.AndroidNotification.setTitle(title);
+            foreach (var item in dicExtra)
+            {
+                //notification.AndroidNotification.AddExtra(item.Key, item.Value);
+                notification.IosNotification.AddExtra(item.Key, item.Value);
+            }
+            pushPayload_alias.notification = notification;
+
+            //消息内容
+            //var message = Message.content(MSG_CONTENT)
+            //                  .AddExtras("key1", "value1")
+            //                  .AddExtras("key2", 222)
+            //                  .AddExtras("key3", false);
+            return pushPayload_alias;
+        }
 
         /// <summary>
         /// 发送所有平台自定义消息根据别名
@@ -168,6 +225,35 @@ namespace Unitoys.Core.JiGuang
             //                  .AddExtras("key3", false);
             return pushPayload_alias;
         }
+
+        /// <summary>
+        /// 发送所有平台自定义消息根据别名
+        /// </summary>
+        /// <returns></returns>
+        private static PushPayload PushObject_android_alias_message(string alias, string msgContent, string contentType, Dictionary<string, string> dicExtra)
+        {
+
+            PushPayload pushPayload_alias = new PushPayload();
+            pushPayload_alias.platform = Platform.android();
+            pushPayload_alias.audience = Audience.s_alias(alias);
+
+            //自定义消息
+            pushPayload_alias.message = Message.content(msgContent).setContentType(contentType);
+
+            //通知
+            foreach (var item in dicExtra)
+            {
+                pushPayload_alias.message.AddExtras(item.Key, item.Value);
+            }
+
+            //消息内容
+            //var message = Message.content(MSG_CONTENT)
+            //                  .AddExtras("key1", "value1")
+            //                  .AddExtras("key2", 222)
+            //                  .AddExtras("key3", false);
+            return pushPayload_alias;
+        }
+
         //Registration ID
         //用户分群推送
 
