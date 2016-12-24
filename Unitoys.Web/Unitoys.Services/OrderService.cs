@@ -113,6 +113,15 @@ namespace Unitoys.Services
                         payOrder.PayDate = CommonHelper.GetDateTimeInt();
                         payOrder.PayStatus = PayStatusType.YesPayment;
 
+                        //如果属于通话套餐或双卡双待套餐则默认激活
+                        if (payOrder.PackageCategory == CategoryType.DualSimStandby || payOrder.PackageCategory == CategoryType.Call)
+                        {
+                            payOrder.OrderStatus = OrderStatusType.Used;
+                            payOrder.EffectiveDate = CommonHelper.GetDateTimeInt();
+                            payOrder.ActivationDate = CommonHelper.GetDateTimeInt();
+                            payOrder.Remark = payOrder.Remark == null ? payOrder.PackageCategory.ToString() : payOrder.Remark + payOrder.PackageCategory.ToString();
+                        }
+
                         db.UT_Users.Attach(payUser);
                         db.UT_Order.Attach(payOrder);
                         db.Entry<UT_Users>(payUser).State = EntityState.Modified;
@@ -188,6 +197,9 @@ namespace Unitoys.Services
                     if (order.PackageCategory == CategoryType.DualSimStandby || order.PackageCategory == CategoryType.Call)
                     {
                         order.OrderStatus = OrderStatusType.Used;
+                        order.EffectiveDate = CommonHelper.GetDateTimeInt();
+                        order.ActivationDate = CommonHelper.GetDateTimeInt();
+                        order.Remark = order.Remark == null ? order.PackageCategory.ToString() : order.Remark + order.PackageCategory.ToString();
                     }
 
                     db.UT_Order.Attach(order);
