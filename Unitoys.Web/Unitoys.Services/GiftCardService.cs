@@ -169,8 +169,8 @@ namespace Unitoys.Services
                             order.OrderStatus = 0; //添加时订单状态默认为0：未激活。
                             order.ExpireDays = package.ExpireDays;
                             order.RemainingCallMinutes = package.CallMinutes;
-                            //order.PayUserAmount = PayUserAmount;
-                            //order.IsPayUserAmount = IsPayUserAmount;
+                            order.PackageFeatures = package.Features;
+                            order.PackageDetails = package.Details;
                             order.PaymentMethod = PaymentMethodType.Gift;
                             order.PayDate = CommonHelper.GetDateTimeInt();
                             order.PayStatus = PayStatusType.YesPayment;

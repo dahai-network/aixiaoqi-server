@@ -34,6 +34,14 @@ namespace Unitoys.Model
         /// </summary>
         public string PackageName { get; set; }
         /// <summary>
+        /// 套餐特色
+        /// </summary>
+        public string PackageFeatures { get; set; }
+        /// <summary>
+        /// 套餐详情
+        /// </summary>
+        public string PackageDetails { get; set; }
+        /// <summary>
         /// 套餐流量
         /// </summary>
         public int Flow { get; set; }

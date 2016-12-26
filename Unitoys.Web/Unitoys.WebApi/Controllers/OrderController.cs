@@ -176,7 +176,7 @@ namespace Unitoys.WebApi.Controllers
                              OrderID = i.ID,
                              OrderNum = i.OrderNum,
                              UserId = i.UserId,
-                             PackageId=i.PackageId,
+                             PackageId = i.PackageId,
                              PackageName = i.PackageName,
                              PackageCategory = (int)i.PackageCategory + "",
                              Flow = i.Flow + "",
@@ -235,43 +235,45 @@ namespace Unitoys.WebApi.Controllers
         public async Task<IHttpActionResult> GetByID(Guid id)
         {
             var currentUser = WebUtil.GetApiUserSession();
-            var packageResult = await _orderService.GetEntityAndPackageByIdAsync(id);
+            var orderResult = await _orderService.GetEntityAndPackageByIdAsync(id);
 
-            if (packageResult == null)
+            if (orderResult == null)
             {
                 return Ok(new { status = 0, msg = "信息异常！" });
             }
-            else if (packageResult.UserId != currentUser.ID)
+            else if (orderResult.UserId != currentUser.ID)
             {
                 return Ok(new { status = 0, msg = "订单不属于此用户！" });
             }
 
             var data = new
             {
-                OrderID = packageResult.ID,
-                OrderNum = packageResult.OrderNum,
-                UserId = packageResult.UserId,
-                PackageId = packageResult.PackageId,
-                PackageName = packageResult.PackageName,
-                PackageCategory = (int)packageResult.PackageCategory + "",
-                Flow = packageResult.Flow,
-                Quantity = packageResult.Quantity.ToString(),
-                UnitPrice = packageResult.UnitPrice,
-                TotalPrice = packageResult.TotalPrice,
-                ExpireDays = GetExpireDaysDescr(packageResult),
-                ExpireDaysInt = (packageResult.ExpireDays * packageResult.Quantity).ToString(),
-                OrderDate = packageResult.OrderDate.ToString(),
-                PayDate = packageResult.PayDate.HasValue ? packageResult.PayDate.Value.ToString() : "",
-                PayStatus = (int)packageResult.PayStatus + "",
-                OrderStatus = (int)packageResult.OrderStatus + "",
-                RemainingCallMinutes = packageResult.RemainingCallMinutes.ToString(),
-                EffectiveDate = packageResult.EffectiveDate.HasValue ? packageResult.EffectiveDate.Value.ToString().ToString() : "",
-                ActivationDate = packageResult.ActivationDate.HasValue ? packageResult.ActivationDate.Value.ToString() : "",
-                //PayUserAmount = packageResult.PayUserAmount,
-                //IsPayUserAmount = packageResult.IsPayUserAmount.ToString(),
-                LogoPic = packageResult.UT_Package.UT_Country != null ? packageResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.UT_Package.Pic.GetCountryPicCompleteUrl(),
-                PaymentMethod = (int)packageResult.PaymentMethod + "",
-                LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(packageResult.OrderDate.ToString()).AddMonths(6)).ToString()
+                OrderID = orderResult.ID,
+                OrderNum = orderResult.OrderNum,
+                UserId = orderResult.UserId,
+                PackageId = orderResult.PackageId,
+                PackageName = orderResult.PackageName,
+                PackageCategory = (int)orderResult.PackageCategory + "",
+                PackageFeatures = orderResult.PackageFeatures,
+                PackageDetails = orderResult.PackageDetails,
+                Flow = orderResult.Flow,
+                Quantity = orderResult.Quantity.ToString(),
+                UnitPrice = orderResult.UnitPrice,
+                TotalPrice = orderResult.TotalPrice,
+                ExpireDays = GetExpireDaysDescr(orderResult),
+                ExpireDaysInt = (orderResult.ExpireDays * orderResult.Quantity).ToString(),
+                OrderDate = orderResult.OrderDate.ToString(),
+                PayDate = orderResult.PayDate.HasValue ? orderResult.PayDate.Value.ToString() : "",
+                PayStatus = (int)orderResult.PayStatus + "",
+                OrderStatus = (int)orderResult.OrderStatus + "",
+                RemainingCallMinutes = orderResult.RemainingCallMinutes.ToString(),
+                EffectiveDate = orderResult.EffectiveDate.HasValue ? orderResult.EffectiveDate.Value.ToString().ToString() : "",
+                ActivationDate = orderResult.ActivationDate.HasValue ? orderResult.ActivationDate.Value.ToString() : "",
+                //PayUserAmount = orderResult.PayUserAmount,
+                //IsPayUserAmount = orderResult.IsPayUserAmount.ToString(),
+                LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetCountryPicCompleteUrl(),
+                PaymentMethod = (int)orderResult.PaymentMethod + "",
+                LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString()
             };
             return Ok(new { status = 1, data = new { list = data } });
         }
@@ -296,7 +298,7 @@ namespace Unitoys.WebApi.Controllers
                 UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
                 if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
                 {
-                    var LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(6));
+                    var LastCanActivationDate = GetLastCanActivationDate(order);
 
                     if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
                     {
@@ -346,6 +348,27 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
+        /// 获取最晚激活时间
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private static int GetLastCanActivationDate(UT_Order order)
+        {
+            if (order == null)
+            {
+                return 0;
+            }
+            if (order.PackageCategory == CategoryType.KingCard)
+            {
+                return CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(3));
+            }
+            else
+            {
+                return CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(6));
+            }
+        }
+
+        /// <summary>
         /// 激活大王卡套餐
         /// </summary>
         /// <param name="status"></param>
@@ -364,7 +387,7 @@ namespace Unitoys.WebApi.Controllers
                 UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
                 if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
                 {
-                    var LastCanActivationDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(6));
+                    var LastCanActivationDate = GetLastCanActivationDate(order);
 
                     if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
                     {
