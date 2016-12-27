@@ -120,8 +120,8 @@ namespace Unitoys.WebApi.Controllers
                            //Flow = packageResult.Flow,
                            Flow = "不限制流量",
                            Desction = packageResult.Desction,
-                           Pic = packageResult.UT_Country != null ? packageResult.UT_Country.Pic.GetCountryPicCompleteUrl() : packageResult.Pic.GetCountryPicCompleteUrl(),
-                           LogoPic = packageResult.UT_Country != null ? packageResult.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.Pic.GetCountryPicCompleteUrl(),
+                           Pic = packageResult.UT_Country != null ? packageResult.UT_Country.Pic.GetCountryPicCompleteUrl() : packageResult.Pic.GetPackageCompleteUrl(),
+                           LogoPic = packageResult.UT_Country != null ? packageResult.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.Pic.GetPackageCompleteUrl(),
                            ExpireDays = packageResult.ExpireDays.ToString(),
                            Features = packageResult.Features,
                            Details = packageResult.Details

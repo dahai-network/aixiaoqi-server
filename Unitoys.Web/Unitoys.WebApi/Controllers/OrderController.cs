@@ -193,7 +193,7 @@ namespace Unitoys.WebApi.Controllers
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
                              //PayUserAmount = i.PayUserAmount,
                              //IsPayUserAmount = i.IsPayUserAmount.ToString(),
-                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetCountryPicCompleteUrl()
+                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetPackageCompleteUrl()
                          };
 
             return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });
@@ -216,7 +216,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else if (i.OrderStatus == OrderStatusType.Used || i.OrderStatus == OrderStatusType.UnactivatError)
             {
-                return string.Format("有效期：{0} {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), (i.ExpireDays * i.Quantity).ToString() + "天");
+                return string.Format("有效期：{0}-{1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
             }
             else if (i.OrderStatus == OrderStatusType.HasExpired)
             {
@@ -271,7 +271,7 @@ namespace Unitoys.WebApi.Controllers
                 ActivationDate = orderResult.ActivationDate.HasValue ? orderResult.ActivationDate.Value.ToString() : "",
                 //PayUserAmount = orderResult.PayUserAmount,
                 //IsPayUserAmount = orderResult.IsPayUserAmount.ToString(),
-                LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetCountryPicCompleteUrl(),
+                LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
                 PaymentMethod = (int)orderResult.PaymentMethod + "",
                 LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString()
             };
