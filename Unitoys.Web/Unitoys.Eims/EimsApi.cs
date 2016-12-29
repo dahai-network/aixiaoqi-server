@@ -19,7 +19,7 @@ namespace Unitoys.Eims
         /// <summary>
         /// EIMS的IP地址
         /// </summary>
-        static string host = "120.25.91.50";//"203.186.75.167";
+        static string host = "120.25.218.24";//"203.186.75.167";
         /// <summary>
         /// EIMS的网页后台端口
         /// </summary>

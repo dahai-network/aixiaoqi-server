@@ -20,7 +20,7 @@ namespace Unitoys.Model
         /// 时间范围
         /// 上午/下午
         /// </summary>
-        public AlarmClockTimeRange TimeRange { get; set; }
+        //public AlarmClockTimeRange TimeRange { get; set; }
         /// <summary>
         /// 闹钟时间
         /// </summary>

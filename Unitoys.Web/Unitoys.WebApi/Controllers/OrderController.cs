@@ -216,7 +216,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else if (i.OrderStatus == OrderStatusType.Used || i.OrderStatus == OrderStatusType.UnactivatError)
             {
-                return string.Format("有效期：{0}-{1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
+                return string.Format("有效期：{0} 到 {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
             }
             else if (i.OrderStatus == OrderStatusType.HasExpired)
             {
@@ -260,7 +260,7 @@ namespace Unitoys.WebApi.Controllers
                 Quantity = orderResult.Quantity.ToString(),
                 UnitPrice = orderResult.UnitPrice,
                 TotalPrice = orderResult.TotalPrice,
-                ExpireDays = GetExpireDaysDescr(orderResult),
+                ExpireDays = GetExpireDaysDescr(orderResult).Replace("有效天数：", "").Replace("有效期：", ""),
                 ExpireDaysInt = (orderResult.ExpireDays * orderResult.Quantity).ToString(),
                 OrderDate = orderResult.OrderDate.ToString(),
                 PayDate = orderResult.PayDate.HasValue ? orderResult.PayDate.Value.ToString() : "",

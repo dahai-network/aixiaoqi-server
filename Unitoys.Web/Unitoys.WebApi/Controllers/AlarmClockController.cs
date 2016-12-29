@@ -34,10 +34,10 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "时间不能为空！" });
             }
-            if (!model.TimeRange.HasValue)
-            {
-                return Ok(new { status = 0, msg = "时间范围不能为空！" });
-            }
+            //if (!model.TimeRange.HasValue)
+            //{
+            //    return Ok(new { status = 0, msg = "时间范围不能为空！" });
+            //}
             if (!model.Status.HasValue)
             {
                 return Ok(new { status = 0, msg = "状态不能为空！" });
@@ -58,7 +58,7 @@ namespace Unitoys.WebApi.Controllers
                 UserId = currentUser.ID,
                 CreateDate = CommonHelper.GetDateTimeInt(),
                 UpdateDate = CommonHelper.GetDateTimeInt(),
-                TimeRange = model.TimeRange.Value,
+                //TimeRange = model.TimeRange.Value,
                 Time = model.Time,
                 Repeat = model.Repeat,
                 Tag = model.Tag,
@@ -91,10 +91,10 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "时间不能为空！" });
             }
-            if (!model.TimeRange.HasValue)
-            {
-                return Ok(new { status = 0, msg = "时间范围不能为空！" });
-            }
+            //if (!model.TimeRange.HasValue)
+            //{
+            //    return Ok(new { status = 0, msg = "时间范围不能为空！" });
+            //}
             if (!model.Status.HasValue)
             {
                 return Ok(new { status = 0, msg = "状态不能为空！" });
@@ -110,7 +110,7 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new { status = 0, msg = "参数错误！" });
             }
 
-            alarmClock.TimeRange = model.TimeRange.Value;
+            //alarmClock.TimeRange = model.TimeRange.Value;
             alarmClock.Time = model.Time;
             alarmClock.Repeat = model.Repeat;
             alarmClock.Tag = model.Tag;
@@ -176,7 +176,8 @@ namespace Unitoys.WebApi.Controllers
                        select new
                        {
                            AlarmClockId = i.ID,
-                           TimeRange = ((int)i.TimeRange).ToString(),
+                           //TimeRange = ((int)i.TimeRange).ToString(),
+                           TimeRange = 0+"",
                            Time = i.Time,
                            Repeat = i.Repeat,
                            Tag = i.Tag,

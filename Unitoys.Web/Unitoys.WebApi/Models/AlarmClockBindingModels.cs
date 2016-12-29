@@ -14,7 +14,7 @@ namespace Unitoys.WebApi.Models
         /// 时间范围
         /// 上午/下午
         /// </summary>
-        public AlarmClockTimeRange? TimeRange { get; set; }
+        //public AlarmClockTimeRange? TimeRange { get; set; }
         public string Time { get; set; }
         public string Repeat { get; set; }
         /// <summary>

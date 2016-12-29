@@ -138,7 +138,7 @@ namespace Unitoys.Services
                         userBill.CreateDate = CommonHelper.GetDateTimeInt();
                         userBill.BillType = 0; //支出
                         userBill.PayType = 2; //余额支付
-                        userBill.Descr = "购买套餐：" + payOrder.UT_Package.PackageName;
+                        userBill.Descr = "购买套餐：" + payOrder.PackageName;
 
                         db.UT_UserBill.Add(userBill);
 
@@ -216,7 +216,7 @@ namespace Unitoys.Services
                     userBill.CreateDate = CommonHelper.GetDateTimeInt();
                     userBill.BillType = 0; //支出
                     userBill.PayType = 1; //在线支付
-                    userBill.Descr = "购买套餐：" + order.UT_Package.PackageName;
+                    userBill.Descr = "购买套餐：" + order.PackageName;
 
                     db.UT_UserBill.Add(userBill);
 
@@ -326,7 +326,7 @@ namespace Unitoys.Services
                         userBill.CreateDate = CommonHelper.GetDateTimeInt();
                         userBill.BillType = 1; //收入
                         userBill.PayType = 5; //取消订单
-                        userBill.Descr = "取消订单";
+                        userBill.Descr = "取消订单：" + order.PackageName;
 
                         db.UT_UserBill.Add(userBill);
                     }
