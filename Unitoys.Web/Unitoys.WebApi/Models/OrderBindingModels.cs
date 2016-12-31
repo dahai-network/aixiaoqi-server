@@ -37,6 +37,10 @@ namespace Unitoys.WebApi.Models
 
     public class ActivationBindingModel
     {
+        /// <summary>
+        /// 空卡序列号
+        /// </summary>
+        public string EmptyCardSerialNumber { get; set; }
         public Guid OrderID { get; set; }
         public int BeginTime { get; set; }
     }

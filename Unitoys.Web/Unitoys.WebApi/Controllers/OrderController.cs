@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Unitoys.Core;
 using Unitoys.Core.Util;
+using Unitoys.ESIM_MVNO;
+using Unitoys.ESIM_MVNO.Model;
 using Unitoys.IServices;
 using Unitoys.Model;
 using Unitoys.WebApi.Models;
@@ -44,10 +46,10 @@ namespace Unitoys.WebApi.Controllers
             {
                 errorMsg = "套餐ID不能为空！";
             }
-            else if (model.Quantity <= 0)
+            else if (model.Quantity <= 0 || model.Quantity > 30)
             {
                 //errorMsg = "包月订单只能购买一个，待后续业务需求是否需要调整！";
-                errorMsg = "无效的值";
+                errorMsg = "数量请选中1-30之间选择！";
             }
             else if (!Enum.IsDefined(typeof(PaymentMethodType), model.PaymentMethod))
             {
@@ -58,21 +60,6 @@ namespace Unitoys.WebApi.Controllers
                 UT_Order order = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod);
                 if (order != null)
                 {
-                    //重新封装，去掉不必要的参数
-                    //UT_Order resultModel = new UT_Order();
-                    //resultModel.ID = order.ID;
-                    //resultModel.OrderNum = order.OrderNum;
-                    //resultModel.OrderDate = order.OrderDate;
-                    //resultModel.PackageId = order.PackageId;
-                    //resultModel.PackageName = order.PackageName;
-                    //resultModel.Quantity = order.Quantity;
-                    //resultModel.UnitPrice = order.UnitPrice;
-                    //resultModel.TotalPrice = order.TotalPrice;
-                    //resultModel.ExpireDays = order.ExpireDays;
-                    //resultModel.Flow = order.Flow;
-                    //resultModel.RemainingCallMinutes = order.RemainingCallMinutes;
-                    //resultModel.PayUserAmount = order.PayUserAmount;
-                    //resultModel.IsPayUserAmount = order.IsPayUserAmount;
                     var resultModel = new
                     {
                         OrderID = order.ID,
@@ -86,8 +73,6 @@ namespace Unitoys.WebApi.Controllers
                         ExpireDays = GetExpireDaysDescr(order),
                         Flow = order.Flow + "",
                         RemainingCallMinutes = order.RemainingCallMinutes + "",
-                        //PayUserAmount = order.PayUserAmount,
-                        //IsPayUserAmount = order.IsPayUserAmount + "",
                         PaymentMethod = (int)order.PaymentMethod + ""
                     };
                     return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
@@ -191,8 +176,6 @@ namespace Unitoys.WebApi.Controllers
                              RemainingCallMinutes = i.RemainingCallMinutes + "",
                              EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
-                             //PayUserAmount = i.PayUserAmount,
-                             //IsPayUserAmount = i.IsPayUserAmount.ToString(),
                              LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetPackageCompleteUrl()
                          };
 
@@ -269,8 +252,6 @@ namespace Unitoys.WebApi.Controllers
                 RemainingCallMinutes = orderResult.RemainingCallMinutes.ToString(),
                 EffectiveDate = orderResult.EffectiveDate.HasValue ? orderResult.EffectiveDate.Value.ToString().ToString() : "",
                 ActivationDate = orderResult.ActivationDate.HasValue ? orderResult.ActivationDate.Value.ToString() : "",
-                //PayUserAmount = orderResult.PayUserAmount,
-                //IsPayUserAmount = orderResult.IsPayUserAmount.ToString(),
                 LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
                 PaymentMethod = (int)orderResult.PaymentMethod + "",
                 LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString()
@@ -317,11 +298,18 @@ namespace Unitoys.WebApi.Controllers
                         try
                         {
                             //2.购买订单卡
-                            var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
+                            //var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
+                            var result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity * package.ExpireDays);
 
-                            //3.保存订单卡数据
-                            order.PackageOrderId = result.orderid;
-                            order.PackageOrderData = result.data;
+                            if (result.status != "1")
+                            {
+                                LoggerHelper.Error("订单ID:" + order.ID + ",购买产品失败,返回msg：" + result.msg);
+                                return Ok(new { status = 0, msg = "激活套餐失败,可能套餐已过期！" });
+                            }
+
+                            //3.保存订单Id
+                            order.PackageOrderId = result.data.orderId;
+                            //order.PackageOrderData = result.data.data;
                             order.EffectiveDate = model.BeginTime;
                             order.OrderStatus = OrderStatusType.UnactivatError;//默认是激活失败
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
@@ -461,6 +449,10 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> QueryOrderData([FromBody]ActivationBindingModel model)
         {
+            if (string.IsNullOrEmpty(model.EmptyCardSerialNumber))
+            {
+                return Ok(new { status = 0, msg = "序列号不能为空！" });
+            }
             if (model.OrderID != Guid.Empty)
             {
                 var currentUser = WebUtil.GetApiUserSession();
@@ -473,7 +465,28 @@ namespace Unitoys.WebApi.Controllers
                         //Byte[] resultData = hexToBytes(order.PackageOrderData);
                         //string dataB64 = Convert.ToBase64String(resultData);
                         //3.返回订单卡数据
-                        return Ok(new { status = 1, data = new { OrderID = order.ID, Data = StringToHexString(Convert.ToBase64String(hexToBytes(order.PackageOrderData)), Encoding.UTF8).ToUpper() } });
+                        //return Ok(new { status = 1, data = new { OrderID = order.ID, Data = StringToHexString(Convert.ToBase64String(hexToBytes(order.PackageOrderData)), Encoding.UTF8).ToUpper() } });
+                        var result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().QueryOrder(order.PackageOrderId);
+
+                        if (result.status != "1")
+                        {
+                            LoggerHelper.Error("订单ID:" + order.ID + ",查询订单套餐信息失败：" + result.msg);
+                            return Ok(new { status = 0, msg = "查询订单套餐信息失败！" });
+                        }
+
+                        //3.生成卡数据
+                        SimData simdata = new SimData(model.EmptyCardSerialNumber, new WriteCard()
+                         {
+                             iccid = result.data.esimResource.iccid,
+                             imsi = result.data.esimResource.imsi,
+                             ki = result.data.esimResource.ki,
+                             opc = result.data.esimResource.opc,
+                             PLMN = result.data.esimResource.plmn,
+                         });
+
+                        var writeData = simdata.GetData();
+
+                        return Ok(new { status = 1, data = new { OrderID = order.ID, Data = writeData } });
                     }
                 }
 

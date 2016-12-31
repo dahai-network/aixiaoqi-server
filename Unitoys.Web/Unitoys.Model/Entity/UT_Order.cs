@@ -98,7 +98,7 @@ namespace Unitoys.Model
         /// 密钥数据
         /// 购买ESim产品的密钥数据
         /// </summary>
-        public string PackageOrderData { get; set; }
+        //public string PackageOrderData { get; set; }
         /// <summary>
         /// 剩余通话分钟数
         /// </summary>

@@ -112,6 +112,18 @@ namespace Unitoys.Core.Config
         /// 注册赠送用户金额
         /// </summary>
         public decimal RegGiftAmount { get; set; }
+        /// <summary>
+        /// MVNO合作伙伴
+        /// </summary>
+        public string MVNOpartner { get; set; }
+        /// <summary>
+        /// MVNO合作伙伴私钥
+        /// </summary>
+        public string MVNOPartnerKey { get; set; }
+        /// <summary>
+        /// MVNO调用地址
+        /// </summary>
+        public string MVNOHost { get; set; }
 
     }
 }
