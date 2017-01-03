@@ -76,11 +76,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "密码不能为空！";
             }
-            else if (model.RegIp.Trim() == "")
-            {
-                result.Success = false;
-                result.Msg = "设备注册IP不能为空！";
-            }
+            //else if (model.RegIp.Trim() == "")
+            //{
+            //    result.Success = false;
+            //    result.Msg = "设备注册IP不能为空！";
+            //}
             else
             {
 
@@ -136,11 +136,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "密码不能为空！";
             }
-            else if (model.RegIp.Trim() == "")
-            {
-                result.Success = false;
-                result.Msg = "设备注册IP不能为空！";
-            }
+            //else if (model.RegIp.Trim() == "")
+            //{
+            //    result.Success = false;
+            //    result.Msg = "设备注册IP不能为空！";
+            //}
             else
             {
                 UT_EjoinDev entity = await _ejoinDevService.GetEntityByIdAsync(model.ID);
