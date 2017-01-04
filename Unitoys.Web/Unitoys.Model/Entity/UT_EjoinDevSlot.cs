@@ -38,6 +38,10 @@ namespace Unitoys.Model
 
         public Guid? UserId { get; set; }
         public virtual UT_Users UT_Users { get; set; }
+        /// <summary>
+        /// 注册时间
+        /// </summary>
+        public int RegDate { get; set; }
     }
     public enum DevPortStatus
     {

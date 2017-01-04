@@ -164,7 +164,7 @@
             return "注册成功";
         }
         if (value == 1) {
-            return "注册失败";
+            return "<span style='color:red'>注册失败</span>";
         }
         return "未识别的状态";
     }
@@ -179,18 +179,42 @@
         return "未识别的设备";
     }
 
-    //function formatSlotStatus(value, rec, index) {
-    //    if (value == 0) {
-    //        return "无SIM卡";
-    //    }
-    //    if (value == 1) {
-    //        return "注册失败";
-    //    }
-    //    for (var i = 0; i < DevPortStatus; i++) {
-
-    //    }
-    //    return "未识别的状态";
-    //}
+    function formatSlotStatus(value, rec, index) {
+        if (value == 0) {
+            return "无SIM卡";
+        }
+        if (value == 1) {
+            return "有SIM卡，没有注册";
+        }
+        if (value == 2) {
+            return "SIM卡注册中";
+        }
+        if (value == 3) {
+            return "SIM卡注册成功";
+        }
+        if (value == 4) {
+            return "正在呼叫";
+        }
+        if (value == 5) {
+            return "告警";
+        }
+        if (value == 6) {
+            return "<span style='color:red'>注册失败</span>";
+        }
+        if (value == 7) {
+            return "设备锁卡";
+        }
+        if (value == 8) {
+            return "运营商锁卡";
+        }
+        if (value == 9) {
+            return "读SIM卡错误";
+        }
+        if (value == 10) {
+            return "端口被用户禁用";
+        }
+        return "未识别的状态";
+    }
 
     $(function () {
         grid = $("#grid").datagrid();
@@ -217,7 +241,7 @@
                 { field: 'IMEI', title: '端口的IMEI码', width: 100 },
                 { field: 'ICCID', title: 'SIM卡ICCID', width: 100 },
                 { field: 'SimNum', title: 'SIM卡号码', width: 100 },
-                { field: 'Status', title: '状态', width: 100 },
+                { field: 'Status', title: '状态', width: 100, formatter: formatSlotStatus },
             ]],
             onResize: function () {
                 sender.datagrid('fixDetailRowHeight', index);
@@ -233,7 +257,7 @@
     function onDbOpenDialog(index, rowData, value) {
         dlg_Edit.dialog('open');
         dlg_Edit_form.form('clear'); //清除之前面选中的表单
-        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.MobileNumber + " 的信息");
+        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.Name + " 的信息");
         dlg_Edit_form.form('load', rowData); //加载到表单的控件上
 
         dlg_Edit_form.url = '/Manage/EjoinDev/Update';
