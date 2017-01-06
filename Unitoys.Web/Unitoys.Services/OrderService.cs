@@ -302,6 +302,10 @@ namespace Unitoys.Services
                     {
                         return -4;
                     }
+                    if (order.PaymentMethod == PaymentMethodType.Gift)
+                    {
+                        return -5;
+                    }
 
                     //设置状态为已取消。
                     order.OrderStatus = OrderStatusType.Cancel;

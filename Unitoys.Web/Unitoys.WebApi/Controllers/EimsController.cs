@@ -25,11 +25,15 @@ namespace Unitoys.WebApi.Controllers
         private ISMSService _smsService;
         private IUserService _userService;
         private IDeviceGoipService _deviceGoipService;
-        public EimsController(ISMSService smsService, IUserService userService, IDeviceGoipService deviceGoipService)
+        private IEjoinDevService _ejoinDevService;
+        private IEjoinDevSlotService _ejoinDevSlotService;
+        public EimsController(ISMSService smsService, IUserService userService, IDeviceGoipService deviceGoipService, IEjoinDevService ejoinDevService, IEjoinDevSlotService ejoinDevSlotService)
         {
             this._smsService = smsService;
             this._userService = userService;
             this._deviceGoipService = deviceGoipService;
+            this._ejoinDevService = ejoinDevService;
+            this._ejoinDevSlotService = ejoinDevSlotService;
         }
 
         #region 1.SMS
@@ -502,7 +506,7 @@ namespace Unitoys.WebApi.Controllers
             LoggerHelper.Info("新短信报告 Content:" + Request.Content.ReadAsStringAsync().Result);
             #endregion
             JPushApi j = new JPushApi();
-            UT_DeviceGoip usedGoip = null;
+            UT_EjoinDevSlot ejoinDevSlot = null;
 
 #if DEBUG
             //j.Push_alias_message("aixiaoqi18719053898", "收到10086短信", "SMSReceiveNew", new Dictionary<string, string>()
@@ -513,9 +517,9 @@ namespace Unitoys.WebApi.Controllers
             //                    });
 #endif
 
-            usedGoip = await _deviceGoipService.GetUsedEntityAndUserAsync(model.IccId);
+            ejoinDevSlot = await _ejoinDevSlotService.GetUsedEntityAndUserAsync(model.DevName, Convert.ToInt32(model.Port));
 
-            if (usedGoip == null)
+            if (ejoinDevSlot == null)
             {
                 LoggerHelper.Info("无法找到可接收此新短信的资源");
                 return Ok(new { status = 0, msg = "无法找到可接收此新短信的资源" });
@@ -531,17 +535,17 @@ namespace Unitoys.WebApi.Controllers
                 fm = model.Fm;
             }
 
-            LoggerHelper.Info("新短信报告 UserTel:" + usedGoip.UT_Users.Tel);
+            LoggerHelper.Info("新短信报告 UserTel:" + ejoinDevSlot.UT_Users.Tel);
 
             UT_SMS entity = new UT_SMS()
             {
-                UserId = (Guid)usedGoip.UserId,
+                UserId = (Guid)ejoinDevSlot.UserId,
                 DevName = model.DevName,//item[1].Substring(0, item[1].IndexOf('.')),
                 Port = model.Port,//item[1].Substring(item[1].IndexOf('.') + 1),
                 IccId = model.IccId,
                 SMSTime = Convert.ToInt32(model.SMSTime),
                 Fm = fm,
-                To = usedGoip.UT_Users.Tel,// item[5],
+                To = ejoinDevSlot.UT_Users.Tel,// item[5],
                 Status = SMSStatusType.Success,
                 IsSend = false,
                 IsRead = false
@@ -562,7 +566,7 @@ namespace Unitoys.WebApi.Controllers
                 //判断用户收件人是否存在对应用户
                 //推送至客户端
                 //todo 由于用户不在线的时候不进行发送，考虑将离线信息保留时间设为1分钟
-                var loginUser = WebUtil.ExistsSession(usedGoip.UT_Users.Tel);
+                var loginUser = WebUtil.ExistsSession(ejoinDevSlot.UT_Users.Tel);
 
                 if (loginUser != 0)
                 {
@@ -580,7 +584,7 @@ namespace Unitoys.WebApi.Controllers
                         });
                 }
 
-                LoggerHelper.Info("新短信报告loginUser" + loginUser + usedGoip.UT_Users.Tel);
+                LoggerHelper.Info("新短信报告loginUser" + loginUser + ejoinDevSlot.UT_Users.Tel);
 
                 return Ok(new
                 {

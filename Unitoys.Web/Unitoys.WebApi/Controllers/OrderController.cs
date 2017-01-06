@@ -121,6 +121,10 @@ namespace Unitoys.WebApi.Controllers
                 {
                     errorMsg = "订单已被使用！";
                 }
+                else if (resultNum == -5)
+                {
+                    errorMsg = "不允许取消！";
+                }
                 else
                 {
                     errorMsg = "取消失败！";

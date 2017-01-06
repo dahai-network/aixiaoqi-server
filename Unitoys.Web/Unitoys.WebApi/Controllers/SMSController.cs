@@ -19,12 +19,14 @@ namespace Unitoys.WebApi.Controllers
         private ISMSService _smsService;
         private ISMSConfirmationService _smsConfirmationService;
         private IDeviceGoipService _deviceGoipService;
+        private IEjoinDevSlotService _ejoinDevSlotService;
         public SMSController() { }
-        public SMSController(ISMSService smsService, ISMSConfirmationService smsConfirmationService, IDeviceGoipService deviceGoipService)
+        public SMSController(ISMSService smsService, ISMSConfirmationService smsConfirmationService, IDeviceGoipService deviceGoipService, IEjoinDevSlotService ejoinDevSlotService)
         {
             this._smsService = smsService;
             this._smsConfirmationService = smsConfirmationService;
             this._deviceGoipService = deviceGoipService;
+            this._ejoinDevSlotService = ejoinDevSlotService;
         }
 
         /// <summary>
@@ -75,8 +77,8 @@ namespace Unitoys.WebApi.Controllers
             string DevName = null;
             string Port = null;
             string IccId = null;
-            var goipEntity = await _deviceGoipService.CheckUserGoipAsync(currentUser.ID);
-            if (goipEntity == null || string.IsNullOrEmpty(goipEntity.IccId))
+            var goipEntity = await _ejoinDevSlotService.GetUsedAAndEjoinDevsync(currentUser.ID);
+            if (goipEntity == null)
             {
                 return Ok(new
                 {
@@ -86,7 +88,8 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                IccId = goipEntity.IccId;
+                DevName = goipEntity.UT_EjoinDev.Name;
+                Port = goipEntity.PortNum + "";
             }
 
             List<SMSTaskModel> list = new List<SMSTaskModel>()

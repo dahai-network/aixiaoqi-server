@@ -30,5 +30,45 @@ namespace Unitoys.Services
                 return new KeyValuePair<int, List<UT_EjoinDevSlot>>(count, result);
             }
         }
+
+        /// <summary>
+        /// 获取使用中的端口和端口中的用户信息
+        /// </summary>
+        /// <param name="DevName">设备名</param>
+        /// <param name="Port">端口</param>
+        /// <returns></returns>
+        public async Task<UT_EjoinDevSlot> GetUsedEntityAndUserAsync(string DevName, int Port)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var query = await db.UT_EjoinDevSlot.Include(x => x.UT_Users)
+                    .Where(x =>
+                        x.UT_EjoinDev.Name == DevName
+                        && x.UT_EjoinDev.RegStatus == RegStatusType.SUCCESS
+                        && x.PortNum == Port
+                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)
+                        && x.UserId.HasValue
+
+                        ).FirstOrDefaultAsync();
+                return query;
+            }
+        }
+
+        /// <summary>
+        /// 获取使用的端口
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UT_EjoinDevSlot> GetUsedAAndEjoinDevsync(Guid userId)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                return await db.UT_EjoinDevSlot.Include(x => x.UT_EjoinDev)
+                    .Where(x =>
+                        x.UT_EjoinDev.RegStatus == RegStatusType.SUCCESS
+                        && x.UserId == userId
+                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)).SingleOrDefaultAsync();
+            }
+        }
     }
 }
