@@ -46,7 +46,7 @@ namespace Unitoys.Services
                         x.UT_EjoinDev.Name == DevName
                         && x.UT_EjoinDev.RegStatus == RegStatusType.SUCCESS
                         && x.PortNum == Port
-                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)
+                        && (x.Status == DevPortStatus.REGING || x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)
                         && x.UserId.HasValue
 
                         ).FirstOrDefaultAsync();
@@ -67,7 +67,7 @@ namespace Unitoys.Services
                     .Where(x =>
                         x.UT_EjoinDev.RegStatus == RegStatusType.SUCCESS
                         && x.UserId == userId
-                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)).SingleOrDefaultAsync();
+                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)).FirstOrDefaultAsync();
             }
         }
     }

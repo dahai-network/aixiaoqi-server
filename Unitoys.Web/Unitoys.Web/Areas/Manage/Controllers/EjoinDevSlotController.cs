@@ -52,6 +52,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                SimNum = i.SimNum,
                                Status = i.Status,
                                EjoinDevId = i.EjoinDevId,
+                               RegDate = i.RegDate,
                                Tel = i.UT_Users != null ? i.UT_Users.Tel : "",
                            };
 

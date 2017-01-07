@@ -444,7 +444,8 @@ namespace Unitoys.WebApi.Controllers
                 //判断被叫号码的费率。TODO
                 int maximumPhoneCallTime = 0;
 
-                maximumPhoneCallTime = Convert.ToInt32(user.Amount / UTConfig.SiteConfig.CallDirectPricePerMinutes * 60);
+                if (user.Amount > 0)//只计算可拨打的分钟
+                    maximumPhoneCallTime = Convert.ToInt32((int)(user.Amount / UTConfig.SiteConfig.CallDirectPricePerMinutes) * 60);
 
                 int dtInt = CommonHelper.GetDateTimeInt();
 

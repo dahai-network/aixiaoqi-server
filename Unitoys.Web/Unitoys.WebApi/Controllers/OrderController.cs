@@ -524,7 +524,11 @@ namespace Unitoys.WebApi.Controllers
                 var currentUser = WebUtil.GetApiUserSession();
 
                 UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
-                if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment && order.OrderStatus == OrderStatusType.UnactivatError)
+                if (order != null
+                    && currentUser.ID == order.UserId
+                    && order.PayDate != null
+                    && order.PayStatus == PayStatusType.YesPayment
+                    && (order.OrderStatus == OrderStatusType.UnactivatError || order.OrderStatus == OrderStatusType.Used))
                 {
                     //3.保存订单卡数据
                     order.OrderStatus = OrderStatusType.Used;

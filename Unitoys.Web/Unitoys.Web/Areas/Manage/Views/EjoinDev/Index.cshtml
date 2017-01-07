@@ -242,6 +242,7 @@
                 { field: 'ICCID', title: 'SIM卡ICCID', width: 100 },
                 { field: 'SimNum', title: 'SIM卡号码', width: 100 },
                 { field: 'Status', title: '状态', width: 100, formatter: formatSlotStatus },
+                { field: 'RegDate', title: '注册时间', width: 100, formatter: formatDateTimeInt },
             ]],
             onResize: function () {
                 sender.datagrid('fixDetailRowHeight', index);
