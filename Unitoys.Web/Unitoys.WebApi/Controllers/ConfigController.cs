@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -78,6 +79,31 @@ namespace Unitoys.WebApi.Controllers
             });
         }
 
+        [HttpGet]
+        [NoAuthenticate]
+        /// <summary>
+        /// 获取大王卡连接
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> getDWKUrl()
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("UserAgent", "Mozilla/5.0 (Linux; Android 5.1; M571C Build/LMY47D) : AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/37.0.0.0 : Mobile MQQBrowser/6.8 TBS/036869 Safari/537.36 QQLiveBrowser/5.1.2.11019;: ");
+            client.DefaultRequestHeaders.Host = "market.m.qq.com";
+            client.DefaultRequestHeaders.Referrer = new Uri("http://3gimg.qq.com/webapp_scan/activity/newcardvideo/build/index.htm");
+
+            int imei = new Random().Next(100000000, 999999999);
+            int imsi = new Random().Next(100000000, 999999999);
+
+            string result = await client.GetStringAsync("http://market.m.qq.com/flow/order.do?method=getKey&imei=99000" + imei + "&imsi=460030" + imsi + "&product=4&channel=2&");
+
+            ResultJsonDwk resultJson = JsonConvert.DeserializeObject<ResultJsonDwk>(result);
+
+            string url = String.Format("http://m.10010.com/mall-mobile/kingNumCard/init?tencentId={0}&key={1}&product=4&channel=2", resultJson.info.uid, resultJson.info.ukey);
+
+            return Ok(new { status = 0, data = url });
+        }
+
 
         /// <summary>
         /// 获取当前北京时间
@@ -145,4 +171,19 @@ namespace Unitoys.WebApi.Controllers
             });
         }
     }
+
+    public class ResultJsonDwk
+    {
+        public string result { get; set; }
+
+        public string msg { get; set; }
+
+        public DwkInfo info { get; set; }
+    }
+    public class DwkInfo
+    {
+        public string uid { get; set; }
+        public string ukey { get; set; }
+    }
+
 }

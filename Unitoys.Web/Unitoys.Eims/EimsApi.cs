@@ -269,7 +269,8 @@ namespace Unitoys.Eims
                     jsonData.Remove(item);
                 }
 
-                var requestJson = JsonConvert.SerializeObject(jsonData);
+                var jSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+                var requestJson = JsonConvert.SerializeObject(jsonData, jSetting);
 
                 HttpContent httpContent = new StringContent(requestJson);
 

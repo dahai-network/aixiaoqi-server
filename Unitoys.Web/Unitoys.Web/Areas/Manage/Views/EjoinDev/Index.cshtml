@@ -128,7 +128,7 @@
                     设备类型：
                 </td>
                 <td>
-                    <select id="RegStatus" name="RegStatus" class="easyui-combobox" style="width:100px" data-options="panelHeight:'auto'">
+                    <select id="ModType" name="ModType" class="easyui-combobox" style="width:100px" data-options="panelHeight:'auto'">
                         @*<option value="">-- 请选择 --</option>*@
                         <option value="0">移动联通设备</option>
                         <option value="1">电信设备</option>
@@ -225,8 +225,17 @@
     function detailFormatterGrid(index, row) {
         return '<div style="padding:2px"><table class="ddv"></table></div>';
     }
+
+    var intervalExpandRowGrid;
     function onExpandRowGrid(index, row) {
         var sender = $(this);
+        if (intervalExpandRowGrid)
+            clearInterval(intervalExpandRowGrid);
+        reloadGrid(sender, index, row);
+        intervalExpandRowGrid = setInterval(function () { reloadGrid(sender, index, row); }, 5000)
+    }
+
+    function reloadGrid(sender, index, row) {
         var ddv = sender.datagrid('getRowDetail', index).find('table.ddv');
         ddv.datagrid({
             url: '/Manage/EjoinDevSlot/GetList?EjoinDevId=' + row.ID,
@@ -243,6 +252,7 @@
                 { field: 'SimNum', title: 'SIM卡号码', width: 100 },
                 { field: 'Status', title: '状态', width: 100, formatter: formatSlotStatus },
                 { field: 'RegDate', title: '注册时间', width: 100, formatter: formatDateTimeInt },
+                { field: 'Tel', title: '用户', width: 60 },
             ]],
             onResize: function () {
                 sender.datagrid('fixDetailRowHeight', index);
