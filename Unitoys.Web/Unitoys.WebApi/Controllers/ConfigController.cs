@@ -73,6 +73,12 @@ namespace Unitoys.WebApi.Controllers
                         //打入
                         AsteriskIp = UTConfig.SiteConfig.AsteriskInIp,
                         AsteriskPort = UTConfig.SiteConfig.AsteriskInPort,
+                    },
+                    VswServer = new
+                    {
+                        //Tcp端连接地址
+                        Ip = UTConfig.SiteConfig.VswServerIp,
+                        Port = UTConfig.SiteConfig.VswServerPort,
                     }
 
                 }
@@ -80,7 +86,7 @@ namespace Unitoys.WebApi.Controllers
         }
 
         [HttpGet]
-        [NoAuthenticate]
+        //[NoAuthenticate]
         /// <summary>
         /// 获取大王卡连接
         /// </summary>
@@ -101,7 +107,7 @@ namespace Unitoys.WebApi.Controllers
 
             string url = String.Format("http://m.10010.com/mall-mobile/kingNumCard/init?tencentId={0}&key={1}&product=4&channel=2", resultJson.info.uid, resultJson.info.ukey);
 
-            return Ok(new { status = 0, data = url });
+            return Ok(new { status = 1, data = url });
         }
 
 

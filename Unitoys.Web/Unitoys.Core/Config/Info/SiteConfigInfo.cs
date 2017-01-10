@@ -124,6 +124,14 @@ namespace Unitoys.Core.Config
         /// MVNO调用地址
         /// </summary>
         public string MVNOHost { get; set; }
+        /// <summary>
+        /// 一正服务端调用IP
+        /// </summary>
+        public string VswServerIp { get; set; }
+        /// <summary>
+        /// 一正服务端调用端口
+        /// </summary>
+        public string VswServerPort { get; set; }
 
     }
 }

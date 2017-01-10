@@ -595,6 +595,34 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
+        /// 根据类型检查是否存在使用中的类型套餐
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> CheckUsedExistByPageCategory([FromBody]IsStatusUsedByCategoryBindingModel model)
+        {
+            string errorMsg = "";
+
+            var currentUser = WebUtil.GetApiUserSession();
+
+            if (currentUser == null)
+            {
+                errorMsg = "当前用户不能为空！";
+            }
+            else if (!model.PackageCategory.HasValue)
+            {
+                errorMsg = "套餐类型不能为空！";
+            }
+            else
+            {
+                bool result = await _orderService.IsStatusUsed(currentUser.ID, model.PackageCategory.Value);
+                return Ok(new { status = 1, data = new { Used = result ? "1" : "0" } });
+            }
+            return Ok(new { status = 0, msg = errorMsg });
+        }
+
+        /// <summary>
         /// app调用支付成功返回的接口
         /// </summary>
         /// <param name="token"></param>

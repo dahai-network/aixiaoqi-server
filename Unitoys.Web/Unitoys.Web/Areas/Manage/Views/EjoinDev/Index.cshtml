@@ -181,37 +181,37 @@
 
     function formatSlotStatus(value, rec, index) {
         if (value == 0) {
-            return "无SIM卡";
+            return "<span style='color:#a5a5a5'>无SIM卡</span>";
         }
         if (value == 1) {
-            return "有SIM卡，没有注册";
+            return "<span style='color:#a5a5a5'>有SIM卡，没有注册</span>"; 
         }
         if (value == 2) {
-            return "SIM卡注册中";
+            return "<span style='color:#c9f2b8'>SIM卡注册中</span>";
         }
         if (value == 3) {
-            return "SIM卡注册成功";
+            return "<span style='color:#2caf0b'>SIM卡注册成功</span>";
         }
         if (value == 4) {
-            return "正在呼叫";
+            return "<span style='color:#0274bb'>正在呼叫</span>";
         }
         if (value == 5) {
-            return "告警";
+            return "<span style='color:red'>告警</span>";
         }
         if (value == 6) {
             return "<span style='color:red'>注册失败</span>";
         }
         if (value == 7) {
-            return "设备锁卡";
+            return "<span style='color:red'>设备锁卡</span>";
         }
         if (value == 8) {
-            return "运营商锁卡";
+            return "<span style='color:red'>运营商锁卡</span>";
         }
         if (value == 9) {
-            return "读SIM卡错误";
+            return "<span style='color:red'>读SIM卡错误</span>";
         }
         if (value == 10) {
-            return "端口被用户禁用";
+            return "<span style='color:red'>端口被用户禁用</span>";
         }
         return "未识别的状态";
     }

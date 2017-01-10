@@ -49,7 +49,7 @@ namespace Unitoys.Services
                         && (x.Status == DevPortStatus.REGING || x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)
                         && x.UserId.HasValue
 
-                        ).FirstOrDefaultAsync();
+                        ).OrderByDescending(x => x.RegDate).FirstOrDefaultAsync();
                 return query;
             }
         }
@@ -67,7 +67,7 @@ namespace Unitoys.Services
                     .Where(x =>
                         x.UT_EjoinDev.RegStatus == RegStatusType.SUCCESS
                         && x.UserId == userId
-                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)).FirstOrDefaultAsync();
+                        && (x.Status == DevPortStatus.REGSUCCESS || x.Status == DevPortStatus.CALLING || x.Status == DevPortStatus.WARNING)).OrderByDescending(x => x.RegDate).FirstOrDefaultAsync();
             }
         }
     }

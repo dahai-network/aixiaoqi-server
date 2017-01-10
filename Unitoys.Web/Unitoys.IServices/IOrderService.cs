@@ -77,5 +77,10 @@ namespace Unitoys.IServices
         /// </summary>
         /// <returns></returns>
         Task<UT_Order> GetEntityAndPackageByIdAsync(Guid ID);
+        /// <summary>
+        /// 根据套餐类型判断当前用户是否有正在使用的套餐
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> IsStatusUsed(Guid userId, CategoryType PackageCategory);
     }
 }

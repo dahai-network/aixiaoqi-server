@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unitoys.Model;
 
 namespace Unitoys.WebApi.Models
 {
@@ -63,4 +64,9 @@ namespace Unitoys.WebApi.Models
         public decimal Amount { get; set; }
         public string Key { get; set; }
     }
+    public class IsStatusUsedByCategoryBindingModel
+    {
+        public CategoryType? PackageCategory { get; set; }
+    }
+
 }

@@ -420,7 +420,6 @@ namespace Unitoys.Services
             }
         }
 
-
         /// <summary>
         /// 判断当前用户是否有正在使用的套餐
         /// </summary>
@@ -442,6 +441,18 @@ namespace Unitoys.Services
             using (UnitoysEntities db = new UnitoysEntities())
             {
                 return await db.UT_Order.Include(x => x.UT_Package.UT_Country).FirstOrDefaultAsync(x => x.ID == ID);
+            }
+        }
+
+        /// <summary>
+        /// 根据套餐类型判断当前用户是否有正在使用的套餐
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> IsStatusUsed(Guid userId, CategoryType PackageCategory)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                return await db.UT_Order.AnyAsync(a => a.OrderStatus == OrderStatusType.Used && a.UserId == userId && a.PackageCategory == PackageCategory);
             }
         }
     }
