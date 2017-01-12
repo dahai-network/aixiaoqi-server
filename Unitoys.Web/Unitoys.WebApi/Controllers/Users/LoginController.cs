@@ -39,7 +39,6 @@ namespace Unitoys.WebApi.Controllers
         [NoLogin]
         public async Task<IHttpActionResult> CheckLogin([FromBody]QueryLoginUser queryModel)
         {
-
             var errorMsg = "";
 
             if (!ValidateHelper.IsMobile(queryModel.Tel))

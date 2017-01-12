@@ -8,10 +8,19 @@
     <div data-options="region:'north',border:false" style="height:90px">
         <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
             <form id="ff" method="post">
+                <span>地区:</span>
+                <select id="countryId" name="countryId" class="easyui-combobox" style="width:100px" data-options="
+					            url:'/Manage/Country/GetSelectList',
+					            method:'get',
+					            valueField:'ID',
+					            textField:'CountryName',
+					            panelHeight:'auto'
+			            "></select>
                 <span>套餐:</span>
                 <input id="packageName" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>运营商:</span>
                 <input id="operators" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>套餐类型:</span>
                 <select id="category" class="easyui-combobox" name="category" style="width:200px;">
                     <option value="">-- 请选择 --</option>
                     <option value="0">流量</option>
@@ -175,9 +184,6 @@
 					            textField:'CountryName',
 					            panelHeight:'auto'
 			            "></select>
-                    <script type="text/javascript">
-
-                    </script>
                 </td>
             </tr>
             <tr>
@@ -346,6 +352,7 @@
             packageName: $("#packageName").val() == null ? "" : $("#packageName").val(),
             operators: $("#operators").val() == null ? "" : $("#operators").val(),
             category: $("#category").combobox("getValue"),
+            countryId: $("#countryId").combobox("getValue"),
         });
     }
 

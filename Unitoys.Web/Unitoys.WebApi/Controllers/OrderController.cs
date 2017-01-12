@@ -57,8 +57,10 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                UT_Order order = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod);
-                if (order != null)
+                UT_Order order = null;
+                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, order);
+
+                if (result == 1 && order != null)
                 {
                     var resultModel = new
                     {
@@ -79,7 +81,19 @@ namespace Unitoys.WebApi.Controllers
                 }
                 else
                 {
-                    errorMsg = "订单创建失败！";
+                    switch (result)
+                    {
+                        case 1:
+                            errorMsg = "订单创建失败！";
+                            break;
+                        case 2:
+                            errorMsg = "套餐不可用，请选择其他套餐！";
+                            break;
+                        default:
+                            errorMsg = "订单创建失败！";
+                            break;
+                    }
+
                 }
             }
             return Ok(new { status = 0, msg = errorMsg });

@@ -23,12 +23,17 @@ namespace Unitoys.Services
         /// <param name="unitPrice">单价</param>
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
-        /// <returns></returns>
-        public async Task<UT_Order> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod)
+        /// <returns>0失败/1成功/2套餐被锁定</returns>
+        public async Task<int> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, UT_Order outOrder)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
                 UT_Package package = await db.UT_Package.FindAsync(packageId);
+                //套餐被锁定
+                if (package.Lock4 == 1)
+                {
+                    return 2;
+                }
                 if (package != null)
                 {
                     //1. 先添加Order实体。
@@ -54,13 +59,13 @@ namespace Unitoys.Services
                     order.PaymentMethod = PaymentMethod;
                     db.UT_Order.Add(order);
 
-                    return await db.SaveChangesAsync() > 0 ? order : null;
-
+                    if (await db.SaveChangesAsync() > 0)
+                    {
+                        outOrder = order;
+                    }
+                    return 1;
                 }
-                else
-                {
-                    return null;
-                }
+                return 0;
             }
         }
 

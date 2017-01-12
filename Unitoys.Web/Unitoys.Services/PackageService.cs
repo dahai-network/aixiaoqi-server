@@ -10,7 +10,7 @@ namespace Unitoys.Services
 {
     public class PackageService : BaseService<UT_Package>, IPackageService
     {
-        public async Task<KeyValuePair<int, List<UT_Package>>> SearchAsync(int page, int rows, string packageName, string countryId, string operators, CategoryType? category)
+        public async Task<KeyValuePair<int, List<UT_Package>>> SearchAsync(int page, int rows, string packageName, Guid? countryId, string operators, CategoryType? category)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -21,9 +21,9 @@ namespace Unitoys.Services
                     query = query.Where(x => x.PackageName.Contains(packageName));
                 }
 
-                if (!string.IsNullOrEmpty(countryId) && countryId != "-1")
+                if (countryId.HasValue)
                 {
-                    query = query.Where(x => x.CountryId.Equals(countryId));
+                    query = query.Where(x => x.CountryId != null && x.CountryId == countryId);
                 }
 
                 if (!string.IsNullOrEmpty(operators))

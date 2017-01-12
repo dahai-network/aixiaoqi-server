@@ -39,7 +39,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string packageName, string countryId, string operators, CategoryType? category)
+        public async Task<ActionResult> GetList(int page, int rows, string packageName, Guid? countryId, string operators, CategoryType? category)
         {
             var pageRowsDb = await _packageService.SearchAsync(page, rows, packageName, countryId, operators, category);
 
@@ -95,11 +95,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "套餐流量错误！";
             }
-            else if (model.Pic.Trim() == "")
-            {
-                result.Success = false;
-                result.Msg = "图片不能为空！";
-            }
+            //else if (string.IsNullOrEmpty(model.Pic))
+            //{
+            //    result.Success = false;
+            //    result.Msg = "图片不能为空！";
+            //}
             else if (model.ExpireDays <= 0)
             {
                 result.Success = false;
@@ -169,11 +169,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "套餐流量错误！";
             }
-            else if (model.Pic.Trim() == "")
-            {
-                result.Success = false;
-                result.Msg = "图片不能为空！";
-            }
+            //else if (string.IsNullOrEmpty(model.Pic))
+            //{
+            //    result.Success = false;
+            //    result.Msg = "图片不能为空！";
+            //}
             else if (model.ExpireDays <= 0)
             {
                 result.Success = false;

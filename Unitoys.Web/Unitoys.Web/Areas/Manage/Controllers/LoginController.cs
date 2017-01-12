@@ -39,7 +39,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         public ActionResult CheckLogin(string loginName, string passWord)
         {
             string result = "";
-
+            
             if (string.IsNullOrEmpty(loginName))
             {
                 result = "用户名不能为空";

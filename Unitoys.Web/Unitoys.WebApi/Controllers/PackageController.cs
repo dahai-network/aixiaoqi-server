@@ -81,7 +81,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "传入ID格式错误！" });
             }
-            var packageResult = await _packageService.GetEntitiesAsync(c => (c.CountryId != null && c.CountryId == CountryID) && c.IsDeleted == false);
+            var packageResult = await _packageService.GetEntitiesAsync(c => (c.CountryId != null && c.CountryId == CountryID) && c.Lock4 == 0 && c.IsDeleted == false);
 
             var data = from i in packageResult.OrderBy(x => x.DisplayOrder)
                        select new
