@@ -57,11 +57,11 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                UT_Order order = null;
-                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, order);
+                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod);
 
-                if (result == 1 && order != null)
+                if (result.Key == 1 && result.Value != null)
                 {
+                    var order = result.Value;
                     var resultModel = new
                     {
                         OrderID = order.ID,
@@ -81,7 +81,7 @@ namespace Unitoys.WebApi.Controllers
                 }
                 else
                 {
-                    switch (result)
+                    switch (result.Key)
                     {
                         case 1:
                             errorMsg = "订单创建失败！";
@@ -386,6 +386,10 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "手机号码格式不正确！" });
             }
+            else if (model.Tel.Substring(0, 3) != "176" && model.Tel.Substring(0, 3) != "185")
+            {
+                return Ok(new { status = 0, msg = "当前号段不支持，如确认号段无误，请联系客服人员！" });
+            }
             if (model.OrderID != Guid.Empty)
             {
                 var currentUser = WebUtil.GetApiUserSession();
@@ -416,9 +420,9 @@ namespace Unitoys.WebApi.Controllers
                             //order.PackageOrderId = result.orderid;
                             //order.PackageOrderData = result.data;
                             order.EffectiveDate = CommonHelper.GetDateTimeInt();
-                            order.OrderStatus = OrderStatusType.Used;//充值后为已使用
+                            order.OrderStatus = OrderStatusType.UnactivatError;//充值后为已使用
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
-                            order.Remark = "充值号码：" + model.Tel;
+                            order.Remark = string.IsNullOrEmpty(order.Remark) ? "充值号码：" + model.Tel : order.Remark + " " + "充值号码：" + model.Tel;
                             if (!await _orderService.UpdateAsync(order))
                             {
                                 LoggerHelper.Error("大王卡激活失败,更新数据库失败");
@@ -439,7 +443,7 @@ namespace Unitoys.WebApi.Controllers
                     }
 
                     //4.返回订单卡数据
-                    return Ok(new { status = 1, msg = "激活成功", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                    return Ok(new { status = 1, msg = "激活成功,请等待充值,待套餐状态为已激活则是成功充值！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                 }
 
                 return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
