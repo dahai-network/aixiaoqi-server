@@ -66,7 +66,10 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                //SMSContent = i.SMSContent,
                                //MsgType = i.MsgType,
                                //StatusType = i.StatusType,
-                               IsRead = i.IsRead
+                               IsRead = i.IsRead,
+                               IccId = i.IccId,
+                               DevName = i.DevName,
+                               Port = i.Port,
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };

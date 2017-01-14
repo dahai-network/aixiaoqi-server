@@ -95,10 +95,6 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 0, msg = "设备号不能为空！" });
             }
-            if (string.IsNullOrEmpty(model.Version))
-            {
-                return Ok(new { status = 0, msg = "版本号不能为空！" });
-            }
 
             model.IMEI = System.Web.HttpUtility.UrlDecode(model.IMEI, Encoding.UTF8);
             //验证设备唯一性,友好提示
@@ -123,7 +119,7 @@ namespace Unitoys.WebApi.Controllers
             UT_DeviceBracelet entity = new UT_DeviceBracelet()
             {
                 IMEI = model.IMEI,
-                Version = model.Version,
+                Version = string.IsNullOrEmpty(model.Version)?"0":model.Version,
                 CreateDate = CommonHelper.GetDateTimeInt(),
                 UserId = currentUser.ID
             };

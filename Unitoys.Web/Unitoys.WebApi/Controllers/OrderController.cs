@@ -441,6 +441,10 @@ namespace Unitoys.WebApi.Controllers
                             throw;
                         }
                     }
+                    if (order.OrderStatus != 0)
+                    {
+                        return Ok(new { status = 1, msg = "激活处理中，请勿重复激活！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                    }
 
                     //4.返回订单卡数据
                     return Ok(new { status = 1, msg = "激活成功,请等待充值,待套餐状态为已激活则是成功充值！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 

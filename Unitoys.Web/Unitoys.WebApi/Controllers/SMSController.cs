@@ -98,7 +98,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                 tid=TId,
                 devname=DevName,
-                port=Port,
+                port=Port.PadLeft(2,'0'),
                 iccid=IccId,
                 to=model.To,
                 sms=model.SMSContent,
@@ -116,7 +116,7 @@ namespace Unitoys.WebApi.Controllers
                 SMSContent = model.SMSContent,
                 Status = SMSStatusType.Int,
                 IsSend = true,
-                Port = Port,
+                Port = Port.PadLeft(2, '0'),
                 IccId = IccId,
                 TId = TId,
                 IsRead = true,

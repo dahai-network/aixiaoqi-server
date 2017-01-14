@@ -1,4 +1,5 @@
-﻿using Senparc.Weixin.MP.AdvancedAPIs;
+﻿using Newtonsoft.Json;
+using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.OAuth;
 using Senparc.Weixin.MP.CommonAPIs;
 using Senparc.Weixin.MP.Containers;
@@ -16,6 +17,7 @@ using System.Xml.Linq;
 using Unitoys.Core;
 using Unitoys.IServices;
 using Unitoys.Model;
+using Unitoys.WebApi.Controllers;
 using WxPayAPI;
 using WxPayAPI.Jssdk;
 
@@ -36,6 +38,24 @@ namespace Unitoys.Web.Areas.wx.Controllers
             this._userBillService = userBillService;
             this._paymentService = paymentService;
         }
+        public async Task<ActionResult> toXh()
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("UserAgent", "Mozilla/5.0 (Linux; Android 5.1; M571C Build/LMY47D) : AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/37.0.0.0 : Mobile MQQBrowser/6.8 TBS/036869 Safari/537.36 QQLiveBrowser/5.1.2.11019;: ");
+            client.DefaultRequestHeaders.Host = "market.m.qq.com";
+            client.DefaultRequestHeaders.Referrer = new Uri("http://3gimg.qq.com/webapp_scan/activity/newcardvideo/build/index.htm");
+
+            int imei = new Random().Next(100000000, 999999999);
+            int imsi = new Random().Next(100000000, 999999999);
+
+            string result = await client.GetStringAsync("http://market.m.qq.com/flow/order.do?method=getKey&imei=99000" + imei + "&imsi=460030" + imsi + "&product=4&channel=2&");
+
+            ResultJsonDwk resultJson = JsonConvert.DeserializeObject<ResultJsonDwk>(result);
+
+            string url = String.Format("http://m.10010.com/mall-mobile/kingNumCard/init?tencentId={0}&key={1}&product=4&channel=2", resultJson.info.uid, resultJson.info.ukey);
+            return Redirect(url);
+        }
+
         /// <summary>
         /// 个人中心首页
         /// </summary>
