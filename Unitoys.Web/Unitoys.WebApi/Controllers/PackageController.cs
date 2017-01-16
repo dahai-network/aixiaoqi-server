@@ -27,6 +27,10 @@ namespace Unitoys.WebApi.Controllers
         /// <returns></returns>
         public async Task<IHttpActionResult> Get(int? pageNumber, int? pageSize, CategoryType? category)
         {
+            if (category.HasValue && category == CategoryType.Call)
+            {
+                category = CategoryType.DualSimStandby;
+            }
             Expression<Func<UT_Package, bool>> exp;
 
             if (!category.HasValue)

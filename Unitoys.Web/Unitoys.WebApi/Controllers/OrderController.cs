@@ -441,7 +441,7 @@ namespace Unitoys.WebApi.Controllers
                             throw;
                         }
                     }
-                    if (order.OrderStatus != 0)
+                    else if (order.OrderStatus != 0)
                     {
                         return Ok(new { status = 1, msg = "激活处理中，请勿重复激活！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                     }
@@ -638,6 +638,10 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
+                if (model.PackageCategory.HasValue && model.PackageCategory == CategoryType.Call)
+                {
+                    model.PackageCategory = CategoryType.DualSimStandby;
+                }
                 bool result = await _orderService.IsStatusUsed(currentUser.ID, model.PackageCategory.Value);
                 return Ok(new { status = 1, data = new { Used = result ? "1" : "0" } });
             }

@@ -52,7 +52,7 @@ namespace Unitoys.Web.Areas.wx.Controllers
 
             ResultJsonDwk resultJson = JsonConvert.DeserializeObject<ResultJsonDwk>(result);
 
-            string url = String.Format("http://m.10010.com/mall-mobile/kingNumCard/init?tencentId={0}&key={1}&product=4&channel=2", resultJson.info.uid, resultJson.info.ukey);
+            string url = String.Format("http://m.10010.com/mall-mobile/kingNumCard/init?tencentId={0}&key={1}&product=0&channel=5#applyInfo0", resultJson.info.uid, resultJson.info.ukey);
             return Redirect(url);
         }
 
