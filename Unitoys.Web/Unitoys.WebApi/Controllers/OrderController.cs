@@ -51,7 +51,7 @@ namespace Unitoys.WebApi.Controllers
                 //errorMsg = "包月订单只能购买一个，待后续业务需求是否需要调整！";
                 errorMsg = "数量请选中1-30之间选择！";
             }
-            else if (!Enum.IsDefined(typeof(PaymentMethodType), model.PaymentMethod))
+            else if (!Enum.IsDefined(typeof(PaymentMethodType), model.PaymentMethod) || model.PaymentMethod == PaymentMethodType.Gift)
             {
                 errorMsg = "无效的支付方式！";
             }
@@ -420,7 +420,7 @@ namespace Unitoys.WebApi.Controllers
                             //order.PackageOrderId = result.orderid;
                             //order.PackageOrderData = result.data;
                             order.EffectiveDate = CommonHelper.GetDateTimeInt();
-                            order.OrderStatus = OrderStatusType.UnactivatError;//充值后为已使用
+                            order.OrderStatus = OrderStatusType.Used;//充值后为已使用
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
                             order.Remark = string.IsNullOrEmpty(order.Remark) ? "充值号码：" + model.Tel : order.Remark + " " + "充值号码：" + model.Tel;
                             if (!await _orderService.UpdateAsync(order))
@@ -441,13 +441,13 @@ namespace Unitoys.WebApi.Controllers
                             throw;
                         }
                     }
-                    else if (order.OrderStatus != 0)
-                    {
-                        return Ok(new { status = 1, msg = "激活处理中，请勿重复激活！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
-                    }
+                    //else if (order.OrderStatus != 0)
+                    //{
+                    //    return Ok(new { status = 1, msg = "激活处理中，请勿重复激活！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                    //}
 
                     //4.返回订单卡数据
-                    return Ok(new { status = 1, msg = "激活成功,请等待充值,待套餐状态为已激活则是成功充值！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+                    return Ok(new { status = 1, msg = "激活成功！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                 }
 
                 return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });

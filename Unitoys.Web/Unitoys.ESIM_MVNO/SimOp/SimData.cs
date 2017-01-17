@@ -84,7 +84,7 @@ namespace Unitoys.ESIM_MVNO
     /// </summary>
     public class SimData
     {
-        private string rootKey = "11223344556677889900112233445566";
+        private string rootKey = "21079FA267206FC64C42617C9515003B";//"11223344556677889900112233445566";
         /// <summary>
         /// 补位后的虚商代码
         /// </summary>
