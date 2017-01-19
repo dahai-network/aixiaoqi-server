@@ -143,7 +143,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     errorMsg = "取消失败！";
                 }
-                //2.取消订单
+                //0.取消订单
                 return Ok(new { status = 0, msg = errorMsg });
             }
         }

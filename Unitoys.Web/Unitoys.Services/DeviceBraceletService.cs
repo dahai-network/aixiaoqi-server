@@ -12,7 +12,7 @@ namespace Unitoys.Services
 {
     public class DeviceBraceletService : BaseService<UT_DeviceBracelet>, IDeviceBraceletService
     {
-        public async Task<KeyValuePair<int, List<UT_DeviceBracelet>>> SearchAsync(int page, int rows, string tel, int? createStartDate, int? createEndDate)
+        public async Task<KeyValuePair<int, List<UT_DeviceBracelet>>> SearchAsync(int page, int rows, string iMEI, string tel, int? createStartDate, int? createEndDate)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -20,6 +20,10 @@ namespace Unitoys.Services
                 if (!string.IsNullOrEmpty(tel))
                 {
                     query = query.Where(x => x.UT_Users.Tel.Contains(tel));
+                }
+                if (!string.IsNullOrEmpty(iMEI))
+                {
+                    query = query.Where(x => x.IMEI.Contains(iMEI));
                 }
                 if (createStartDate.HasValue)
                 {

@@ -119,7 +119,7 @@ namespace Unitoys.WebApi.Controllers
             UT_DeviceBracelet entity = new UT_DeviceBracelet()
             {
                 IMEI = model.IMEI,
-                Version = string.IsNullOrEmpty(model.Version)?"0":model.Version,
+                Version = string.IsNullOrEmpty(model.Version) ? "0" : model.Version,
                 CreateDate = CommonHelper.GetDateTimeInt(),
                 UserId = currentUser.ID
             };
@@ -181,7 +181,7 @@ namespace Unitoys.WebApi.Controllers
                     {
                         Version = UTConfig.DeviceBraceletOTAConfigInfo.Version,// "20",
                         VersionName = UTConfig.DeviceBraceletOTAConfigInfo.VersionName,// "1.0.1",
-                        Descr = UTConfig.DeviceBraceletOTAConfigInfo.Descr,//"1.更新时间更新/r/n2.优化传输速度",
+                        Descr = UTConfig.DeviceBraceletOTAConfigInfo.Descr.Replace("\\n", "\n"),//"1.更新时间更新\n2.优化传输速度",
                         Url = UTConfig.DeviceBraceletOTAConfigInfo.Url//"https://api.unitoys.com/unitoys6.zip",
                     }
                 });

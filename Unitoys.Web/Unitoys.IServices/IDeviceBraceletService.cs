@@ -14,11 +14,12 @@ namespace Unitoys.IServices
         /// </summary>
         /// <param name="page">页码</param>
         /// <param name="rows">页数</param>
+        /// <param name="iMEI">设备号</param>
         /// <param name="tel">用户手机号</param>
         /// <param name="createStartDate">创建开始时间</param>
         /// <param name="createEndDate">创建结束时间</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_DeviceBracelet>>> SearchAsync(int page, int rows, string tel, int? createStartDate, int? createEndDate);
+        Task<KeyValuePair<int, List<UT_DeviceBracelet>>> SearchAsync(int page, int rows, string iMEI, string tel, int? createStartDate, int? createEndDate);
 
         /// <summary>
         /// 检查设备号是否已经存在

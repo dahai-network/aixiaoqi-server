@@ -15,11 +15,12 @@ namespace Unitoys.IServices
         /// <param name="page">页码</param>
         /// <param name="rows">页数</param>
         /// <param name="cardNum">卡号</param>
+        /// <param name="cardPwd">卡密</param>
         /// <param name="createStartDate">创建开始时间</param>
         /// <param name="createEndDate">创建结束时间</param>
         /// <param name="status">状态</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status);
+        Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status);
 
         /// <summary>
         /// 新增生成卡

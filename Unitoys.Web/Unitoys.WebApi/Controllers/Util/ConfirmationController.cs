@@ -34,29 +34,31 @@ namespace Unitoys.WebApi.Controllers.Util
         [NoLogin]
         public async Task<IHttpActionResult> SendSMS([FromBody]SendSMSBindingModel model)
         {
-            string errorMsg = "";
+            StatusCodeRes errorMsg = new StatusCodeRes();
             DateTime dtNow = DateTime.Now;
             if (!ValidateHelper.IsMobile(model.ToNum))
             {
-                errorMsg = "手机号码错误！";
+                errorMsg = new StatusCodeRes(StatusCodeType.手机号码格式不正确);
             }
             else if (model.Type != 1 && model.Type != 2 && model.Type != 3)
             {
-                errorMsg = "验证类型错误！";
+                errorMsg = new StatusCodeRes(StatusCodeType.验证类型错误);
             }
             else if (model.Type == 1 && _userService.CheckTelExist(model.ToNum))
             {
-                errorMsg = "您输入的手机号码已注册！";
+                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码已注册2);
             }
             else if (model.Type == 2 && !_userService.CheckTelExist(model.ToNum))
             {
-                errorMsg = "您输入的手机号码未注册！";
+                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码未注册);
             }
             else if (dicSendSMSTime.ContainsKey(model.ToNum) &&
                 (dtNow - dicSendSMSTime[model.ToNum]).TotalSeconds <= 60)
             {
                 int tLeft = Convert.ToInt32(60 - (dtNow - dicSendSMSTime[model.ToNum]).TotalSeconds);
-                errorMsg = string.Format("一分钟内不能再次发送,{0}秒以后可以再次发送", tLeft);
+                //errorMsg = string.Format("一分钟内不能再次发送,{0}秒以后可以再次发送", tLeft);
+                //errorMsg = new StatusCodeRes(StatusCodeType.一分钟内不能再次发送_x秒以后可以再次发送);
+                return Ok(new { status = StatusCodeType.一分钟内不能再次发送_x秒以后可以再次发送, data = new { RemainingSeconds = tLeft + "" } });
             }
             else
             {
@@ -91,22 +93,22 @@ namespace Unitoys.WebApi.Controllers.Util
                     else
                     {
                         LoggerHelper.Error("发送短信接口错误（短信已发送，保存短信记录到数据库时出错！）");
-                        errorMsg = "短信服务器异常，请联系客服人员！";
+                        errorMsg = new StatusCodeRes(StatusCodeType.短信服务器异常_请联系客服人员);
 
                     }
-                    
+
                 }
                 else if (rsp.code == "15")
                 {
-                    errorMsg = "您发送的太频繁了！";
+                    errorMsg = new StatusCodeRes(StatusCodeType.您发送的太频繁了);
                 }
                 else
                 {
-                    errorMsg = rsp.msg;
+                    errorMsg = new StatusCodeRes(StatusCodeType.阿里云短信调用失败) { msg = rsp.msg };
                 }
 
             }
-            return Ok(new { status = 0, msg = "发送失败！" + errorMsg });
+            return Ok(errorMsg);
         }
     }
 }

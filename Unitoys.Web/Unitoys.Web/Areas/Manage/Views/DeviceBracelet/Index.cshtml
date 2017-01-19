@@ -8,6 +8,8 @@
     <div data-options="region:'north',border:false" style="height:90px">
         <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
             <form id="ff" method="post">
+                <span>设备号:</span>
+                <input id="iMEI" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>手机号:</span>
                 <input id="tel" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>绑定时间:</span>
@@ -51,6 +53,7 @@
     function doSearch() {
         $("#grid").datagrid('load', {
             tel: $("#tel").val() == null ? "" : $("#tel").val(),
+            iMEI: $("#iMEI").val() == null ? "" : $("#iMEI").val(),
             createStartDate: $("input[name$='createStartDate']").val(),
             createEndDate: $("input[name$='createEndDate']").val(),
         });

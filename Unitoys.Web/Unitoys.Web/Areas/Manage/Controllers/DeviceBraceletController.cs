@@ -34,7 +34,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string tel, DateTime? createStartDate, DateTime? createEndDate)
+        public async Task<ActionResult> GetList(int page, int rows, string iMEI, string tel, DateTime? createStartDate, DateTime? createEndDate)
         {
             int? beginSMSTimeInt = null;
             int? endSMSTimeInt = null;
@@ -46,7 +46,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             {
                 endSMSTimeInt = CommonHelper.ConvertDateTimeInt(createEndDate.Value);
             }
-            var pageRowsDb = await _deviceBraceletService.SearchAsync(page, rows, tel, beginSMSTimeInt, endSMSTimeInt);
+            var pageRowsDb = await _deviceBraceletService.SearchAsync(page, rows, iMEI, tel, beginSMSTimeInt, endSMSTimeInt);
 
             int totalNum = pageRowsDb.Key;
 

@@ -39,19 +39,19 @@ namespace Unitoys.WebApi.Controllers
         [NoLogin]
         public async Task<IHttpActionResult> CheckLogin([FromBody]QueryLoginUser queryModel)
         {
-            var errorMsg = "";
+            StatusCodeRes errorMsg = new StatusCodeRes();
 
             if (!ValidateHelper.IsMobile(queryModel.Tel))
             {
-                errorMsg = "手机号码格式不正确！";
+                errorMsg = new StatusCodeRes(StatusCodeType.手机号码格式不正确);
             }
             else if (queryModel.PassWord.Length < 6 || queryModel.PassWord.Length > 12)
             {
-                errorMsg = "密码长度必须在6~12位之间！";
+                errorMsg = new StatusCodeRes(StatusCodeType.密码长度必须在6到20位之间);
             }
             else if (!_userService.CheckTelExist(queryModel.Tel))
             {
-                errorMsg = "帐号不存在，请先注册！";
+                errorMsg = new StatusCodeRes(StatusCodeType.帐号不存在_请先注册);
             }
             else
             {
@@ -76,7 +76,7 @@ namespace Unitoys.WebApi.Controllers
                         var userShapeAsync = _userShapeService.GetUserShapeAsync(user.ID);
 
                         //手环设备
-                        var deviceBraceletAsync =  _deviceBraceletService.GetEntityAsync(x => x.UserId == user.ID);
+                        var deviceBraceletAsync = _deviceBraceletService.GetEntityAsync(x => x.UserId == user.ID);
 
                         //用户配置
                         var dataResult = await _usersConfigService.GetEntitiesAsync(x => x.UserId == user.ID);
@@ -88,7 +88,7 @@ namespace Unitoys.WebApi.Controllers
 
                         //等待异步的完成。
                         await insertTaskAsync;
-                        var deviceBracelet =await deviceBraceletAsync;
+                        var deviceBracelet = await deviceBraceletAsync;
                         var userShape = await userShapeAsync;
 
                         double? Weight = null;
@@ -132,12 +132,12 @@ namespace Unitoys.WebApi.Controllers
                     }
                     else
                     {
-                        errorMsg = "您的帐号已被锁定！";
+                        errorMsg = new StatusCodeRes(StatusCodeType.您的帐号已被锁定);
                     }
                 }
                 else
                 {
-                    errorMsg = "密码不正确！";
+                    errorMsg = new StatusCodeRes(StatusCodeType.密码不正确);
                 }
             }
             return Ok(new { status = 0, msg = errorMsg });

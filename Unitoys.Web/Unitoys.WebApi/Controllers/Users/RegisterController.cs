@@ -42,23 +42,23 @@ namespace Unitoys.WebApi.Controllers
         [NoLogin]
         public async Task<IHttpActionResult> Post([FromBody]QueryRegUser queryModel)
         {
-            var errorMsg = "";
+            StatusCodeRes errorMsg = new StatusCodeRes();
 
             if (!ValidateHelper.IsMobile(queryModel.tel))
             {
-                errorMsg = "手机号码格式不正确！";
+                errorMsg = new StatusCodeRes(StatusCodeType.手机号码格式不正确);
             }
             else if (queryModel.passWord.Length < 6 || queryModel.passWord.Length > 12)
             {
-                errorMsg = "密码长度必须在6~12位之间！";
+                errorMsg = new StatusCodeRes(StatusCodeType.密码长度必须在6到20位之间);
             }
             else if (!ValidateHelper.IsNumeric(queryModel.smsVerCode))
             {
-                errorMsg = "验证码无效！";
+                errorMsg = new StatusCodeRes(StatusCodeType.验证码无效);
             }
             else if (_userService.CheckTelExist(queryModel.tel))
             {
-                errorMsg = "您输入的手机号码已注册！";
+                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码已注册);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     if (DateTime.Now > smsConfirmation.ExpireDate)
                     {
-                        errorMsg = "此验证码已经过期，请重新发送验证码。";
+                        errorMsg = new StatusCodeRes(StatusCodeType.此验证码已经过期_请重新发送验证码);
                     }
                     else
                     {
@@ -94,9 +94,9 @@ namespace Unitoys.WebApi.Controllers
                         switch (PhoneServerByMySqlServices.SetSip_Buddies(model.Tel))
                         {
                             case 2:
-                                return Ok(new { status = 0, msg = "系统繁忙，请重试" });
+                                return Ok(new StatusCodeRes(StatusCodeType.系统繁忙_请重试));
                             case 0:
-                                return Ok(new { status = 0, msg = "注册失败，请重试" });
+                                return Ok(new StatusCodeRes(StatusCodeType.注册失败_请重试));
                         }
 
                         if (await _userService.RegisterAsync(model, smsConfirmation))
@@ -112,10 +112,10 @@ namespace Unitoys.WebApi.Controllers
                 }
                 else
                 {
-                    errorMsg = "验证码错误！";
+                    errorMsg = new StatusCodeRes(StatusCodeType.验证码错误);
                 }
             }
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(errorMsg);
         }
 
         [HttpGet]

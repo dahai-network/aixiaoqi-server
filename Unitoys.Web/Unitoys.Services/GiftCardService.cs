@@ -12,7 +12,7 @@ namespace Unitoys.Services
 {
     public class GiftCardService : BaseService<UT_GiftCard>, IGiftCardService
     {
-        public async Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status)
+        public async Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -21,6 +21,11 @@ namespace Unitoys.Services
                 if (!string.IsNullOrEmpty(cardNum))
                 {
                     query = query.Where(x => x.CardNum.Contains(cardNum));
+                }
+
+                if (!string.IsNullOrEmpty(cardPwd))
+                {
+                    query = query.Where(x => x.CardPwd.Contains(cardPwd));
                 }
 
                 if (status != null)

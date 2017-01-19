@@ -93,7 +93,7 @@ namespace Unitoys.WebApi.Controllers
                         int setResult = PhoneServerByMySqlServices.SetNameChange(entity.TelNum, currentUser.Tel, true);
                         if (setResult == 2)
                         {
-                            return Ok(new { status = 0, msg = "系统繁忙，请重试" });
+                            return Ok(new StatusCodeRes(StatusCodeType.系统繁忙_请重试));
                         }
                         //设置使用Goip
                         if (!await _deviceGoipService.SetUsedAsync(currentUser.ID, model.Iccid))
@@ -180,7 +180,7 @@ namespace Unitoys.WebApi.Controllers
                         int setResult = PhoneServerByMySqlServices.SetNameChange(TransferNumModel.TelNum, currentUser.Tel, false);
                         if (setResult == 2)
                         {
-                            return Ok(new { status = 0, msg = "系统繁忙，请重试" });
+                            return Ok(new StatusCodeRes(StatusCodeType.系统繁忙_请重试));
                         }
 
                         //取消设备

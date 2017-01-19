@@ -83,7 +83,7 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new
                 {
                     status = 0,
-                    msg = "未开启短信功能"
+                    msg = "手环内的卡未注册成功"
                 });
             }
             else

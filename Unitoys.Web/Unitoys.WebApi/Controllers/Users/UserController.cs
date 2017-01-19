@@ -319,15 +319,15 @@ namespace Unitoys.WebApi.Controllers
         [NoLogin]
         public async Task<IHttpActionResult> ForgotPassword([FromBody]QueryForgotPassword queryModel)
         {
-            string errorMsg = "";
+            StatusCodeRes errorMsg = new StatusCodeRes();
 
             if (!ValidateHelper.IsMobile(queryModel.tel))
             {
-                errorMsg = "手机号码格式不正确！";
+                errorMsg = new StatusCodeRes(StatusCodeType.手机号码格式不正确);
             }
             else if (queryModel.newPassword.Length < 6 || queryModel.newPassword.Length > 20)
             {
-                errorMsg = "密码长度必须在6~20位之间！";
+                errorMsg = new StatusCodeRes(StatusCodeType.密码长度必须在6到20位之间);
             }
             else
             {
@@ -343,7 +343,7 @@ namespace Unitoys.WebApi.Controllers
                     {
                         if (DateTime.Now > smsConfirmation.ExpireDate)
                         {
-                            errorMsg = "此验证码已经过期，请重新发送验证码！";
+                            errorMsg = new StatusCodeRes(StatusCodeType.此验证码已经过期_请重新发送验证码);
                         }
                         else
                         {
@@ -357,15 +357,15 @@ namespace Unitoys.WebApi.Controllers
                     }
                     else
                     {
-                        errorMsg = "验证码错误！";
+                        errorMsg = new StatusCodeRes(StatusCodeType.验证码错误);
                     }
                 }
                 else
                 {
-                    errorMsg = "手机号未注册！";
+                    errorMsg = new StatusCodeRes(StatusCodeType.手机号未注册);
                 }
             }
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(errorMsg);
         }
 
         /// <summary>
@@ -420,7 +420,7 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new { status = 1, data = new { amount = user.Amount } });
             }
 
-            return Ok(new { status = 0, msg = "找不到该用户！" });
+            return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
         }
 
         /// <summary>

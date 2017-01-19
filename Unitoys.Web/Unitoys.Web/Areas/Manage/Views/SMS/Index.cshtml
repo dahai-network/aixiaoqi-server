@@ -112,7 +112,13 @@
         var month = dateEnd.getMonth() + 1;
         var date = dateEnd.getDate();
 
-        $('#endSMSTime').datebox('setValue', today.toLocaleString());
+        //today.setDate(today.getDate() + 1);
+        //alert(today.toLocaleString());
+        if (number == 0) {
+            $('#endSMSTime').datebox('setValue', year + '-' + month + '-' +( date + 1));
+        } else {
+            $('#endSMSTime').datebox('setValue', year + '-' + month + '-' + (date + 1));
+        }
         $('#beginSMSTime').datebox('setValue', year + '-' + month + '-' + date);
         doSearch();
     }

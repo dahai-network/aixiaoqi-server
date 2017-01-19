@@ -73,7 +73,7 @@ namespace Unitoys.WebApi.Controllers
                 && x.StartDateTime >= BeginDateInt
                 && x.EndDateTime < EndDateInt);
 
-            var sport = await _sportService.GetEntityAsync(x => x.Date == BeginDateInt && x.UserId == currentUser.ID);
+            var sport = await _sportService.GetEntityAsync(x => x.Date == BeginDateInt && x.UserId == currentUser.ID && x.StepNum > 0);
 
             var data = from i in result.OrderBy(x => x.StartDateTime)
                        select new
@@ -189,7 +189,8 @@ namespace Unitoys.WebApi.Controllers
 
             var result = await _sportService.GetEntitiesAsync(x => x.UserId == currentUser.ID
                 && x.Date >= startDate
-                && x.Date <= EndDateInt);
+                && x.Date <= EndDateInt
+                && x.StepNum > 0);
 
             return Ok(new
             {
