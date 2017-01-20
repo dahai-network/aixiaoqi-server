@@ -43,7 +43,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                return Ok(new { status = 0, msg = "empty" });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "empty"));
             }
         }
 
@@ -87,33 +87,48 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Bind([FromBody]DeviceBraceletBindingModels model)
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
 
             if (string.IsNullOrEmpty(model.IMEI))
             {
-                return Ok(new { status = 0, msg = "设备号不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "设备号不能为空"));
             }
 
+            model.Version = string.IsNullOrEmpty(model.Version) ? "0" : model.Version;
             model.IMEI = System.Web.HttpUtility.UrlDecode(model.IMEI, Encoding.UTF8);
+
             //验证设备唯一性,友好提示
             var bEntity = await _deviceBraceletService.GetEntityAsync(x => x.IMEI.Equals(model.IMEI));
             if (bEntity != null)
             {
                 if (bEntity.UserId == currentUser.ID)
                 {
-                    return Ok(new { status = 0, msg = "请勿重复绑定！" });
+                    if (bEntity.Version == model.Version)
+                    {
+                        return Ok(new StatusCodeRes(StatusCodeType.设备重复绑定, "请勿重复绑定"));
+                    }
+                    else
+                    {
+                        //更新设备版本号
+                        bEntity.Version = model.Version;
+                        bEntity.UpdateDate = CommonHelper.GetDateTimeInt();
+
+                        if (await _deviceBraceletService.UpdateAsync(bEntity))
+                        {
+                            return Ok(new { status = 1, msg = "绑定成功！" });
+                        }
+                        return Ok(new StatusCodeRes(StatusCodeType.失败, "绑定失败"));
+                    }
                 }
                 else
                 {
-                    return Ok(new { status = 0, msg = "此设备已绑定其他用户！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.设备重复绑定, "此设备已绑定其他用户"));
                 }
             }
 
             if (await _deviceBraceletService.CheckUserIdExist(currentUser.ID))
             {
-                return Ok(new { status = 0, msg = "用户已绑定设备！" });
+                return Ok(new StatusCodeRes(StatusCodeType.设备重复绑定, "用户已绑定设备"));
             }
 
             UT_DeviceBracelet entity = new UT_DeviceBracelet()
@@ -129,12 +144,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "绑定成功！" });
             }
-            else
-            {
-                errorMsg = "绑定失败";
-            }
-
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "绑定失败"));
         }
 
         /// <summary>
@@ -158,10 +168,9 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                errorMsg = "解除绑定失败";
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "解除绑定失败"));
             }
 
-            return Ok(new { status = 0, msg = errorMsg });
         }
 
         /// <summary>

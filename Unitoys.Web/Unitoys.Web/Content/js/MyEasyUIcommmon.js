@@ -98,14 +98,17 @@ JSON.find = function (obj, key, val) {
     }
     return objects;
 }
-Array.del = function (ary, obj) {
-    var i = ary.indexOf(obj);
+Array.del = function (ary, obj) {   
+    var i = ary.indexOf(obj);       
     if (i != -1) {
         ary.splice(i, 1);
     }
 }
 
 function formatDateTimeInt(value, rec, index) {
+    if (!value) {
+        return "";
+    }
     var unixTimestamp = new Date(value * 1000);
     return unixTimestamp.getFullYear() + '/' + (unixTimestamp.getMonth() + 1) + '/' + unixTimestamp.getDate() + ' ' + unixTimestamp.getHours() + ':' + unixTimestamp.getMinutes() + ':' + unixTimestamp.getSeconds();
 }

@@ -32,7 +32,7 @@ namespace Unitoys.WebApi.Controllers
 
             if (string.IsNullOrEmpty(model.Time))
             {
-                return Ok(new { status = 0, msg = "时间不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "时间不能为空"));
             }
             //if (!model.TimeRange.HasValue)
             //{
@@ -40,17 +40,17 @@ namespace Unitoys.WebApi.Controllers
             //}
             if (!model.Status.HasValue)
             {
-                return Ok(new { status = 0, msg = "状态不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "状态不能为空"));
             }
             if (!IsRepeat(model.Repeat))
             {
-                return Ok(new { status = 0, msg = "重复参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "重复参数错误"));
             }
 
             var count = await _alarmClockService.GetEntitiesCountAsync(x => x.UserId == currentUser.ID);
             if (count >= 3)
             {
-                return Ok(new { status = 0, msg = "目前仅支持最高3个闹钟！" });
+                return Ok(new StatusCodeRes(StatusCodeType.达到最高设定数量));
             }
 
             UT_AlarmClock alarmClock = new UT_AlarmClock()
@@ -69,7 +69,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "添加成功！", data = new { AlarmClockId = alarmClock.ID } });
             }
-            return Ok(new { status = 0, msg = "添加失败！" });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "添加失败"));
         }
 
         /// <summary>
@@ -85,11 +85,11 @@ namespace Unitoys.WebApi.Controllers
 
             if (model.ID == Guid.Empty)
             {
-                return Ok(new { status = 0, msg = "参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "参数错误"));
             }
             if (string.IsNullOrEmpty(model.Time))
             {
-                return Ok(new { status = 0, msg = "时间不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "时间不能为空"));
             }
             //if (!model.TimeRange.HasValue)
             //{
@@ -97,17 +97,17 @@ namespace Unitoys.WebApi.Controllers
             //}
             if (!model.Status.HasValue)
             {
-                return Ok(new { status = 0, msg = "状态不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "状态不能为空"));
             }
             if (!IsRepeat(model.Repeat))
             {
-                return Ok(new { status = 0, msg = "重复参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "重复参数错误"));
             }
 
             UT_AlarmClock alarmClock = await _alarmClockService.GetEntityByIdAsync(model.ID);
             if (alarmClock.UserId != currentUser.ID)
             {
-                return Ok(new { status = 0, msg = "参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "参数错误"));
             }
 
             //alarmClock.TimeRange = model.TimeRange.Value;
@@ -120,7 +120,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "更新成功！" });
             }
-            return Ok(new { status = 0, msg = "更新失败！" });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "更新失败"));
         }
 
         /// <summary>
@@ -136,16 +136,16 @@ namespace Unitoys.WebApi.Controllers
 
             if (model.ID == Guid.Empty)
             {
-                return Ok(new { status = 0, msg = "参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "参数错误"));
             }
             else if (!model.Status.HasValue)
             {
-                return Ok(new { status = 0, msg = "状态不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "状态不能为空"));
             }
             UT_AlarmClock alarmClock = await _alarmClockService.GetEntityByIdAsync(model.ID);
             if (alarmClock.UserId != currentUser.ID)
             {
-                return Ok(new { status = 0, msg = "参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "参数错误"));
             }
 
             //alarmClock.TimeRange = model.TimeRange;
@@ -158,7 +158,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "更新成功！" });
             }
-            return Ok(new { status = 0, msg = "更新失败！" });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "更新失败"));
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace Unitoys.WebApi.Controllers
                        {
                            AlarmClockId = i.ID,
                            //TimeRange = ((int)i.TimeRange).ToString(),
-                           TimeRange = 0+"",
+                           TimeRange = 0 + "",
                            Time = i.Time,
                            Repeat = i.Repeat,
                            Tag = i.Tag,
@@ -212,12 +212,12 @@ namespace Unitoys.WebApi.Controllers
 
             if (model.ID == Guid.Empty)
             {
-                return Ok(new { status = 0, msg = "参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "参数错误"));
             }
             UT_AlarmClock alarmClock = await _alarmClockService.GetEntityByIdAsync(model.ID);
             if (alarmClock.UserId != currentUser.ID)
             {
-                return Ok(new { status = 0, msg = "参数错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "参数错误"));
             }
 
             //alarmClock.TimeRange = model.TimeRange;
@@ -229,7 +229,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "删除成功！" });
             }
-            return Ok(new { status = 0, msg = "删除失败！" });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "删除失败"));
         }
 
         private bool IsRepeat(string repeat)

@@ -83,7 +83,7 @@ namespace Unitoys.WebApi.Controllers
         {
             if (CountryID == Guid.Empty)
             {
-                return Ok(new { status = 0, msg = "传入ID格式错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "传入ID格式错误"));
             }
             var packageResult = await _packageService.GetEntitiesAsync(c => (c.CountryId != null && c.CountryId == CountryID) && c.Lock4 == 0 && c.IsDeleted == false);
 

@@ -52,21 +52,13 @@ namespace Unitoys.WebApi.Controllers
 
             if (model.To.Split(',').Any(x => !Int64.TryParse(x, out TryParseInt)))
             {
-                return Ok(new
-                {
-                    status = 0,
-                    msg = "接收号码格式不正确"
-                });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "接收号码格式不正确"));
             }
 
             LoggerHelper.Info("发送短信");
             if (string.IsNullOrEmpty(model.SMSContent))
             {
-                return Ok(new
-                {
-                    status = 0,
-                    msg = "内容不允许为空"
-                });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "内容不允许为空"));
             }
 
             var currentUser = WebUtil.GetApiUserSession();
@@ -80,11 +72,7 @@ namespace Unitoys.WebApi.Controllers
             var goipEntity = await _ejoinDevSlotService.GetUsedAAndEjoinDevsync(currentUser.ID);
             if (goipEntity == null)
             {
-                return Ok(new
-                {
-                    status = 0,
-                    msg = "手环内的卡未注册成功"
-                });
+                return Ok(new StatusCodeRes(StatusCodeType.手环内的卡未注册成功));
             }
             else
             {
@@ -153,24 +141,12 @@ namespace Unitoys.WebApi.Controllers
                     entity.Status = SMSStatusType.Error;
                     entity.ErrorMsg = "短信服务端调用异常：" + ex.Message;
                     _smsService.UpdateAsync(entity);
-                    return Ok(new { status = 0, msg = "短信服务端调用异常：" + ex.Message });
+                    return Ok(new StatusCodeRes(StatusCodeType.内部错误, "短信服务端调用异常：" + ex.Message));
                 }
-            }
-            else
-            {
-                return Ok(new
-                {
-                    status = 0,
-                    msg = "失败",
-                    data = new
-                    {
-                        tid = TId
-                    }
-                });
             }
             return Ok(new
             {
-                status = 0,
+                status = StatusCodeType.失败,
                 msg = "失败",
                 data = new
                 {
@@ -199,11 +175,7 @@ namespace Unitoys.WebApi.Controllers
         {
             if (model.SMSID == Guid.Empty)
             {
-                return Ok(new
-                {
-                    status = 0,
-                    msg = "发送参数错误"
-                });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空));
             }
 
             var currentUser = WebUtil.GetApiUserSession();
@@ -214,29 +186,30 @@ namespace Unitoys.WebApi.Controllers
             string DevName = null;
             string Port = null;
             string IccId = null;
-            var goipEntity = await _deviceGoipService.CheckUserGoipAsync(currentUser.ID);
-            if (goipEntity == null || string.IsNullOrEmpty(goipEntity.IccId))
+            var goipEntity = await _ejoinDevSlotService.GetUsedAAndEjoinDevsync(currentUser.ID);
+            if (goipEntity == null)
             {
-                return Ok(new
-                {
-                    status = 0,
-                    msg = "未开启短信功能"
-                });
+                return Ok(new StatusCodeRes(StatusCodeType.手环内的卡未注册成功));
             }
             else
             {
-                IccId = goipEntity.IccId;
+                DevName = goipEntity.UT_EjoinDev.Name;
+                Port = goipEntity.PortNum + "";
             }
 
             UT_SMS entity = await _smsService.GetEntityByIdAsync(model.SMSID);
 
             if (entity.Status != SMSStatusType.Error)
             {
-                return Ok(new
+
+                if (entity.Status == SMSStatusType.Success)
                 {
-                    status = 0,
-                    msg = entity.Status == SMSStatusType.Success ? "短信已发送成功" : "短信处理中",
-                });
+                    return Ok(new StatusCodeRes(StatusCodeType.短信已发送成功));
+                }
+                else
+                {
+                    return Ok(new StatusCodeRes(StatusCodeType.短信处理中));
+                }
             }
             if (entity.UserId != currentUser.ID)
             {
@@ -293,7 +266,7 @@ namespace Unitoys.WebApi.Controllers
                     entity.Status = SMSStatusType.Error;
                     entity.ErrorMsg = "短信服务端调用异常：" + ex.Message;
                     _smsService.UpdateAsync(entity);
-                    return Ok(new { status = 0, msg = "短信服务端调用异常：" + ex.Message });
+                    return Ok(new StatusCodeRes(StatusCodeType.内部错误, "短信服务端调用异常：" + ex.Message));
                 }
             }
             else
@@ -310,7 +283,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new
             {
-                status = 0,
+                status = StatusCodeType.失败,
                 msg = "失败",
                 data = new
                 {
@@ -481,7 +454,7 @@ namespace Unitoys.WebApi.Controllers
 
             if (string.IsNullOrEmpty(Tel))
             {
-                return Ok(new { status = 0, msg = "Tel不允许为空" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "Tel不允许为空"));
             }
 
             var smsResult = await _smsService.GetByUserAndTelAsync(pageNumber, pageSize, currentUser.ID, currentUser.Tel, Tel);

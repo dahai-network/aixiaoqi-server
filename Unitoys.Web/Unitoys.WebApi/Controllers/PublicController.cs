@@ -32,19 +32,22 @@ namespace Unitoys.WebApi.Controllers
             var currentUser = WebUtil.GetApiUserSession();
             if (string.IsNullOrEmpty(queryModel.Info))
             {
-                return Ok(new { status = 0, msg = "反馈信息不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "反馈信息不能为空"));
             }
             else if (string.IsNullOrEmpty(queryModel.Terminal))
             {
                 return Ok(new { status = 0, msg = "Terminal不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "Terminal不能为空"));
             }
             else if (string.IsNullOrEmpty(queryModel.Mail))
             {
                 return Ok(new { status = 0, msg = "邮箱不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "邮箱不能为空"));
             }
             else if (!ValidateHelper.IsEmail(queryModel.Mail))
             {
                 return Ok(new { status = 0, msg = "邮箱格式不正确！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "邮箱格式不正确"));
             }
             UT_Feedback feedback = new UT_Feedback()
             {
@@ -61,7 +64,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "意见反馈信息添加成功！" });
             }
-            return Ok(new { status = 0, msg = "意见反馈信息添加失败！" });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "意见反馈信息添加失败"));
         }
 
 

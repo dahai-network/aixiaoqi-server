@@ -38,22 +38,20 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Add([FromBody]AddBindingModel model)
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
             //System.Web.Http.ModelBinding.DefaultActionValueBinder
             if (model.PackageID == Guid.Empty)
             {
-                errorMsg = "套餐ID不能为空！";
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "套餐ID不能为空"));
             }
             else if (model.Quantity <= 0 || model.Quantity > 30)
             {
                 //errorMsg = "包月订单只能购买一个，待后续业务需求是否需要调整！";
-                errorMsg = "数量请选中1-30之间选择！";
+                return Ok(new { status = StatusCodeType.数量请在BeginQty至EndQty之间选择, msg = "数量请选中1至30之间选择", data = new { BeginQty = 1, EndQty = 30 } });
             }
             else if (!Enum.IsDefined(typeof(PaymentMethodType), model.PaymentMethod) || model.PaymentMethod == PaymentMethodType.Gift)
             {
-                errorMsg = "无效的支付方式！";
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "无效的支付方式"));
             }
             else
             {
@@ -84,19 +82,19 @@ namespace Unitoys.WebApi.Controllers
                     switch (result.Key)
                     {
                         case 1:
-                            errorMsg = "订单创建失败！";
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
                             break;
                         case 2:
-                            errorMsg = "套餐不可用，请选择其他套餐！";
+                            return Ok(new StatusCodeRes(StatusCodeType.套餐不可用_请选择其他套餐, "套餐不可用，请选择其他套餐"));
                             break;
                         default:
-                            errorMsg = "订单创建失败！";
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
                             break;
                     }
 
                 }
             }
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
         }
 
         /// <summary>
@@ -109,11 +107,9 @@ namespace Unitoys.WebApi.Controllers
         {
             var currentUser = WebUtil.GetApiUserSession();
 
-            string errorMsg = "";
-
             if (model.OrderID == Guid.Empty)
             {
-                return Ok(new { status = 0, msg = "订单ID格式错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误"));
             }
             else
             {
@@ -125,26 +121,22 @@ namespace Unitoys.WebApi.Controllers
                 }
                 else if (resultNum == -2)
                 {
-                    errorMsg = "订单已经被取消！";
+                    return Ok(new StatusCodeRes(StatusCodeType.订单已经被取消));
                 }
                 else if (resultNum == -3)
                 {
-                    errorMsg = "此订单不属于该用户！";
+                    return Ok(new StatusCodeRes(StatusCodeType.参数错误, "此订单不属于该用户"));
                 }
                 else if (resultNum == -4)
                 {
-                    errorMsg = "订单已被使用！";
+                    return Ok(new StatusCodeRes(StatusCodeType.订单已被使用));
                 }
                 else if (resultNum == -5)
                 {
-                    errorMsg = "不允许取消！";
-                }
-                else
-                {
-                    errorMsg = "取消失败！";
+                    return Ok(new StatusCodeRes(StatusCodeType.订单不允许取消));
                 }
                 //0.取消订单
-                return Ok(new { status = 0, msg = errorMsg });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "取消失败"));
             }
         }
 
@@ -240,11 +232,12 @@ namespace Unitoys.WebApi.Controllers
 
             if (orderResult == null)
             {
-                return Ok(new { status = 0, msg = "信息异常！" });
+                //return Ok(new { status = 0, msg = "信息异常！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "信息异常"));
             }
             else if (orderResult.UserId != currentUser.ID)
             {
-                return Ok(new { status = 0, msg = "订单不属于此用户！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单不属于此用户"));
             }
 
             var data = new
@@ -278,8 +271,7 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
-        /// 激活套餐
-        /// 获取订单卡数据
+        /// 套餐激活
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
@@ -288,7 +280,7 @@ namespace Unitoys.WebApi.Controllers
         {
             if (model.BeginTime == 0)
             {
-                return Ok(new { status = 0, msg = "激活失败！时间格式错误！" });
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "激活失败，时间格式错误"));
             }
             if (model.OrderID != Guid.Empty)
             {
@@ -301,11 +293,11 @@ namespace Unitoys.WebApi.Controllers
 
                     if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
                     {
-                        return Ok(new { status = 0, msg = "激活失败！超过最晚激活日期！" });
+                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期));
                     }
                     if (order.PackageCategory != CategoryType.Flow)
                     {
-                        return Ok(new { status = 0, msg = "激活失败！激活类型异常！" });
+                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常));
                     }
                     if (order.OrderStatus == 0)
                     {
@@ -322,7 +314,7 @@ namespace Unitoys.WebApi.Controllers
                             if (result.status != "1")
                             {
                                 LoggerHelper.Error("订单ID:" + order.ID + ",购买产品失败,返回msg：" + result.msg);
-                                return Ok(new { status = 0, msg = "激活套餐失败,可能套餐已过期！" });
+                                return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期));
                             }
 
                             //3.保存订单Id
@@ -334,7 +326,7 @@ namespace Unitoys.WebApi.Controllers
                             if (!await _orderService.UpdateAsync(order))
                             {
                                 LoggerHelper.Error("套餐激活失败,更新数据库失败");
-                                return Ok(new { status = 0, msg = "更新订单失败！" });
+                                return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
                             }
                         }
                         catch (Exception ex)
@@ -348,9 +340,10 @@ namespace Unitoys.WebApi.Controllers
                     return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                 }
 
-                return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "激活失败，可能订单不存在或未支付"));
             }
-            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+            //return Ok(new { status = 0, msg = "订单ID格式错误！" });
+            return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误"));
         }
 
         /// <summary>
@@ -384,11 +377,11 @@ namespace Unitoys.WebApi.Controllers
         {
             if (!ValidateHelper.IsMobile(model.Tel))
             {
-                return Ok(new { status = 0, msg = "手机号码格式不正确！" });
+                return Ok(new StatusCodeRes(StatusCodeType.手机号码格式不正确));
             }
             else if (model.Tel.Substring(0, 3) != "176" && model.Tel.Substring(0, 3) != "185")
             {
-                return Ok(new { status = 0, msg = "当前号段不支持，如确认号段无误，请联系客服人员！" });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "当前号段不支持，如确认号段无误，请联系客服人员"));
             }
             if (model.OrderID != Guid.Empty)
             {
@@ -401,11 +394,11 @@ namespace Unitoys.WebApi.Controllers
 
                     if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
                     {
-                        return Ok(new { status = 0, msg = "激活失败！超过最晚激活日期！" });
+                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期));
                     }
                     if (order.PackageCategory != CategoryType.KingCard)
                     {
-                        return Ok(new { status = 0, msg = "激活失败！激活类型异常！" });
+                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常));
                     }
                     if (order.OrderStatus == 0)
                     {
@@ -426,7 +419,7 @@ namespace Unitoys.WebApi.Controllers
                             if (!await _orderService.UpdateAsync(order))
                             {
                                 LoggerHelper.Error("大王卡激活失败,更新数据库失败");
-                                return Ok(new { status = 0, msg = "更新订单失败！" });
+                                return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
                             }
                             else
                             {
@@ -450,9 +443,9 @@ namespace Unitoys.WebApi.Controllers
                     return Ok(new { status = 1, msg = "激活成功！", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                 }
 
-                return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "激活失败，可能订单不存在或未支付"));
             }
-            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+            return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误"));
         }
 
         private Byte[] hexToBytes(String s)
@@ -477,7 +470,7 @@ namespace Unitoys.WebApi.Controllers
         {
             if (string.IsNullOrEmpty(model.EmptyCardSerialNumber))
             {
-                return Ok(new { status = 0, msg = "序列号不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "序列号不能为空！"));
             }
             if (model.OrderID != Guid.Empty)
             {
@@ -497,7 +490,7 @@ namespace Unitoys.WebApi.Controllers
                         if (result.status != "1")
                         {
                             LoggerHelper.Error("订单ID:" + order.ID + ",查询订单套餐信息失败：" + result.msg);
-                            return Ok(new { status = 0, msg = "查询订单套餐信息失败！" });
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "查询订单套餐信息失败！"));
                         }
 
                         //3.生成卡数据
@@ -516,9 +509,9 @@ namespace Unitoys.WebApi.Controllers
                     }
                 }
 
-                return Ok(new { status = 0, msg = "无有效订单卡数据！" });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "无有效订单卡数据！"));
             }
-            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+            return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误！"));
         }
 
         private static string StringToHexString(string s, Encoding encode)
@@ -556,16 +549,16 @@ namespace Unitoys.WebApi.Controllers
                     order.OrderStatus = OrderStatusType.Used;
                     if (!await _orderService.UpdateAsync(order))
                     {
-                        return Ok(new { status = 0, msg = "更新订单失败！" });
+                        return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
                     }
 
                     //4.返回订单卡数据
                     return Ok(new { status = 1, data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
                 }
 
-                return Ok(new { status = 0, msg = "激活失败！可能订单不存在或未支付！" });
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "激活失败，可能订单不存在或未支付"));
             }
-            return Ok(new { status = 0, msg = "订单ID格式错误！" });
+            return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误"));
         }
 
         /// <summary>
@@ -580,39 +573,36 @@ namespace Unitoys.WebApi.Controllers
 
             var currentUser = WebUtil.GetApiUserSession();
 
-            if (currentUser == null)
+            int resultNum = await _orderService.PayOrderByUserAmount(currentUser.ID, model.OrderID);
+
+            if (resultNum == 0)
             {
-                errorMsg = "当前用户不能为空！";
+                return Ok(new { status = 1, msg = "支付成功！" });
+            }
+            else if (resultNum == -2)
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.此订单已经支付成功_不能再支付));
+            }
+            else if (resultNum == -3)
+            {
+                //errorMsg = "此订单不属于该用户！";
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "此订单不属于该用户"));
+            }
+            else if (resultNum == -4)
+            {
+                errorMsg = "用户余额不足！";
+                return Ok(new StatusCodeRes(StatusCodeType.用户余额不足));
+            }
+            else if (resultNum == -5)
+            {
+                errorMsg = "支付方式异常！";
+                return Ok(new StatusCodeRes(StatusCodeType.支付方式异常));
             }
             else
             {
-                int resultNum = await _orderService.PayOrderByUserAmount(currentUser.ID, model.OrderID);
-
-                if (resultNum == 0)
-                {
-                    return Ok(new { status = 1, msg = "支付成功！" });
-                }
-                else if (resultNum == -2)
-                {
-                    errorMsg = "此订单已经支付成功，不能再支付！";
-                }
-                else if (resultNum == -3)
-                {
-                    errorMsg = "此订单不属于该用户！";
-                }
-                else if (resultNum == -4)
-                {
-                    errorMsg = "用户余额不足！";
-                }
-                else if (resultNum == -5)
-                {
-                    errorMsg = "支付方式异常！";
-                }
-                else
-                {
-                    errorMsg = "支付失败！";
-                }
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "支付失败"));
             }
+
             return Ok(new { status = 0, msg = errorMsg });
         }
 
@@ -628,13 +618,9 @@ namespace Unitoys.WebApi.Controllers
 
             var currentUser = WebUtil.GetApiUserSession();
 
-            if (currentUser == null)
+            if (!model.PackageCategory.HasValue)
             {
-                errorMsg = "当前用户不能为空！";
-            }
-            else if (!model.PackageCategory.HasValue)
-            {
-                errorMsg = "套餐类型不能为空！";
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "套餐类型不能为空"));
             }
             else
             {
@@ -645,7 +631,6 @@ namespace Unitoys.WebApi.Controllers
                 bool result = await _orderService.IsStatusUsed(currentUser.ID, model.PackageCategory.Value);
                 return Ok(new { status = 1, data = new { Used = result ? "1" : "0" } });
             }
-            return Ok(new { status = 0, msg = errorMsg });
         }
 
         /// <summary>

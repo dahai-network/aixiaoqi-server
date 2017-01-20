@@ -24,6 +24,7 @@ namespace Unitoys.Model
         /// 绑定日期
         /// </summary>
         public int CreateDate { get; set; }
+        public int UpdateDate { get; set; }
         /// <summary>
         /// 固件版本号
         /// </summary>

@@ -32,11 +32,13 @@ namespace Unitoys.WebApi.Controllers
 
             if (!model.Status.HasValue)
             {
-                return Ok(new { status = 0, msg = "状态不能为空！" });
+                //return Ok(new { status = 0, msg = "状态不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "状态不能为空"));
             }
             if (string.IsNullOrEmpty(model.Name))
             {
-                return Ok(new { status = 0, msg = "配置名不能为空！" });
+                //return Ok(new { status = 0, msg = "配置名不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "配置名不能为空"));
             }
             UT_UsersConfig UsersConfig = await _usersConfigService.GetEntityAsync(x => x.UserId == currentUser.ID && x.Name == model.Name);
 
@@ -44,7 +46,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 if (UsersConfig.UserId != currentUser.ID)
                 {
-                    return Ok(new { status = 0, msg = "参数错误！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.参数错误));
                 }
 
                 UsersConfig.Status = model.Status.Value;
@@ -52,7 +54,7 @@ namespace Unitoys.WebApi.Controllers
 
                 if (!await _usersConfigService.UpdateAsync(UsersConfig))
                 {
-                    return Ok(new { status = 0, msg = "失败！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.失败));
                 }
             }
             else
@@ -68,15 +70,15 @@ namespace Unitoys.WebApi.Controllers
 
                 if (!await _usersConfigService.InsertAsync(UsersConfig))
                 {
-                    return Ok(new { status = 0, msg = "失败！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.失败));
                 }
             }
 
-            return Ok(new { status = 1, msg = "成功！" });
+            return Ok(new StatusCodeRes(StatusCodeType.成功));
         }
 
         /// <summary>
-        /// 查询配置列表
+        /// 获取用户配置
         /// </summary>
         /// <returns></returns>
         [HttpGet]

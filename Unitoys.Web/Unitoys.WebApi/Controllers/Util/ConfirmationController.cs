@@ -56,9 +56,9 @@ namespace Unitoys.WebApi.Controllers.Util
                 (dtNow - dicSendSMSTime[model.ToNum]).TotalSeconds <= 60)
             {
                 int tLeft = Convert.ToInt32(60 - (dtNow - dicSendSMSTime[model.ToNum]).TotalSeconds);
-                //errorMsg = string.Format("一分钟内不能再次发送,{0}秒以后可以再次发送", tLeft);
+                string msg = string.Format("一分钟内不能再次发送,{0}秒以后可以再次发送", tLeft);
                 //errorMsg = new StatusCodeRes(StatusCodeType.一分钟内不能再次发送_x秒以后可以再次发送);
-                return Ok(new { status = StatusCodeType.一分钟内不能再次发送_x秒以后可以再次发送, data = new { RemainingSeconds = tLeft + "" } });
+                return Ok(new { status = StatusCodeType.一分钟内不能再次发送_RemainingSeconds秒以后可以再次发送, msg = msg, data = new { RemainingSeconds = tLeft + "" } });
             }
             else
             {
@@ -94,7 +94,6 @@ namespace Unitoys.WebApi.Controllers.Util
                     {
                         LoggerHelper.Error("发送短信接口错误（短信已发送，保存短信记录到数据库时出错！）");
                         errorMsg = new StatusCodeRes(StatusCodeType.短信服务器异常_请联系客服人员);
-
                     }
 
                 }

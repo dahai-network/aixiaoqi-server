@@ -28,25 +28,19 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Add([FromBody]AddPaymentBindingModel model)
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
 
-            if (currentUser == null)
+            if (model.Amount <= 0)
             {
-                errorMsg = "当前用户不能为空！";
-            }
-            else if (model.Amount <= 0)
-            {
-                errorMsg = "充值金额需要大于0元！";
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "充值金额需要大于0元"));
             }
             else if (model.PaymentMethod != PaymentMethodType.AliPay && model.PaymentMethod != PaymentMethodType.WxPay)
             {
-                errorMsg = "无效的支付方式！";
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "无效的支付方式"));
             }
             else
             {
-                var result = await _paymentService.Add(currentUser.ID,model.Amount,model.PaymentMethod);
+                var result = await _paymentService.Add(currentUser.ID, model.Amount, model.PaymentMethod);
 
                 if (result != null)
                 {
@@ -67,13 +61,9 @@ namespace Unitoys.WebApi.Controllers
                 }
                 else
                 {
-                    errorMsg = "充值订单添加失败！";
+                    return Ok(new StatusCodeRes(StatusCodeType.失败, "充值订单添加失败"));
                 }
             }
-
-            return Ok(new { status = 0, msg = errorMsg });
         }
-
-
     }
 }

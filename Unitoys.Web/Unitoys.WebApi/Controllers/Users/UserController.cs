@@ -106,21 +106,19 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> UpdateUserInfoAndUserShape([FromBody]UserInfoAndUserShape queryModel)
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
 
             if (currentUser == null)
             {
-                errorMsg = "用户不能为空！";
+                return Ok(new StatusCodeRes(StatusCodeType.用户不能为空));
             }
             else if (!string.IsNullOrEmpty(queryModel.nickName) && queryModel.nickName.Length > 20)
             {
-                errorMsg = "昵称不能长于10个字符！";
+                return Ok(new StatusCodeRes(StatusCodeType.昵称不能长于10个字符));
             }
             else if (queryModel.sex != null && queryModel.sex != 0 && queryModel.sex != 1)
             {
-                errorMsg = "性别错误！";
+                return Ok(new StatusCodeRes(StatusCodeType.性别错误));
             }
             else
             {
@@ -131,11 +129,8 @@ namespace Unitoys.WebApi.Controllers
                 {
                     return Ok(new { status = 1, msg = "更新成功" });
                 }
-
-                errorMsg = "暂时无法更新，操作失败";
-
+                return Ok(new StatusCodeRes(StatusCodeType.失败, "暂时无法更新_操作失败"));
             }
-            return Ok(new { status = 0, msg = errorMsg });
         }
 
         [HttpPost]
@@ -202,21 +197,22 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
+
+        /// <summary>
+        /// 更新用户头像
+        /// </summary>
+        /// <returns></returns>
         public async Task<IHttpActionResult> ModifyUserHead()
         {
-            string errorMsg = "";
-
             var httpRequest = HttpContext.Current.Request;
 
             //LoggerHelper.Info(httpRequest.Files.Count + "");
             //LoggerHelper.Info(Request.Content.ReadAsStringAsync().Result);
 
-            //LoggerHelper.Info();
-
             //1. 校验参数。
             if (httpRequest.Files.Count > 1)
             {
-                errorMsg = "只能选择一张图片！";
+                return Ok(new StatusCodeRes(StatusCodeType.只能选择一张图片));
             }
             if (httpRequest.Files.Count > 0)
             {
@@ -244,14 +240,12 @@ namespace Unitoys.WebApi.Controllers
                             return Ok(new { status = 1, msg = "更新成功", data = new { UserHead = user.UserHead.GetUserHeadCompleteUrl() + "?r=" + new Random().Next(100) } });
                         }
 
-                        errorMsg = "暂时无法更新，操作失败";
+                        return Ok(new StatusCodeRes(StatusCodeType.失败, "暂时无法更新，操作失败"));
                     }
                 }
-                if (string.IsNullOrEmpty(errorMsg))
-                    errorMsg = "暂时无法保存头像";
-
+                return Ok(new StatusCodeRes(StatusCodeType.暂时无法保存头像));
             }
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(new StatusCodeRes(StatusCodeType.失败));
         }
         /// <summary>
         /// 修改密码
@@ -465,13 +459,11 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new { status = 1, data = new { maximumPhoneCallTime = maximumPhoneCallTime.ToString() } });
             }
 
-            return Ok(new { status = 0, msg = "找不到该用户！" });
-
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
         }
 
         /// <summary>
-        /// 获取是否在线
+        /// 获取指定用户手机号是否在线
         /// </summary>
         /// <param name="authQueryint"></param>
         /// <param name="To">被叫号码</param>

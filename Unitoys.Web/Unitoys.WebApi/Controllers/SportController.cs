@@ -36,13 +36,12 @@ namespace Unitoys.WebApi.Controllers
             LoggerHelper.Info("BodyInputStream:" + new System.IO.StreamReader(System.Web.HttpContext.Current.Request.InputStream).ReadToEnd());
             LoggerHelper.Info("Content:" + Request.Content.ReadAsStringAsync().Result);
 
-            string errorMsg = "";
 
             var currentUser = WebUtil.GetApiUserSession();
 
             if (model == null)
             {
-                errorMsg = "没有任何数据";
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "没有任何数据"));
             }
             else
             {
@@ -51,8 +50,7 @@ namespace Unitoys.WebApi.Controllers
                     return Ok(new { status = 1, msg = "添加成功！" });
                 }
             }
-
-            return Ok(new { status = 0, msg = "添加失败！" + errorMsg });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "添加失败！"));
         }
 
         /// <summary>
@@ -71,7 +69,8 @@ namespace Unitoys.WebApi.Controllers
 
             var result = await _sportTimePeriodService.GetEntitiesAsync(x => x.UserId == currentUser.ID
                 && x.StartDateTime >= BeginDateInt
-                && x.EndDateTime < EndDateInt);
+                && x.EndDateTime < EndDateInt
+                && x.StepNum > 0);
 
             var sport = await _sportService.GetEntityAsync(x => x.Date == BeginDateInt && x.UserId == currentUser.ID && x.StepNum > 0);
 
@@ -208,22 +207,13 @@ namespace Unitoys.WebApi.Controllers
         [NonAction]
         public async Task<IHttpActionResult> Add([FromBody]AddSportAndTimePeriodBindingModel model)
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
 
-            if (currentUser == null)
+            if (await _sportService.AddSportAndTimePeriodAsync(currentUser.ID, model.StepNum, model.StepTime))
             {
-                errorMsg = "用户不能为空！";
+                return Ok(new { status = 1, msg = "添加成功！" });
             }
-            else
-            {
-                if (await _sportService.AddSportAndTimePeriodAsync(currentUser.ID, model.StepNum, model.StepTime))
-                {
-                    return Ok(new { status = 1, msg = "添加成功！" });
-                }
-            }
-            return Ok(new { status = 0, msg = "添加失败！" + errorMsg });
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "添加失败"));
         }
 
     }

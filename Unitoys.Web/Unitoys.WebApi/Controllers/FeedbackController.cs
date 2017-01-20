@@ -32,12 +32,13 @@ namespace Unitoys.WebApi.Controllers
 
             if (string.IsNullOrEmpty(queryModel.Info))
             {
-                return Ok(new { status = 0, msg = "反馈信息不能为空！" });
+                //return Ok(new { status = 0, msg = "反馈信息不能为空！" });
+                return Ok(new StatusCodeRes(StatusCodeType.反馈信息不能为空));
             }
 
             if (queryModel.Info.Length < 10)
             {
-                return Ok(new { status = 0, msg = "反馈信息不能少于10个字！" });
+                return Ok(new StatusCodeRes(StatusCodeType.反馈信息不能少于10个字));
             }
 
             UT_Feedback feedback = new UT_Feedback()
@@ -54,7 +55,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "意见反馈信息添加成功！" });
             }
-            return Ok(new { status = 0, msg = "意见反馈信息添加失败！" });
+            return Ok(new StatusCodeRes(StatusCodeType.失败));
         }
 
     }

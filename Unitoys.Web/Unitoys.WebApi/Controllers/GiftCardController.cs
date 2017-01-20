@@ -33,25 +33,26 @@ namespace Unitoys.WebApi.Controllers
             UT_GiftCard outModel = new UT_GiftCard();
             if (string.IsNullOrEmpty(model.CardPwd) || model.CardPwd.Length < 16)
             {
-                return Ok(new { status = 0, msg = "请输入16位完整卡密码！" });
+                return Ok(new StatusCodeRes(StatusCodeType.请输入16位礼包卡密码));
             }
             var result = await _giftCardService.Bind(currentUser.ID, model.CardPwd, outModel);
             switch (result)
             {
                 case 0:
                     return Ok(new { status = 0, msg = "绑定失败！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.失败, "绑定失败"));
                 case 1:
                     return Ok(new { status = 1, msg = "绑定成功！", data = new { CardNum = outModel.CardNum } });
                 case 2:
-                    return Ok(new { status = 0, msg = "绑定卡已被使用或失效！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.礼包卡已被使用或失效));
                 case 3:
-                    return Ok(new { status = 0, msg = "绑定卡已超过最晚可用时间！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.礼包卡已超过最晚可用时间));
                 case 4:
-                    return Ok(new { status = 0, msg = "套餐不存在！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.内部错误, "套餐不存在"));
                 case 5:
-                    return Ok(new { status = 0, msg = "已绑定礼包卡！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.已绑定礼包卡));
                 default:
-                    return Ok(new { status = 0, msg = "绑定异常，请重试！" });
+                    return Ok(new StatusCodeRes(StatusCodeType.绑定异常_请重试));
             }
         }
     }
