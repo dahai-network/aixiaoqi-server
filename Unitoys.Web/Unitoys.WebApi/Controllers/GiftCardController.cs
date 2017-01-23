@@ -39,7 +39,6 @@ namespace Unitoys.WebApi.Controllers
             switch (result)
             {
                 case 0:
-                    return Ok(new { status = 0, msg = "绑定失败！" });
                     return Ok(new StatusCodeRes(StatusCodeType.失败, "绑定失败"));
                 case 1:
                     return Ok(new { status = 1, msg = "绑定成功！", data = new { CardNum = outModel.CardNum } });

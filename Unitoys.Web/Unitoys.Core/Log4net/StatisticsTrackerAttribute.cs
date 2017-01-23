@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Unitoys.Model;
 
 namespace Unitoys.Core
 {
@@ -16,6 +17,7 @@ namespace Unitoys.Core
     public class StatisticsTrackerAttribute : ActionFilterAttribute, IExceptionFilter
     {
         private readonly string Key = "_thisOnActionMonitorLog_";
+        private readonly string KeyOperation = "_thisOnActionMonitorLog_Operation";
 
         #region Action时间监控
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -25,7 +27,21 @@ namespace Unitoys.Core
             MonLog.ControllerName = filterContext.RouteData.Values["controller"] as string;
             MonLog.ActionName = filterContext.RouteData.Values["action"] as string;
 
+            Unitoys.Model.UT_OperationRecord OperationRecord = null;
+            if (WebUtil.GetManageUserSession() != null && MonLog.ActionName == "Add" || MonLog.ActionName == "Update" || MonLog.ActionName == "Delete")
+                OperationRecord = new Unitoys.Model.UT_OperationRecord()
+                {
+                    Url = MonLog.ControllerName + "/" + MonLog.ActionName,
+                    Parameter = Newtonsoft.Json.JsonConvert.SerializeObject(filterContext.ActionParameters, new Newtonsoft.Json.JsonSerializerSettings { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore }),
+                    Data = "",
+                    //Response = "",
+                    ManageUserId = WebUtil.GetManageUserSession().ID,
+                    CreateDate = CommonHelper.GetDateTimeInt(),
+                    Remark = MonLog.ActionName,
+                };
+
             filterContext.Controller.ViewData[Key] = MonLog;
+            filterContext.Controller.ViewData[KeyOperation] = OperationRecord;
         }
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
@@ -36,6 +52,12 @@ namespace Unitoys.Core
             MonLog.QueryCollections = filterContext.HttpContext.Request.QueryString;//Url 参数
             LoggerHelper.Monitor(MonLog.GetLoginfo());
 
+            UT_OperationRecord OperationRecord = filterContext.Controller.ViewData[KeyOperation] as UT_OperationRecord;
+            if (OperationRecord != null)
+            {
+                OperationRecord.Response = Newtonsoft.Json.JsonConvert.SerializeObject(filterContext.Result, new Newtonsoft.Json.JsonSerializerSettings { NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore });
+                LoggerHelper.OperationRecord(OperationRecord);
+            }
         }
         #endregion
 

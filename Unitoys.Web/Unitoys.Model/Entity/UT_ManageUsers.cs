@@ -44,5 +44,6 @@ namespace Unitoys.Model
         public virtual ICollection<UT_ManageUsersRole> UT_ManageUsersRole { get; set; }
         public virtual ICollection<UT_PaymentCard> UT_PaymentCard { get; set; }
         public virtual ICollection<UT_GiftCard> UT_GiftCard { get; set; }
+        public virtual ICollection<UT_OperationRecord> UT_OperationRecord { get; set; }
     }
 }

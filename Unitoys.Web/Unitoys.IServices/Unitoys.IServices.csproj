@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="IEjoinDevSlotService.cs" />
     <Compile Include="IEjoinDevService.cs" />
+    <Compile Include="IOperationRecordService.cs" />
     <Compile Include="IOrderByZCConfirmationService.cs" />
     <Compile Include="IOrderByZCService.cs" />
     <Compile Include="IGiftCardService.cs" />

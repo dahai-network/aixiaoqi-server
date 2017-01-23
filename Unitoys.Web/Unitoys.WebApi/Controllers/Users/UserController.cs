@@ -243,7 +243,7 @@ namespace Unitoys.WebApi.Controllers
                         return Ok(new StatusCodeRes(StatusCodeType.失败, "暂时无法更新，操作失败"));
                     }
                 }
-                return Ok(new StatusCodeRes(StatusCodeType.暂时无法保存头像));
+                return Ok(new StatusCodeRes(StatusCodeType.暂时无法保存头像, "暂时无法保存头像 uploadImageUrl：" + uploadImageUrl));
             }
             return Ok(new StatusCodeRes(StatusCodeType.失败));
         }

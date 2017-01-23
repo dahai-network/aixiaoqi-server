@@ -254,6 +254,15 @@ namespace Unitoys.Core.Security
 
         #endregion
 
+        #region OperationRecord
+
+        public const string Can_Add_OperationRecord = "Can_Add_OperationRecord";
+        public const string Can_View_OperationRecord = "Can_View_OperationRecord";
+        public const string Can_Modify_OperationRecord = "Can_Modify_OperationRecord";
+        public const string Can_Delete_OperationRecord = "Can_Delete_OperationRecord";
+
+        #endregion
+
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -392,10 +401,15 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_EjoinDevSlot = new Tuple<string, string, int>("Can_Modify_EjoinDevSlot", "修改一正设备端口", 26);
                 Tuple<string, string, int> Can_Delete_EjoinDevSlot = new Tuple<string, string, int>("Can_Delete_EjoinDevSlot", "删除一正设备端口", 26);
 
-                Tuple<string, string, int> Can_Add_GiftCard = new Tuple<string, string, int>("Can_Add_GiftCard", "添加一正设备端口", 27);
-                Tuple<string, string, int> Can_View_GiftCard = new Tuple<string, string, int>("Can_View_GiftCard", "查看一正设备端口", 27);
-                Tuple<string, string, int> Can_Modify_GiftCard = new Tuple<string, string, int>("Can_Modify_GiftCard", "修改一正设备端口", 27);
-                Tuple<string, string, int> Can_Delete_GiftCard = new Tuple<string, string, int>("Can_Delete_GiftCard", "删除一正设备端口", 27);
+                Tuple<string, string, int> Can_Add_GiftCard = new Tuple<string, string, int>("Can_Add_GiftCard", "添加礼包卡", 27);
+                Tuple<string, string, int> Can_View_GiftCard = new Tuple<string, string, int>("Can_View_GiftCard", "查看礼包卡", 27);
+                Tuple<string, string, int> Can_Modify_GiftCard = new Tuple<string, string, int>("Can_Modify_GiftCard", "修改礼包卡", 27);
+                Tuple<string, string, int> Can_Delete_GiftCard = new Tuple<string, string, int>("Can_Delete_GiftCard", "删除礼包卡", 27);
+
+                Tuple<string, string, int> Can_Add_OperationRecord = new Tuple<string, string, int>("Can_Add_OperationRecord", "添加操作记录", 28);
+                Tuple<string, string, int> Can_View_OperationRecord = new Tuple<string, string, int>("Can_View_OperationRecord", "查看操作记录", 28);
+                Tuple<string, string, int> Can_Modify_OperationRecord = new Tuple<string, string, int>("Can_Modify_OperationRecord", "修改操作记录", 28);
+                Tuple<string, string, int> Can_Delete_OperationRecord = new Tuple<string, string, int>("Can_Delete_OperationRecord", "删除操作记录", 28);
 
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
@@ -531,6 +545,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_GiftCard);
                 returnList.Add(Can_Modify_GiftCard);
                 returnList.Add(Can_Delete_GiftCard);
+
+                returnList.Add(Can_Add_OperationRecord);
+                returnList.Add(Can_View_OperationRecord);
+                returnList.Add(Can_Modify_OperationRecord);
+                returnList.Add(Can_Delete_OperationRecord);
                 #endregion
 
                 return returnList;

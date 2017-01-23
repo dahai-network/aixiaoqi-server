@@ -24,6 +24,9 @@ namespace Unitoys.Model
             //礼品卡1对多
             this.HasMany(t => t.UT_GiftCard).WithRequired(t => t.UT_ManageUsers).HasForeignKey(t => t.ManageUserId);
 
+            //操作记录1对多
+            this.HasMany(t => t.UT_OperationRecord).WithRequired(t => t.UT_ManageUsers).HasForeignKey(t => t.ManageUserId);
+
             Property(t => t.LoginName).HasMaxLength(20).IsRequired();
 
             Property(t => t.PassWord).HasMaxLength(32).IsRequired();

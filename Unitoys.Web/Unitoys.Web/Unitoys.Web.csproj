@@ -141,6 +141,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manage\Controllers\ConfigController.cs" />
     <Compile Include="Areas\Manage\Controllers\EjoinDevSlotController.cs" />
+    <Compile Include="Areas\Manage\Controllers\OperationRecordController.cs" />
     <Compile Include="Areas\Manage\Controllers\OrderByZCController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1055,6 +1056,7 @@
     <Content Include="Areas\Manage\Views\ZCSelectionNumber\Index.cshtml" />
     <Content Include="Areas\Manage\Views\EjoinDev\Index.cshtml" />
     <Content Include="Areas\Manage\Views\GiftCard\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\OperationRecord\Index.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>
@@ -1129,7 +1131,10 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\log4net.config" />
+    <Content Include="App_Data\log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Manage\Views\Country\Index.cshtml" />

@@ -76,7 +76,7 @@ namespace Unitoys.Ioc
             Kernel.Bind<IEjoinDevService>().To<EjoinDevService>();
             Kernel.Bind<IEjoinDevSlotService>().To<EjoinDevSlotService>();
             Kernel.Bind<IGiftCardService>().To<GiftCardService>();
-            
+            Kernel.Bind<IOperationRecordService>().To<OperationRecordService>();
         }
 
         private static void AddFilterBindings()

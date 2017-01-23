@@ -154,6 +154,7 @@
     <Compile Include="JiGuang\DeviceApi.cs" />
     <Compile Include="JiGuang\JPushApi.cs" />
     <Compile Include="Log4net\LoggerHelper.cs" />
+    <Compile Include="Log4net\MyLayout.cs" />
     <Compile Include="Log4net\StatisticsTrackerAttribute.cs" />
     <Compile Include="Log4net\WebApiStatisticsTrackerAttribute.cs" />
     <Compile Include="MvcAuth\RequireRolesOrPermissionsAttribute.cs" />

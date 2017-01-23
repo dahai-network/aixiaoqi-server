@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "操作记录管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<script src="~/Content/js/uploadify/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/js/uploadify/uploadify.css">
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>路径:</span>
+                <input id="url" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>管理名称:</span>
+                <input id="managerLoginName" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="操作记录列表管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/OperationRecord/GetList',method:'get',toolbar:toolbar,pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'Url',width:50">路径</th>
+                    <th data-options="field:'Parameter',width:50">参数</th>
+                    <th data-options="field:'Data',width:150">数据</th>
+                    <th data-options="field:'Response',width:100">返回</th>
+                    <th data-options="field:'CreateDate',width:50,formatter:formatDateTimeInt">创建时间</th>
+                    <th data-options="field:'CreateManageUsersName',width:50">创建管理员</th>
+                    <th data-options="field:'Remark',width:100">备注</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div id="dlg-edit" class="easyui-dialog" title="添加操作记录" style="width:300px;height:180px;padding:20px"
+     data-options="
+                iconCls: 'icon-save',
+                closed:true,
+                buttons: [{
+                    text:'生成',
+                    iconCls:'icon-ok',
+                    handler:saveData
+                }]
+            ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right">
+                    数量：
+                </td>
+                <td>
+                    <input type="text" name="Qty" id="Qty" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            @*<tr>
+                    <td style="text-align:right">
+                        金额：
+                    </td>
+                    <td>
+                        <input type="text" name="Price" id="Price" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 /> $
+                    </td>
+                </tr>*@
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    var toolbar = [{
+        text: '设置备注',
+        iconCls: 'icon-add',
+        handler: function () {
+            dlg_Edit_form.form('clear');
+            dlg_Edit.dialog('open');
+            dlg_Edit.dialog('setTitle', '添加操作记录');
+            dlg_Edit_form.url = '/Manage/OperationRecord/Add/';
+        }
+    }];
+
+    $(function () {
+        grid = $("#grid").datagrid();
+        dlg_Edit = $("#dlg-edit").dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+    })
+
+    //保存数据
+    function saveData() {
+        dlg_Edit_form.form('submit', {
+            url: dlg_Edit_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: successCallback
+        });
+    }
+
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            url: $("#url").val() == null ? "" : $("#url").val(),
+            managerLoginName: $("#managerLoginName").val() == null ? "" : $("#managerLoginName").val(),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
+        });
+    }
+</script>

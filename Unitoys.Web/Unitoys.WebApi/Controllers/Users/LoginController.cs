@@ -140,7 +140,7 @@ namespace Unitoys.WebApi.Controllers
                     errorMsg = new StatusCodeRes(StatusCodeType.密码不正确);
                 }
             }
-            return Ok(new { status = 0, msg = errorMsg });
+            return Ok(errorMsg);
 
         }
         /// <summary>

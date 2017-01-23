@@ -12,6 +12,7 @@ namespace Unitoys.Core
         static readonly log4net.ILog logerror = log4net.LogManager.GetLogger("logerror");
         static readonly log4net.ILog logmonitor = log4net.LogManager.GetLogger("logmonitor");
         static readonly log4net.ILog logwebapimonitor = log4net.LogManager.GetLogger("webapilogmonitor");
+        static readonly log4net.ILog logoperation = log4net.LogManager.GetLogger("logoperation");
 
         public static void Error(string ErrorMsg, Exception ex = null)
         {
@@ -38,6 +39,10 @@ namespace Unitoys.Core
         public static void WebApiMonitor(string Msg)
         {
             logwebapimonitor.Info(Msg);
+        }
+        public static void OperationRecord(Unitoys.Model.UT_OperationRecord Msg)
+        {
+            logoperation.Info(Msg);
         }
     }
 }

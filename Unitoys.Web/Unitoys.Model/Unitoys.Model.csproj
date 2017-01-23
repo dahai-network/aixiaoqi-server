@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Configuration\EjoinDevConfiguration.cs" />
     <Compile Include="Configuration\EjoinDevSlotConfiguration.cs.cs" />
+    <Compile Include="Configuration\OperationRecordConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCConfirmationConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCConfiguration.cs" />
     <Compile Include="Configuration\OrderByZCSelectionNumberConfiguration.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
     <Compile Include="Entity\UT_EjoinDev.cs" />
     <Compile Include="Entity\UT_EjoinDevSlot.cs" />
+    <Compile Include="Entity\UT_OperationRecord.cs" />
     <Compile Include="Entity\UT_OrderByZC.cs" />
     <Compile Include="Entity\UT_OrderByZCConfirmation.cs" />
     <Compile Include="Entity\UT_GiftCard.cs" />
