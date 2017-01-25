@@ -1006,6 +1006,7 @@
     <Content Include="Content\js\uploadify\uploadify.swf" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Manage\Views\Role\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\OperationRecord\PartialLogSearch.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1057,6 +1058,7 @@
     <Content Include="Areas\Manage\Views\EjoinDev\Index.cshtml" />
     <Content Include="Areas\Manage\Views\GiftCard\Index.cshtml" />
     <Content Include="Areas\Manage\Views\OperationRecord\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\OperationRecord\LogIndex.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>

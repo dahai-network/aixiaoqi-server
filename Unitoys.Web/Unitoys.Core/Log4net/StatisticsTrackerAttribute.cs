@@ -28,7 +28,8 @@ namespace Unitoys.Core
             MonLog.ActionName = filterContext.RouteData.Values["action"] as string;
 
             Unitoys.Model.UT_OperationRecord OperationRecord = null;
-            if (WebUtil.GetManageUserSession() != null && MonLog.ActionName == "Add" || MonLog.ActionName == "Update" || MonLog.ActionName == "Delete")
+
+            if (WebUtil.GetManageUserSession() != null && filterContext.ActionDescriptor.GetCustomAttributes(typeof(RequireRolesOrPermissionsAttribute), false).Length > 0)
                 OperationRecord = new Unitoys.Model.UT_OperationRecord()
                 {
                     Url = MonLog.ControllerName + "/" + MonLog.ActionName,

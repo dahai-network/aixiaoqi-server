@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "系统配置列表";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="系统配置列表" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/Config/GetList',method:'get',pagination:true,onDblClickRow:onDbOpenDialog">
+            <thead>
+                <tr>
+                    <th data-options="field:'ConfigDescr',width:150">配置描述</th>
+                    <th data-options="field:'ConfigName',width:150">配置名称</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="dlg-edit_SiteConfig" class="easyui-dialog" title="更新固件配置" style="width:500px;height:265px;padding:20px"
+     data-options="
+                iconCls: 'icon-save',
+                closed:true,
+                buttons: [{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    handler:saveData
+                }]
+            ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            @foreach (var item in ViewBag.SiteConfigNameList)
+            {
+                <tr>
+                    <td style="text-align:right" width="100">
+                        @item：
+                    </td>
+                    <td>
+                        <input type="text" name="@item" id="@item" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=12 /> &nbsp;
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </form>
+</div>
+
+<div id="dlg-edit_DeviceBraceletOTAConfig" class="easyui-dialog" title="更新固件配置" style="width:500px;height:265px;padding:20px"
+     data-options="
+                iconCls: 'icon-save',
+                closed:true,
+                buttons: [{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    handler:saveData
+                }]
+            ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right" width="100">
+                    Version：
+                </td>
+                <td>
+                    <input type="text" name="Version" id="Version" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=12 /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right" width="100">
+                    VersionName：
+                </td>
+                <td>
+                    <input type="text" name="Version" id="Version" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=12 /> &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right" width="100">
+                    Url：
+                </td>
+                <td>
+                    <input type="text" name="Version" id="Version" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=12 /> &nbsp;
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align:right" width="100">
+                    Descr：
+                </td>
+                <td>
+                    <input name="Descr" id="Descr" class="easyui-textbox" data-options="multiline:true" style="width:220px;height:100px">
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    $(function () {
+        grid = $("#grid").datagrid();
+
+    })
+    function onDbOpenDialog(index, rowData, value) {
+        dlg_Edit = $("#dlg-edit_" + rowData.Id).dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+
+        var rowDataForm = {};
+        for (var o in rowData.Config) {
+            rowDataForm[o] = rowData.Config[o];
+            console.log(rowData.Config[o]);
+        }
+
+        dlg_Edit.dialog('open');
+        dlg_Edit_form.form('clear'); //清除之前面选中的表单
+        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.ConfigName + " 的信息");
+        dlg_Edit_form.form('load', rowDataForm); //加载到表单的控件上
+        dlg_Edit_form.url = '/Manage/Config/Update' + rowData.Id;
+    };
+
+    //保存数据
+    function saveData() {
+        dlg_Edit_form.form('submit', {
+            url: dlg_Edit_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: successCallback
+        });
+    }
+</script>

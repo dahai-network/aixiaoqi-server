@@ -1,0 +1,5 @@
+﻿@{
+    Layout = null;
+}
+@model Unitoys.Web.Areas.Manage.Controllers.LogFileModel
+@Html.Raw(@Model.Text.Replace("\n", "<br/>"))

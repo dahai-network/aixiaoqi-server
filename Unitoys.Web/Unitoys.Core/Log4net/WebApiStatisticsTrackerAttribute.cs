@@ -80,7 +80,7 @@ namespace Unitoys.Core
                 {
                     MonLog.ResponseStr = "";
                 }
-                MonLog.ResponseStr += System.Environment.NewLine + "出现Exception:" + actionExecutedContext.Exception.Message;
+                MonLog.ResponseStr += System.Environment.NewLine + "出现Exception:" + actionExecutedContext.Exception.Message + "  请求失败！请稍后重试";
             }
 
             LoggerHelper.WebApiMonitor(MonLog.GetLoginfo());

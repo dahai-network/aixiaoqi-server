@@ -155,8 +155,6 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> UnBind()
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
 
             var entity = await _deviceBraceletService.GetEntityAsync(x => x.UserId == currentUser.ID);

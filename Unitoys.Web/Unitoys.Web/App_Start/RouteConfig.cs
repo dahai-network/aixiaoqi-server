@@ -14,6 +14,13 @@ namespace Unitoys.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+             name: "Default2",
+             url: "{controller}/{action}/{id}",
+             defaults: new { controller = "Login", action = "Index", id = UrlParameter.Optional },
+             namespaces: new string[] { "Unitoys.Web.Areas.Manage.Controllers" }
+         ).DataTokens.Add("Area", "Manage");
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },

@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "日志管理";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询-高风险功能-请勿随便操作-影响性能-勿查询过大时间点,将造成系统崩溃" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>搜索（空格隔开 必须符合所有相隔点）:</span>
+                <input id="search" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>前缀路径:</span>
+                <input id="prefixPath" type="text" class="easyui-textbox" style="height:25px;" placeholder="空格隔开 必须符合所有相隔点" value="LogMonitor/WebApi" />
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <div id="divLogs"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function doSearch() {
+        $("#divLogs").load("/Manage/OperationRecord/PartialLogSearch", {
+            search: $('#search').val(),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
+            prefixPath: $('#prefixPath').val()
+        }, function () {
+            //console.log('搜索结束');
+            alert('搜索结束');
+        })
+    }
+</script>

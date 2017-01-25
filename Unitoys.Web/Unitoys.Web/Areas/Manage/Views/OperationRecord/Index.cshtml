@@ -22,7 +22,7 @@
     </div>
     <div data-options="region:'center',border:false">
         <table id="grid" class="easyui-datagrid" title="操作记录列表管理" style="width:100%;height:100%"
-               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/OperationRecord/GetList',method:'get',toolbar:toolbar,pagination:true">
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/OperationRecord/GetList',method:'get',pagination:true,onDblClickRow:onDbOpenDialog">
             <thead>
                 <tr>
                     <th data-options="field:'Url',width:50">路径</th>
@@ -37,12 +37,12 @@
         </table>
     </div>
 </div>
-<div id="dlg-edit" class="easyui-dialog" title="添加操作记录" style="width:300px;height:180px;padding:20px"
+<div id="dlg-edit" class="easyui-dialog" title="设置备注" style="width:300px;height:180px;padding:20px"
      data-options="
                 iconCls: 'icon-save',
                 closed:true,
                 buttons: [{
-                    text:'生成',
+                    text:'保存',
                     iconCls:'icon-ok',
                     handler:saveData
                 }]
@@ -52,20 +52,12 @@
         <table cellpadding="5" class="tb_form">
             <tr>
                 <td style="text-align:right">
-                    数量：
+                    备注：
                 </td>
                 <td>
-                    <input type="text" name="Qty" id="Qty" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                    <input type="text" name="Remark" id="Remark" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
                 </td>
             </tr>
-            @*<tr>
-                    <td style="text-align:right">
-                        金额：
-                    </td>
-                    <td>
-                        <input type="text" name="Price" id="Price" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 /> $
-                    </td>
-                </tr>*@
         </table>
     </form>
 </div>
@@ -75,22 +67,20 @@
     var dlg_Edit;
     var dlg_Edit_form;
 
-    var toolbar = [{
-        text: '设置备注',
-        iconCls: 'icon-add',
-        handler: function () {
-            dlg_Edit_form.form('clear');
-            dlg_Edit.dialog('open');
-            dlg_Edit.dialog('setTitle', '添加操作记录');
-            dlg_Edit_form.url = '/Manage/OperationRecord/Add/';
-        }
-    }];
-
     $(function () {
         grid = $("#grid").datagrid();
         dlg_Edit = $("#dlg-edit").dialog();
         dlg_Edit_form = dlg_Edit.find('form');
     })
+
+    function onDbOpenDialog(index, rowData, value) {
+        dlg_Edit.dialog('open');
+        dlg_Edit_form.form('clear'); //清除之前面选中的表单
+        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.Url + " 的信息");
+        dlg_Edit_form.form('load', rowData); //加载到表单的控件上
+
+        dlg_Edit_form.url = '/Manage/OperationRecord/SetRemark';
+    }
 
     //保存数据
     function saveData() {
