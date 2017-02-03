@@ -12,6 +12,8 @@
                 <input id="cardNum" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>卡密:</span>
                 <input id="cardPwd" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>手机号码:</span>
+                <input id="tel" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>创建时间:</span>
                 <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
                 <span>-</span>
@@ -136,6 +138,7 @@
         $("#grid").datagrid('load', {
             cardNum: $("#cardNum").val() == null ? "" : $("#cardNum").val(),
             cardPwd: $("#cardPwd").val() == null ? "" : $("#cardPwd").val(),
+            tel: $("#tel").val(),
             status: $("#status").combobox("getValue"),
             createStartDate: $("input[name$='createStartDate']").val(),
             createEndDate: $("input[name$='createEndDate']").val(),

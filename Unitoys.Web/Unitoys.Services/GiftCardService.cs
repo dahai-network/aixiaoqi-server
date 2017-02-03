@@ -12,7 +12,7 @@ namespace Unitoys.Services
 {
     public class GiftCardService : BaseService<UT_GiftCard>, IGiftCardService
     {
-        public async Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status)
+        public async Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status, string tel)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -41,6 +41,11 @@ namespace Unitoys.Services
                 if (createEndDate != null && createEndDate != DateTime.MinValue)
                 {
                     query = query.Where(x => x.CreateDate <= createEndDate);
+                }
+
+                if (!string.IsNullOrEmpty(tel))
+                {
+                    query = query.Where(x => x.UT_Users.Tel.Contains(tel));
                 }
 
                 var result = await query.OrderByDescending(x => x.CreateDate).Skip((page - 1) * rows).Take(rows).ToListAsync();

@@ -19,8 +19,9 @@ namespace Unitoys.IServices
         /// <param name="createStartDate">创建开始时间</param>
         /// <param name="createEndDate">创建结束时间</param>
         /// <param name="status">状态</param>
+        /// <param name="tel">用户</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status);
+        Task<KeyValuePair<int, List<UT_GiftCard>>> SearchAsync(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status, string tel);
 
         /// <summary>
         /// 新增生成卡

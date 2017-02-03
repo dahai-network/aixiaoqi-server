@@ -34,9 +34,9 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status)
+        public async Task<ActionResult> GetList(int page, int rows, string cardNum, string cardPwd, DateTime? createStartDate, DateTime? createEndDate, GiftCardStatusType? status, string tel)
         {
-            var pageRowsDb = await _giftCardService.SearchAsync(page, rows, cardNum, cardPwd, createStartDate, createEndDate, status);
+            var pageRowsDb = await _giftCardService.SearchAsync(page, rows, cardNum, cardPwd, createStartDate, createEndDate, status, tel);
 
             int totalNum = pageRowsDb.Key;
 
