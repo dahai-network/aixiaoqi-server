@@ -92,5 +92,15 @@ namespace Unitoys.Ioc
         {
             return Kernel;
         }
+
+        /// <summary>
+        /// 获取Kernel对应服务
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static object GetKernelService(Type t)
+        {
+            return Kernel.Get(t);
+        }
     }
 }
