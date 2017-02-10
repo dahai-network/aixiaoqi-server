@@ -484,7 +484,7 @@ namespace Unitoys.WebApi.Controllers
                         //Byte[] resultData = hexToBytes(order.PackageOrderData);
                         //string dataB64 = Convert.ToBase64String(resultData);
                         //3.返回订单卡数据
-                        //return Ok(new { status = 1, data = new { OrderID = order.ID, Data = StringToHexString(Convert.ToBase64String(hexToBytes(order.PackageOrderData)), Encoding.UTF8).ToUpper() } });
+                        //return Ok(new { status = 1, data = new { OrderID = order.ID, Data = 0000000000000(Convert.ToBase64String(hexToBytes(order.PackageOrderData)), Encoding.UTF8).ToUpper() } });
                         var result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().QueryOrder(order.PackageOrderId);
 
                         if (result.status != "1")

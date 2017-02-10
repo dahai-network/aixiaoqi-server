@@ -13,7 +13,6 @@ namespace Unitoys.Web.Areas.Manage.Controllers
     /// </summary>
     public class BaseController : Controller
     {
-       
         /// <summary>
         /// 重新基类在Action执行之前的事情
         /// </summary>

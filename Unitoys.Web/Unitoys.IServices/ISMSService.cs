@@ -64,5 +64,22 @@ namespace Unitoys.IServices
         /// <param name="UserId">用户ID</param>
         /// <returns>最大的收件时间</returns>
         Task<int> GetMaxNotSendTimeByUserAsync(Guid UserId);
+
+        /// <summary>
+        /// 批量删除多条
+        /// </summary>
+        /// <param name="userId">用户</param>
+        /// <param name="ids">多个id</param>
+        /// <returns></returns>
+        Task<bool> DeletesAsync(Guid userId, Guid[] ids);
+
+        /// <summary>
+        /// 批量删除联系人短信
+        /// </summary>
+        /// <param name="UserId">用户</param>
+        /// <param name="Tel">用户手机号码</param>
+        /// <param name="ContactTel">联系人电话</param>
+        /// <returns></returns>
+        Task<bool> DeletesByTelAsync(Guid UserId, string Tel, string ContactTel);
     }
 }

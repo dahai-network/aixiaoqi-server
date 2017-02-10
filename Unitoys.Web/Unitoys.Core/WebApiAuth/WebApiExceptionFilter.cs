@@ -40,7 +40,7 @@ namespace Unitoys.Core
 
             LoggerHelper.Error(ErrorMsg + Environment.NewLine + requestStr.ToString(), context.Exception);
 
-            string json = "{\"status\":\"998\",\"msg\":\"请求失败！请稍后重试\"}";
+            string json = "{\"status\":\"-998\",\"msg\":\"请求失败！请稍后重试\"}";
             var content = new System.Net.Http.StringContent(json, System.Text.Encoding.GetEncoding("UTF-8"), "application/json");
 
             context.Response = new System.Net.Http.HttpResponseMessage()

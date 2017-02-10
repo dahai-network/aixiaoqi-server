@@ -14,10 +14,11 @@ namespace Unitoys.WebApi.Controllers
     public class DeviceBraceletController : ApiController
     {
         private IDeviceBraceletService _deviceBraceletService;
-
-        public DeviceBraceletController(IDeviceBraceletService deviceBraceletService)
+        private IEjoinDevSlotService _ejoinDevSlotService;
+        public DeviceBraceletController(IDeviceBraceletService deviceBraceletService, IEjoinDevSlotService ejoinDevSlotService)
         {
             this._deviceBraceletService = deviceBraceletService;
+            this._ejoinDevSlotService = ejoinDevSlotService;
         }
 
         /// <summary>
@@ -159,16 +160,18 @@ namespace Unitoys.WebApi.Controllers
 
             var entity = await _deviceBraceletService.GetEntityAsync(x => x.UserId == currentUser.ID);
 
+            if (entity == null)
+            {
+                return Ok(new { status = 1, msg = "解除绑定成功！" });
+            }
+
             var result = await _deviceBraceletService.DeleteAsync(entity);
             if (result)
             {
                 return Ok(new { status = 1, msg = "解除绑定成功！" });
             }
-            else
-            {
-                return Ok(new StatusCodeRes(StatusCodeType.失败, "解除绑定失败"));
-            }
 
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "解除绑定失败"));
         }
 
         /// <summary>
@@ -203,6 +206,37 @@ namespace Unitoys.WebApi.Controllers
                     {
 
                     }
+                });
+            }
+        }
+
+        [HttpGet]
+        /// <summary>
+        /// 获取手环设备注册状态
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> GetRegStatus()
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            var model = await _ejoinDevSlotService.GetUsedAAndEjoinDevsync(currentUser.ID);
+
+            if (model != null && (model.Status == DevPortStatus.REGSUCCESS || model.Status == DevPortStatus.CALLING))
+            {
+                return Ok(new
+                {
+                    status = 1,
+                    msg = "success",
+                    data = new { RegStatus = "1" }
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    status = 1,
+                    msg = "success",
+                    data = new { RegStatus = "0" }
                 });
             }
         }

@@ -479,12 +479,48 @@ namespace Unitoys.WebApi.Controllers
         /// </summary>
         /// <param name="smsId"></param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IHttpActionResult> Delete(Guid smsId)
+        [HttpPost]
+        public async Task<IHttpActionResult> Delete([FromBody]DeleteSMSBindingModel model)
         {
-            UT_SMS sms = await _smsService.GetEntityByIdAsync(smsId);
+            var currentUser = WebUtil.GetApiUserSession();
 
-            if (await _smsService.DeleteAsync(sms))
+            UT_SMS sms = await _smsService.GetEntityByIdAsync(model.Id);
+
+            if (sms != null && sms.UserId == currentUser.ID && await _smsService.DeleteAsync(sms))
+            {
+                return Ok(new { status = 1, msg = "删除成功！" });
+            }
+            return Ok(new { status = 0, Msg = "删除失败！" });
+        }
+
+        /// <summary>
+        /// 删除多条短信
+        /// </summary>
+        /// <param name="smsId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> Deletes([FromBody]DeleteSMSBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            if (await _smsService.DeletesAsync(currentUser.ID, model.Ids))
+            {
+                return Ok(new { status = 1, msg = "删除成功！" });
+            }
+            return Ok(new { status = 0, Msg = "删除失败！" });
+        }
+
+        /// <summary>
+        /// 删除联系人短信
+        /// </summary>
+        /// <param name="smsId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> DeletesByTel([FromBody]DeleteSMSBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            if (await _smsService.DeletesByTelAsync(currentUser.ID, currentUser.Tel, model.Tel))
             {
                 return Ok(new { status = 1, msg = "删除成功！" });
             }

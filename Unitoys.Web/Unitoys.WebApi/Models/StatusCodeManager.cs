@@ -38,7 +38,7 @@ namespace Unitoys.WebApi
         #region 权限验证
         tokenIncorrect = -999,
         parameterInvalid = -401,
-        请求失败_请稍后重试 = 998,
+        请求失败_请稍后重试 = -998,
         #endregion
 
         #region 公共状态码

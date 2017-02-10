@@ -71,4 +71,11 @@ namespace Unitoys.WebApi.Models
         /// </summary>
         public string Iccid { get; set; }
     }
+
+    public class DeleteSMSBindingModel
+    {
+        public Guid Id { get; set; }
+        public Guid[] Ids { get; set; }
+        public string Tel { get; set; }
+    }
 }

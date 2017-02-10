@@ -73,6 +73,8 @@ namespace Unitoys.Web
         {
             if (WebUtil.GetManageUserSession() != null && filterContext.ActionDescriptor.GetCustomAttributes(typeof(RequireRolesOrPermissionsAttribute), false).Length == 0)
                 return;
+            if (WebUtil.GetManageUserSession() == null)
+                return;
 
             string controllerName = filterContext.RouteData.Values["controller"] as string;
             string actionName = filterContext.RouteData.Values["action"] as string;

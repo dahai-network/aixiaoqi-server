@@ -114,10 +114,7 @@ namespace Unitoys.Services
         /// <returns>用户和来往手机号短信</returns>
         public async Task<IEnumerable<UT_SMS>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel)
         {
-            //判断TEL避免用户查看自己手机号的信息
-            var list = await db.UT_SMS.Where(x => x.UserId == UserId &&
-                ((x.Fm == ContactTel && x.To == Tel) || (x.To == ContactTel && x.Fm == Tel)))
-                .OrderByDescending(x => x.SMSTime)
+            var list = await GetUserAndContactTel(UserId, Tel, ContactTel)
                 .Skip((page - 1) * row).Take(row)
                 .ToListAsync();
 
@@ -139,6 +136,21 @@ namespace Unitoys.Services
         }
 
         /// <summary>
+        /// 获取用户和联系手机号的短信
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="Tel"></param>
+        /// <param name="ContactTel"></param>
+        /// <returns></returns>
+        private IOrderedQueryable<UT_SMS> GetUserAndContactTel(Guid UserId, string Tel, string ContactTel)
+        {
+            //判断TEL避免用户查看自己手机号的信息
+            return db.UT_SMS.Where(x => x.UserId == UserId &&
+                            ((x.Fm == ContactTel && x.To == Tel) || (x.To == ContactTel && x.Fm == Tel)))
+                            .OrderByDescending(x => x.SMSTime);
+        }
+
+        /// <summary>
         /// 根据用户获取最大的收件时间
         /// </summary>
         /// <param name="UserId">用户ID</param>
@@ -148,6 +160,62 @@ namespace Unitoys.Services
             var list = await db.UT_SMS.Where(x => x.UserId == UserId && x.IsSend == false).MaxAsync(x => x.SMSTime);
 
             return list;
+        }
+
+        /// <summary>
+        /// 批量删除多条
+        /// </summary>
+        /// <param name="userId">用户</param>
+        /// <param name="ids">多个id</param>
+        /// <returns></returns>
+        public async Task<bool> DeletesAsync(Guid userId, Guid[] ids)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var listEntity = await db.UT_SMS.Where(x => x.UserId == userId && ids.Contains(x.ID)).ToListAsync();
+
+                //与删除数量不一致
+                //if (listEntity.Count == ids.Length)
+                //{
+
+                //}
+
+                foreach (var entity in listEntity)
+                {
+                    db.UT_SMS.Attach(entity);
+                    db.Entry<UT_SMS>(entity).State = EntityState.Deleted;
+                }
+
+                return await db.SaveChangesAsync() > 0;
+            }
+        }
+
+        /// <summary>
+        /// 批量删除联系人短信
+        /// </summary>
+        /// <param name="UserId">用户</param>
+        /// <param name="Tel">用户手机号码</param>
+        /// <param name="ContactTel">联系人电话</param>
+        /// <returns></returns>
+        public async Task<bool> DeletesByTelAsync(Guid UserId, string Tel, string ContactTel)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var listEntity = await GetUserAndContactTel(UserId, Tel, ContactTel).ToListAsync();
+
+                //if (listEntity.Count == ids.Length)
+                //{
+
+                //}
+
+                foreach (var entity in listEntity)
+                {
+                    db.UT_SMS.Attach(entity);
+                    db.Entry<UT_SMS>(entity).State = EntityState.Deleted;
+                }
+
+                return await db.SaveChangesAsync() > 0;
+            }
         }
     }
 }
