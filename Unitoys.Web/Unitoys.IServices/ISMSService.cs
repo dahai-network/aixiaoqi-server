@@ -81,5 +81,14 @@ namespace Unitoys.IServices
         /// <param name="ContactTel">联系人电话</param>
         /// <returns></returns>
         Task<bool> DeletesByTelAsync(Guid UserId, string Tel, string ContactTel);
+
+        /// <summary>
+        /// 获取短信实体,并允许出现重复的tid,获取首行
+        /// </summary>
+        /// <param name="tid"></param>
+        /// <param name="to"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        Task<UT_SMS> GetEntityFirstOrDefaultAsync(int tid, string to, SMSStatusType status);
     }
 }

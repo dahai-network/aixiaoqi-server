@@ -185,13 +185,12 @@ namespace Unitoys.WebApi.Controllers
 
                     var to = item[1];
 
-                    var entity = await _smsService.GetEntityAsync(x => x.TId == model.rpts.tid);
+                    var entity = await _smsService.GetEntityFirstOrDefaultAsync(model.rpts.tid, to, SMSStatusType.Int);
                     if (entity != null)
                     {
                         entity.Status = SMSStatusType.Success;
                         if (await _smsService.UpdateAsync(entity))
                         {
-
                             j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送成功", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
@@ -207,7 +206,7 @@ namespace Unitoys.WebApi.Controllers
 
                     var to = item[1];
 
-                    var entity = await _smsService.GetEntityAsync(x => x.TId == model.rpts.tid);
+                    var entity = await _smsService.GetEntityFirstOrDefaultAsync(model.rpts.tid, to, SMSStatusType.Int);
                     if (entity != null)
                     {
                         entity.Status = SMSStatusType.Error;
