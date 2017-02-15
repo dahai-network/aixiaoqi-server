@@ -48,6 +48,8 @@ namespace Unitoys.Core
                 var user = WebUtil.GetApiUserSession();
                 if (user != null)
                 {
+                    MonLog.UserTel = user.Tel;
+                    MonLog.Source = System.Web.HttpContext.Current.Request.Url.Authority;
                     requestStr.AppendLine("user：" + user.Tel);
                     requestStr.AppendLine("partner：" + System.Web.HttpContext.Current.Request.Headers["partner"]);
                     requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
@@ -83,7 +85,8 @@ namespace Unitoys.Core
                 MonLog.ResponseStr += System.Environment.NewLine + "出现Exception:" + actionExecutedContext.Exception.Message + "  请求失败！请稍后重试";
             }
 
-            LoggerHelper.WebApiMonitor(MonLog.GetLoginfo());
+            //LoggerHelper.WebApiMonitor(MonLog.GetLoginfo());
+            LoggerHelper.WebApiMonitor(MonLog);
         }
     }
 
@@ -119,7 +122,8 @@ namespace Unitoys.Core
             get;
             set;
         }
-
+        public string UserTel { get; set; }
+        public string Source { get; set; }
         public string RequestStr { get; set; }
         public string ResponseStr { get; set; }
         /// <summary>

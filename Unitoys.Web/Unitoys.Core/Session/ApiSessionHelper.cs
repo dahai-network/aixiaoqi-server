@@ -55,6 +55,7 @@ namespace Unitoys.Core
                 return null;
             }
         }
+
         private void SetSession(string key, LoginUserInfo value)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -99,6 +100,11 @@ namespace Unitoys.Core
         public long Exists(string key)
         {
             return RedisHelper.Instance.Exists(key);
+        }
+
+        public string GetStrSession(string key)
+        {
+            return RedisHelper.Instance.Get<string>(key);
         }
     }
 }

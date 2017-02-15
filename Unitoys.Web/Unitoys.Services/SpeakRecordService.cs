@@ -12,6 +12,11 @@ namespace Unitoys.Services
 {
     public class SpeakRecordService : BaseService<UT_SpeakRecord>, ISpeakRecordService
     {
+        private IUserService _userService;
+        public SpeakRecordService(IUserService userService)
+        {
+            this._userService = userService;
+        }
         //直拨每秒的费用
         //private const decimal CallDirectPricePerSeconds = 0.01m;
         //回拨每秒的费用
@@ -142,8 +147,10 @@ namespace Unitoys.Services
                         {
                             calledTelNum = calledTelNum.Substring(0, calledTelNum.IndexOf('#'));
                         };
-
                     }
+
+                    //不依赖与网络电话端传递过来的剩余秒数
+                    CallAgoRemainingCallSeconds = await _userService.GetAmountAndOrderMaximumPhoneCallTime(user.ID);
 
                     //4. 添加通话记录。
                     UT_SpeakRecord speakRecord = new UT_SpeakRecord()

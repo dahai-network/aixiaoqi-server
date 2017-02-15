@@ -73,5 +73,11 @@ namespace Unitoys.IServices
         /// <param name="openId">微信用户唯一的openid</param>
         /// <returns></returns>
         Task<UT_Users> GetEntityByOpenIdAsync(string openId);
+        /// <summary>
+        /// 获取余额和订单总可通话最长秒数
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>-1/失败->0通话秒数</returns>
+        Task<int> GetAmountAndOrderMaximumPhoneCallTime(Guid id);
     }
 }

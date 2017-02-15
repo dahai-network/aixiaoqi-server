@@ -191,12 +191,16 @@ namespace Unitoys.WebApi.Controllers
                         entity.Status = SMSStatusType.Success;
                         if (await _smsService.UpdateAsync(entity))
                         {
-                            j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送成功", "SMSSendResult", new Dictionary<string, string>()
+                            string userToken = WebUtil.GetApiKeyByTel(entity.Fm);
+                            if (!string.IsNullOrEmpty(userToken))
+                            {
+                                j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送成功", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
                                     {"Status",(int)entity.Status + ""},
                                     {"SMSID",entity.ID.ToString()}
                                 });
+                            }
                         }
                     }
                 }
@@ -212,12 +216,16 @@ namespace Unitoys.WebApi.Controllers
                         entity.Status = SMSStatusType.Error;
                         result = await _smsService.UpdateAsync(entity);
 
-                        j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送失败", "SMSSendResult", new Dictionary<string, string>()
+                        string userToken = WebUtil.GetApiKeyByTel(entity.Fm);
+                        if (!string.IsNullOrEmpty(userToken))
+                        {
+                            j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送失败", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
                                     {"Status",(int)entity.Status + ""},
                                     {"SMSID",entity.ID.ToString()}
                                 });
+                        }
                     }
                 }
             }
@@ -566,24 +574,28 @@ namespace Unitoys.WebApi.Controllers
                 //推送至客户端
                 //todo 由于用户不在线的时候不进行发送，考虑将离线信息保留时间设为1分钟
                 var loginUser = WebUtil.ExistsSession(ejoinDevSlot.UT_Users.Tel);
+                string userToken = WebUtil.GetApiKeyByTel(entity.To);
 
                 if (loginUser != 0)
                 {
-                    j.Push_android_alias_message("aixiaoqi" + entity.To, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
+                    if (!string.IsNullOrEmpty(userToken))
+                    {
+                        j.Push_android_alias_message("aixiaoqi" + entity.To, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.Fm},
                                     {"SMSContent",entity.SMSContent},
                                     {"SMSID",entity.ID.ToString()}
                                 });
-                    j.Push_ios_alias_alert("aixiaoqi" + entity.To, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
+                        j.Push_ios_alias_alert("aixiaoqi" + entity.To, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
                         {
                             {"Tel",entity.Fm},
                             {"SMSContent",entity.SMSContent},
                             {"SMSID",entity.ID.ToString()}
                         });
+                    }
                 }
 
-                LoggerHelper.Info("新短信报告loginUser" + loginUser + ejoinDevSlot.UT_Users.Tel);
+                LoggerHelper.Info("新短信报告loginUser" + loginUser + ejoinDevSlot.UT_Users.Tel + userToken);
 
                 return Ok(new
                 {

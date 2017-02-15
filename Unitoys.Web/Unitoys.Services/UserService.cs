@@ -167,5 +167,44 @@ namespace Unitoys.Services
                 }
             }
         }
+
+        /// <summary>
+        /// 获取余额和订单总可通话最长秒数
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>-1/失败->0通话秒数</returns>
+        public async Task<int> GetAmountAndOrderMaximumPhoneCallTime(Guid id)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var user = await db.UT_Users.SingleOrDefaultAsync(x => x.ID == id);
+                if (user != null)
+                {
+                    //判断被叫号码的费率。TODO
+                    int maximumPhoneCallTime = 0;
+
+                    if (user.Amount > 0)//只计算可拨打的分钟
+                        maximumPhoneCallTime = Convert.ToInt32((int)(user.Amount / UTConfig.SiteConfig.CallDirectPricePerMinutes) * 60);
+
+                    int dtInt = CommonHelper.GetDateTimeInt();
+
+                    //订单剩余分钟数
+                    //获取当前用户有效订单-已激活+已付款+剩余通话时间大于0+在有效时间内
+                    var orderList = await db.UT_Order.Where(x => x.UserId == user.ID
+                            && x.OrderStatus == OrderStatusType.Used
+                            && x.PayStatus == PayStatusType.YesPayment
+                            && x.EffectiveDate.HasValue
+                            && x.EffectiveDate.Value + (x.ExpireDays * 86400) > dtInt
+                            && x.RemainingCallMinutes > 0).ToListAsync();
+
+                    if (orderList != null && orderList.Count() > 0)
+                    {
+                        maximumPhoneCallTime += orderList.Sum(x => x.RemainingCallMinutes) * 60;
+                    }
+                    return maximumPhoneCallTime;
+                }
+            }
+            return -1;
+        }
     }
 }

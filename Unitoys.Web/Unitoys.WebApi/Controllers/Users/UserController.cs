@@ -426,37 +426,13 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetMaximumPhoneCallTime()
         {
-            string errorMsg = "";
-
             var currentUser = WebUtil.GetApiUserSession();
 
+            int result = await _userService.GetAmountAndOrderMaximumPhoneCallTime(currentUser.ID);
 
-            UT_Users user = await _userService.GetEntityByIdAsync(currentUser.ID);
-
-            if (user != null)
+            if (result > 0)
             {
-                //判断被叫号码的费率。TODO
-                int maximumPhoneCallTime = 0;
-
-                if (user.Amount > 0)//只计算可拨打的分钟
-                    maximumPhoneCallTime = Convert.ToInt32((int)(user.Amount / UTConfig.SiteConfig.CallDirectPricePerMinutes) * 60);
-
-                int dtInt = CommonHelper.GetDateTimeInt();
-
-                //订单剩余分钟数
-                //获取当前用户有效订单-已激活+已付款+剩余通话时间大于0+在有效时间内
-                var orderList = await _orderService.GetEntitiesAsync(x => x.UserId == user.ID
-                        && x.OrderStatus == OrderStatusType.Used
-                        && x.PayStatus == PayStatusType.YesPayment
-                        && x.EffectiveDate.HasValue
-                        && x.EffectiveDate.Value + (x.ExpireDays * 86400) > dtInt
-                        && x.RemainingCallMinutes > 0);
-                if (orderList != null && orderList.Count() > 0)
-                {
-                    maximumPhoneCallTime += orderList.Sum(x => x.RemainingCallMinutes) * 60;
-                }
-
-                return Ok(new { status = 1, data = new { maximumPhoneCallTime = maximumPhoneCallTime.ToString() } });
+                return Ok(new { status = 1, data = new { maximumPhoneCallTime = result.ToString() } });
             }
 
             return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));

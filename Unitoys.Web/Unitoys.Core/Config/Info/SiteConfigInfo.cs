@@ -132,6 +132,13 @@ namespace Unitoys.Core.Config
         /// 一正服务端调用端口
         /// </summary>
         public string VswServerPort { get; set; }
-
+        /// <summary>
+        /// 阿里云日志服务Endpoint
+        /// </summary>
+        public string AliyunLogEndpoint { get; set; }
+        /// <summary>
+        /// EIMS的IP地址
+        /// </summary>
+        public string EIMSServerIp { get; set; }
     }
 }

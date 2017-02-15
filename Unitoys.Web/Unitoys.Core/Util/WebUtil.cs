@@ -89,6 +89,15 @@ namespace Unitoys.Core
             }
             return apiSession[token] as LoginUserInfo;
         }
+
+        /// <summary>
+        /// 获取用户Session
+        /// </summary>
+        /// <returns></returns>
+        public static string GetApiKeyByTel(string tel)
+        {
+            return apiSession.GetStrSession(tel);
+        }
         /// <summary>
         /// 设置用户Session
         /// </summary>
