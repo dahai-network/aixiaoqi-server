@@ -88,11 +88,11 @@ namespace Unitoys.ESIM_MVNO
         /// <summary>
         /// 补位后的虚商代码
         /// </summary>
-        public string VirtualBusiness { get; set; }
+        private string VirtualBusiness { get; set; }
         /// <summary>
         /// 空卡序列号
         /// </summary>
-        public string EmptyCardSerialNumber { get; set; }
+        private string EmptyCardSerialNumber { get; set; }
 
         /// <summary>
         /// k1,计算所需密钥
@@ -205,7 +205,7 @@ namespace Unitoys.ESIM_MVNO
             byte[] key = DataHelper.HexToByte(k1);
             byte[] iv = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };      //当模式为ECB时，IV无用
             byte[] data = DataHelper.HexToByte(sb.ToString());
-            var encrypData = Des3.Des3EncodeCBC(key, iv, data);
+            var encrypData = DesHelper.Des3EncodeCBC(key, iv, data);
             string encrypDataStr = DataHelper.ByteToHex(encrypData, encrypData.Length);
 
             //写卡数据
@@ -288,7 +288,7 @@ namespace Unitoys.ESIM_MVNO
         /// 倒转每两位字符串顺序
         /// </summary>
         /// <param name="str"></param>
-        public static string ReverseStrTwo(string str)
+        private string ReverseStrTwo(string str)
         {
             string reverseStr = "";
             for (int i = 0; i < str.Length / 2; i++)
@@ -340,10 +340,10 @@ namespace Unitoys.ESIM_MVNO
             byte[] oData = null;
             for (int i = 1; i < data.Count / 8; i++)
             {
-                oData = Des3.Des3EncodeCBC(DataHelper.HexToByte(k1), new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, iData);
+                oData = DesHelper.Des3EncodeCBC(DataHelper.HexToByte(k1), new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, iData);
                 iData = BitXor(data.GetRange(8 * i, 8).ToArray(), oData, 8);
             }
-            var mac = Des3.Des3EncodeCBC(DataHelper.HexToByte(k1), new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, iData);
+            var mac = DesHelper.Des3EncodeCBC(DataHelper.HexToByte(k1), new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, iData);
             return DataHelper.ByteToHex(mac, mac.Length);
         }
 
@@ -354,7 +354,7 @@ namespace Unitoys.ESIM_MVNO
         /// <param name="Data2"></param>
         /// <param name="Len"></param>
         /// <returns></returns>
-        private static byte[] BitXor(byte[] Data1, byte[] Data2, int Len)
+        private byte[] BitXor(byte[] Data1, byte[] Data2, int Len)
         {
             int i;
             byte[] Dest = new byte[Len];

@@ -46,14 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\WriteCardSTK.cs" />
     <Compile Include="MVNOModel.cs" />
     <Compile Include="MVNOServiceApi.cs" />
     <Compile Include="SimOp\DataHelper.cs" />
-    <Compile Include="SimOp\Des3.cs" />
+    <Compile Include="SimOp\DesHelper.cs" />
     <Compile Include="SimOp\Diversify.cs" />
     <Compile Include="Model\APDUModel.cs" />
     <Compile Include="Model\WriteCard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimOp\SimDataSTK.cs" />
     <Compile Include="SimOp\SimData.cs" />
   </ItemGroup>
   <ItemGroup>

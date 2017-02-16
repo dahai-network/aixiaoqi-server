@@ -468,10 +468,6 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> QueryOrderData([FromBody]ActivationBindingModel model)
         {
-            if (string.IsNullOrEmpty(model.EmptyCardSerialNumber))
-            {
-                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "序列号不能为空！"));
-            }
             if (model.OrderID != Guid.Empty)
             {
                 var currentUser = WebUtil.GetApiUserSession();
@@ -494,16 +490,31 @@ namespace Unitoys.WebApi.Controllers
                         }
 
                         //3.生成卡数据
-                        SimData simdata = new SimData(model.EmptyCardSerialNumber, new WriteCard()
-                         {
-                             iccid = result.data.esimResource.iccid,
-                             imsi = result.data.esimResource.imsi,
-                             ki = result.data.esimResource.ki,
-                             opc = result.data.esimResource.opc,
-                             PLMN = result.data.esimResource.plmn,
-                         });
-
-                        var writeData = simdata.GetData();
+                        string writeData = "";
+                        if (string.IsNullOrEmpty(model.EmptyCardSerialNumber))
+                        {
+                            SimDataSTK simdata = new SimDataSTK(model.EmptyCardSerialNumber, new WriteCardSTK()
+                            {
+                                iccid = result.data.esimResource.iccid,
+                                imsi = result.data.esimResource.imsi,
+                                ki = result.data.esimResource.ki,
+                                opc = result.data.esimResource.opc,
+                                PREFER_NETWORK = result.data.esimResource.plmn,
+                            });
+                            writeData = simdata.GetData();
+                        }
+                        else
+                        {
+                            SimData simdata = new SimData(model.EmptyCardSerialNumber, new WriteCard()
+                            {
+                                iccid = result.data.esimResource.iccid,
+                                imsi = result.data.esimResource.imsi,
+                                ki = result.data.esimResource.ki,
+                                opc = result.data.esimResource.opc,
+                                PLMN = result.data.esimResource.plmn,
+                            });
+                            writeData = simdata.GetData();
+                        }
 
                         return Ok(new { status = 1, data = new { OrderID = order.ID, Data = writeData } });
                     }

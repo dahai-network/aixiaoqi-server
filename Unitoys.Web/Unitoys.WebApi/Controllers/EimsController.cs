@@ -162,8 +162,14 @@ namespace Unitoys.WebApi.Controllers
         {
             LoggerHelper.Info("短信状态报告");
             LoggerHelper.Info("短信：" + await Request.Content.ReadAsStringAsync());
+
             //从body中获取内容
             var model = await Request.Content.ReadAsAsync<TranslateEimsSMSReportQueryModel>();
+            if (model == null)
+            {
+                model = await Newtonsoft.Json.JsonConvert.DeserializeObjectAsync<TranslateEimsSMSReportQueryModel>(await Request.Content.ReadAsStringAsync() + "}}");
+            }
+
             LoggerHelper.Info(string.Format(model.rpts.tid + "短信状态报告type：{0},rpt_num:{1},sdrCount:{2},fdrCount:{3}", model.type, model.rpt_num, model.rpts.sdr.Count, model.rpts.fdr.Count));
 
             bool result = false;

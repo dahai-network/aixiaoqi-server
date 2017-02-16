@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Unitoys.ESIM_MVNO
 {
-    public class Des3
+    public class DesHelper
     {
-        #region CBC模式**
+        #region 3DES-CBC模式**
 
         /// <summary>
         /// DES3 CBC模式加密
@@ -106,7 +106,7 @@ namespace Unitoys.ESIM_MVNO
 
         #endregion
 
-        #region ECB模式
+        #region 3DES-ECB模式
 
         /// <summary>
         /// DES3 ECB模式加密
@@ -227,6 +227,52 @@ namespace Unitoys.ESIM_MVNO
             byte[] results = desCrypt.TransformFinalBlock(str, 0, 8);
 
             return results;
+        }
+        #endregion
+
+        #region DES-ECB
+        /// <summary>
+        /// Des-ECB加密
+        /// </summary>
+        /// <param name="dataHex">加密16进制数据</param>
+        /// <param name="keyHex">加密16进制Key</param>
+        /// <returns></returns>
+        public static string DesEncodeECB(string dataHex, string keyHex) //数据为十六进制
+        {
+            try
+            {
+                byte[] in_data = DataHelper.HexToByte(dataHex);
+                byte[] DES_KEY = DataHelper.HexToByte(keyHex);
+
+                DES desEncrypt = new DESCryptoServiceProvider();
+                desEncrypt.Mode = CipherMode.ECB;
+                //desEncrypt.Key = ASCIIEncoding.ASCII.GetBytes(str_DES_KEY);
+                desEncrypt.Key = DES_KEY;
+
+                byte[] R;
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(stream, desEncrypt.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(in_data, 0, in_data.Length);
+                        //return Convert.ToBase64String(stream.ToArray());
+                        R = stream.ToArray();
+                    }
+                }
+
+                string return_str = "";
+                foreach (byte b in R)
+                {
+                    return_str += b.ToString("X2");
+                }
+                //return_str = return_str.Substring(0, 16);
+                return return_str;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
         #endregion
     }

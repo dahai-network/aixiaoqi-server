@@ -30,8 +30,8 @@ namespace Unitoys.ESIM_MVNO
                 //byte[] wkLeft = Des3.ThreeDES(byteKey, byteRandomLeft);// TriDES.encryptWithPKCS5Padding(byteRandomLeft, byteKey);
                 //byte[] wkRight = Des3.ThreeDES(byteKey, byteRandomRight);//TriDES.encryptWithPKCS5Padding(byteRandomRight, byteKey);
 
-                byte[] wkLeft = Des3.Des3EncodeECB(byteKey, null, byteRandomLeft);// TriDES.encryptWithPKCS5Padding(byteRandomLeft, byteKey);
-                byte[] wkRight = Des3.Des3EncodeECB(byteKey, null, byteRandomRight);//
+                byte[] wkLeft = DesHelper.Des3EncodeECB(byteKey, null, byteRandomLeft);// TriDES.encryptWithPKCS5Padding(byteRandomLeft, byteKey);
+                byte[] wkRight = DesHelper.Des3EncodeECB(byteKey, null, byteRandomRight);//
 
                 byte[] result = new byte[16];
                 for (int i = 0; i < wkLeft.Length; i++)
