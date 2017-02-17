@@ -34,6 +34,11 @@ namespace Unitoys.Services
                 {
                     return new KeyValuePair<int, UT_Order>(2, null);
                 }
+                //该套餐不允许购买多个
+                if (!package.IsCanBuyMultiple && quantity != 1)
+                {
+                    return new KeyValuePair<int, UT_Order>(3, null);
+                }
                 if (package != null)
                 {
                     //1. 先添加Order实体。
@@ -142,7 +147,7 @@ namespace Unitoys.Services
                         userBill.CreateDate = CommonHelper.GetDateTimeInt();
                         userBill.BillType = 0; //支出
                         userBill.PayType = 2; //余额支付
-                        userBill.Descr = "购买套餐：" + payOrder.PackageName;
+                        userBill.Descr = "购买套餐:" + payOrder.PackageName;
 
                         db.UT_UserBill.Add(userBill);
 
@@ -220,7 +225,7 @@ namespace Unitoys.Services
                     userBill.CreateDate = CommonHelper.GetDateTimeInt();
                     userBill.BillType = 0; //支出
                     userBill.PayType = 1; //在线支付
-                    userBill.Descr = "购买套餐：" + order.PackageName;
+                    userBill.Descr = "购买套餐:" + order.PackageName;
 
                     db.UT_UserBill.Add(userBill);
 
@@ -334,7 +339,7 @@ namespace Unitoys.Services
                         userBill.CreateDate = CommonHelper.GetDateTimeInt();
                         userBill.BillType = 1; //收入
                         userBill.PayType = 5; //取消订单
-                        userBill.Descr = "取消订单：" + order.PackageName;
+                        userBill.Descr = "取消订单:" + order.PackageName;
 
                         db.UT_UserBill.Add(userBill);
                     }

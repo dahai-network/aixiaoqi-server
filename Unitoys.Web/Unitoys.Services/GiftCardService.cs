@@ -166,7 +166,7 @@ namespace Unitoys.Services
                             //1. 先添加Order实体。
                             UT_Order order = new UT_Order();
                             order.UserId = userId;
-                            order.OrderNum = String.Format("8022{0}", DateTime.Now.ToString("yyyyMMddHHmmssfffffff"));
+                            order.OrderNum = String.Format("8022{0}", DateTime.Now.ToString("yyMMddHHmmssffff"));
                             order.PackageId = packageId;
                             order.PackageName = package.PackageName;
                             order.PackageCategory = package.Category;

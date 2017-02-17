@@ -160,14 +160,35 @@ namespace Unitoys.WebApi.Controllers
         [NoAuthenticate]
         public async Task<IHttpActionResult> SMSReport()
         {
+            var contentStr = await Request.Content.ReadAsStringAsync();
             LoggerHelper.Info("短信状态报告");
-            LoggerHelper.Info("短信：" + await Request.Content.ReadAsStringAsync());
+            LoggerHelper.Info("短信：" + contentStr);
 
             //从body中获取内容
-            var model = await Request.Content.ReadAsAsync<TranslateEimsSMSReportQueryModel>();
+            TranslateEimsSMSReportQueryModel model = null;
+            try
+            {
+                model = await Request.Content.ReadAsAsync<TranslateEimsSMSReportQueryModel>();
+            }
+            catch (Newtonsoft.Json.JsonSerializationException ex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                LoggerHelper.Info("短信状态报告异常" + ex.Message);
+            }
+
+            LoggerHelper.Info("短信状态报告ReadAsAsync model=null：" + (model == null));
+
             if (model == null)
             {
-                model = await Newtonsoft.Json.JsonConvert.DeserializeObjectAsync<TranslateEimsSMSReportQueryModel>(await Request.Content.ReadAsStringAsync() + "}}");
+                //处理错误的json格式
+                if (contentStr.Substring(contentStr.IndexOf("\"fdr\":["), 8) != "\"fdr\":[[")
+                {
+                    contentStr = contentStr.Replace("\"fdr\":[", "\"fdr\":[[") + "}}";
+                }
+                model = Newtonsoft.Json.JsonConvert.DeserializeObject<TranslateEimsSMSReportQueryModel>(contentStr);
             }
 
             LoggerHelper.Info(string.Format(model.rpts.tid + "短信状态报告type：{0},rpt_num:{1},sdrCount:{2},fdrCount:{3}", model.type, model.rpt_num, model.rpts.sdr.Count, model.rpts.fdr.Count));
@@ -200,13 +221,14 @@ namespace Unitoys.WebApi.Controllers
                             string userToken = WebUtil.GetApiKeyByTel(entity.Fm);
                             if (!string.IsNullOrEmpty(userToken))
                             {
-                                j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送成功", "SMSSendResult", new Dictionary<string, string>()
+                                j.Push_all_alias_message("aixiaoqi" + userToken, "短信发送成功", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
                                     {"Status",(int)entity.Status + ""},
                                     {"SMSID",entity.ID.ToString()}
                                 });
                             }
+                            return Ok(new { status = 1, msg = "" });
                         }
                     }
                 }
@@ -225,17 +247,18 @@ namespace Unitoys.WebApi.Controllers
                         string userToken = WebUtil.GetApiKeyByTel(entity.Fm);
                         if (!string.IsNullOrEmpty(userToken))
                         {
-                            j.Push_all_alias_message("aixiaoqi" + entity.Fm, "短信发送失败", "SMSSendResult", new Dictionary<string, string>()
+                            j.Push_all_alias_message("aixiaoqi" + userToken, "短信发送失败", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
                                     {"Status",(int)entity.Status + ""},
                                     {"SMSID",entity.ID.ToString()}
                                 });
                         }
+                        return Ok(new { status = 1, msg = "" });
                     }
                 }
             }
-            return Ok(new { status = 1, msg = "" });
+            return Ok(new { status = 0, msg = "" });
         }
 
         /// <summary>

@@ -128,7 +128,8 @@ namespace Unitoys.WebApi.Controllers
                            LogoPic = packageResult.UT_Country != null ? packageResult.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.Pic.GetPackageCompleteUrl(),
                            ExpireDays = packageResult.ExpireDays.ToString(),
                            Features = packageResult.Features,
-                           Details = packageResult.Details
+                           Details = packageResult.Details,
+                           IsCanBuyMultiple = packageResult.IsCanBuyMultiple
                        };
             return Ok(new { status = 1, data = new { list = data } });
         }

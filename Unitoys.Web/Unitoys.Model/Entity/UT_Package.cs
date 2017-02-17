@@ -78,6 +78,10 @@ namespace Unitoys.Model
         /// </summary>
         public int DisplayOrder { get; set; }
         /// <summary>
+        /// 是否能购买多个
+        /// </summary>
+        public bool IsCanBuyMultiple { get; set; }
+        /// <summary>
         /// 分类
         /// </summary>
         public CategoryType Category { get; set; }

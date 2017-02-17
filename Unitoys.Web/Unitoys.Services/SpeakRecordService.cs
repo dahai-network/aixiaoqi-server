@@ -187,7 +187,7 @@ namespace Unitoys.Services
                         userBill.CreateDate = CommonHelper.GetDateTimeInt();
                         userBill.BillType = 0; //支出
                         userBill.PayType = 4; //扣话费
-                        userBill.Descr = string.Format("拨打电话：{0}（{1}分钟）", calledTelNum, userAmountCallSessionTimeMinutes);
+                        userBill.Descr = string.Format("拨打:{0}（{1}分钟）", calledTelNum, userAmountCallSessionTimeMinutes);
 
                         db.UT_UserBill.Add(userBill);
                     }

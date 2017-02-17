@@ -66,6 +66,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                Features = i.Features,
                                Details = i.Details,
                                DisplayOrder = i.DisplayOrder,
+                               IsCanBuyMultiple = i.IsCanBuyMultiple,
                                //Category=i.Category
                            };
 
@@ -128,6 +129,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.Details = model.Details;
                 package.DisplayOrder = model.DisplayOrder;
                 package.Category = model.Category;
+                package.IsCanBuyMultiple = model.IsCanBuyMultiple;
 
                 if (await _packageService.InsertAsync(package))
                 {
@@ -203,6 +205,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.Details = model.Details;
                     package.DisplayOrder = model.DisplayOrder;
                     package.Category = model.Category;
+                    package.IsCanBuyMultiple = model.IsCanBuyMultiple;
 
                     if (await _packageService.UpdateAsync(package))
                     {

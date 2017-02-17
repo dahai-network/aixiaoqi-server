@@ -87,6 +87,9 @@ namespace Unitoys.WebApi.Controllers
                         case 2:
                             return Ok(new StatusCodeRes(StatusCodeType.套餐不可用_请选择其他套餐, "套餐不可用，请选择其他套餐"));
                             break;
+                        case 3:
+                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "该套餐不允许购买多个"));
+                            break;
                         default:
                             return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
                             break;
@@ -265,7 +268,7 @@ namespace Unitoys.WebApi.Controllers
                 ActivationDate = orderResult.ActivationDate.HasValue ? orderResult.ActivationDate.Value.ToString() : "",
                 LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
                 PaymentMethod = (int)orderResult.PaymentMethod + "",
-                LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString()
+                LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString(),
             };
             return Ok(new { status = 1, data = new { list = data } });
         }
