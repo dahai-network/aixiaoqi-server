@@ -586,13 +586,13 @@ namespace Unitoys.WebApi.Controllers
                 {
                     if (!string.IsNullOrEmpty(userToken))
                     {
-                        j.Push_android_alias_message("aixiaoqi" + entity.To, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
+                        j.Push_android_alias_message("aixiaoqi" + userToken, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.Fm},
                                     {"SMSContent",entity.SMSContent},
                                     {"SMSID",entity.ID.ToString()}
                                 });
-                        j.Push_ios_alias_alert("aixiaoqi" + entity.To, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
+                        j.Push_ios_alias_alert("aixiaoqi" + userToken, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
                         {
                             {"Tel",entity.Fm},
                             {"SMSContent",entity.SMSContent},
