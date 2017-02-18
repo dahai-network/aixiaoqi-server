@@ -75,8 +75,6 @@ namespace Unitoys.WebApi.Controllers
 
             var currentUser = WebUtil.GetApiUserSession();
 
-
-
             UT_SMS entity = new UT_SMS()
             {
                 UserId = currentUser.ID,
@@ -615,6 +613,13 @@ namespace Unitoys.WebApi.Controllers
                                     {"SMSContent",entity.SMSContent},
                                     {"SMSID",entity.ID.ToString()}
                                 });
+                        //IOS确认不需要在新短信接收自定义消息
+                        //j.Push_all_alias_message("aixiaoqi" + userToken, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
+                        //        {
+                        //            {"Tel",entity.Fm},
+                        //            {"SMSContent",entity.SMSContent},
+                        //            {"SMSID",entity.ID.ToString()}
+                        //        });
                         j.Push_ios_alias_alert("aixiaoqi" + userToken, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
                         {
                             {"Tel",entity.Fm},

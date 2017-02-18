@@ -107,7 +107,12 @@
     function setDateRange(interval, number) {
         var today = new Date();
 
-        $('#endSMSTime').datebox('setValue', today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate()+1));
+        if (number == 0) {
+            $('#endSMSTime').datebox('setValue', today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() + 1));
+        }
+        else {
+            $('#endSMSTime').datebox('setValue', today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate()));
+        }
 
         var dateEnd = DateAdd(interval, number, today);
         var year = dateEnd.getFullYear();
@@ -132,7 +137,6 @@
         *---------------End  DateAdd(interval,number,date)  -----------------
         */
     function DateAdd(interval, number, date) {
-
         switch (interval) {
             case "y": {
                 date.setFullYear(date.getFullYear() + number);

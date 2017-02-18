@@ -108,7 +108,7 @@ namespace Unitoys.WebApi.Controllers
                 IccId = IccId,
                 TId = TId,
                 IsRead = true,
-                UpdateDate = CommonHelper.GetDateTimeInt()
+                UpdateDate =0// CommonHelper.GetDateTimeInt()
             };
 
             if (await _smsService.InsertAsync(entity))
@@ -182,7 +182,6 @@ namespace Unitoys.WebApi.Controllers
 
             EimsApi api = new EimsApi();
 
-            int TId = CommonHelper.GetDateTimeInt();
             string DevName = null;
             string Port = null;
             string IccId = null;
@@ -224,7 +223,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 new  SMSTaskModel()
                 {
-                tid=TId,
+                tid=entity.TId.Value,
                 devname=DevName,
                 port=Port,
                 iccid=IccId,
@@ -234,7 +233,8 @@ namespace Unitoys.WebApi.Controllers
                 }
             };
 
-            entity.Status = SMSStatusType.Error;
+            entity.SMSTime = CommonHelper.GetDateTimeInt();
+            entity.Status = SMSStatusType.Int;
             entity.UpdateDate = CommonHelper.GetDateTimeInt();
 
             if (await _smsService.UpdateAsync(entity))
@@ -251,7 +251,7 @@ namespace Unitoys.WebApi.Controllers
                                 status = 1,
                                 data = new
                                 {
-                                    tid = TId
+                                    tid = entity.TId.Value
                                 }
                             });
                         }
@@ -277,7 +277,7 @@ namespace Unitoys.WebApi.Controllers
                     msg = "失败",
                     data = new
                     {
-                        tid = TId
+                        tid = entity.TId.Value
                     }
                 });
             }
@@ -287,7 +287,7 @@ namespace Unitoys.WebApi.Controllers
                 msg = "失败",
                 data = new
                 {
-                    tid = TId
+                    tid = entity.TId.Value
                 }
             });
         }
