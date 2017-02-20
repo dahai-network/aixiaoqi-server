@@ -622,6 +622,7 @@ namespace Unitoys.WebApi.Controllers
                         //        });
                         j.Push_ios_alias_alert("aixiaoqi" + userToken, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
                         {
+                            {"alertType","SMSReceiveNew"},
                             {"Tel",entity.Fm},
                             {"SMSContent",entity.SMSContent},
                             {"SMSID",entity.ID.ToString()}
