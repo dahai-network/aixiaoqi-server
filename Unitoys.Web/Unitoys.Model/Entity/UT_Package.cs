@@ -46,6 +46,10 @@ namespace Unitoys.Model
         /// </summary>
         public string Details { get; set; }
         /// <summary>
+        /// 使用简介
+        /// </summary>
+        public string UseDescr { get; set; }
+        /// <summary>
         /// 图片
         /// </summary>
         public string Pic { get; set; }

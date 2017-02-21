@@ -186,7 +186,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     contentStr = contentStr.Replace("\"fdr\":[", "\"fdr\":[[") + "}}";
                 }
-                model = Newtonsoft.Json.JsonConvert.DeserializeObject<TranslateEimsSMSReportQueryModel>(contentStr);
+                model = await Newtonsoft.Json.JsonConvert.DeserializeObjectAsync<TranslateEimsSMSReportQueryModel>(contentStr);
             }
 
             LoggerHelper.Info(string.Format(model.rpts.tid + "短信状态报告type：{0},rpt_num:{1},sdrCount:{2},fdrCount:{3}", model.type, model.rpt_num, model.rpts.sdr.Count, model.rpts.fdr.Count));
@@ -607,19 +607,14 @@ namespace Unitoys.WebApi.Controllers
                 {
                     if (!string.IsNullOrEmpty(userToken))
                     {
+                        //IOS确认不需要在新短信接收自定义消息
                         j.Push_android_alias_message("aixiaoqi" + userToken, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.Fm},
                                     {"SMSContent",entity.SMSContent},
                                     {"SMSID",entity.ID.ToString()}
                                 });
-                        //IOS确认不需要在新短信接收自定义消息
-                        //j.Push_all_alias_message("aixiaoqi" + userToken, "收到" + entity.Fm + "短信", "SMSReceiveNew", new Dictionary<string, string>()
-                        //        {
-                        //            {"Tel",entity.Fm},
-                        //            {"SMSContent",entity.SMSContent},
-                        //            {"SMSID",entity.ID.ToString()}
-                        //        });
+
                         j.Push_ios_alias_alert("aixiaoqi" + userToken, "有一条新短信", "有一条新短信", new Dictionary<string, string>()
                         {
                             {"alertType","SMSReceiveNew"},

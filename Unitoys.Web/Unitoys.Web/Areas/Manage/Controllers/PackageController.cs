@@ -65,6 +65,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                Operators = i.Operators,
                                Features = i.Features,
                                Details = i.Details,
+                               UseDescr = i.UseDescr,
                                DisplayOrder = i.DisplayOrder,
                                IsCanBuyMultiple = i.IsCanBuyMultiple,
                                //Category=i.Category
@@ -127,6 +128,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.Operators = model.Operators;
                 package.Features = model.Features;
                 package.Details = model.Details;
+                package.UseDescr = model.UseDescr;
                 package.DisplayOrder = model.DisplayOrder;
                 package.Category = model.Category;
                 package.IsCanBuyMultiple = model.IsCanBuyMultiple;
@@ -203,6 +205,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.CallMinutes = model.CallMinutes;
                     package.Features = model.Features;
                     package.Details = model.Details;
+                    package.UseDescr = model.UseDescr;
                     package.DisplayOrder = model.DisplayOrder;
                     package.Category = model.Category;
                     package.IsCanBuyMultiple = model.IsCanBuyMultiple;

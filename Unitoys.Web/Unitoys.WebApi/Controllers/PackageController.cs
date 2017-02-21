@@ -129,6 +129,7 @@ namespace Unitoys.WebApi.Controllers
                            ExpireDays = packageResult.ExpireDays.ToString(),
                            Features = packageResult.Features,
                            Details = packageResult.Details,
+                           UseDescr = packageResult.UseDescr,
                            IsCanBuyMultiple = packageResult.IsCanBuyMultiple
                        };
             return Ok(new { status = 1, data = new { list = data } });
