@@ -45,6 +45,7 @@ namespace Unitoys.Ioc
             Kernel.Bind<IUserLoginRecordService>().To<UserLoginInfoService>();
             Kernel.Bind<IDeviceGoipService>().To<DeviceGoipService>();
             Kernel.Bind<IDeviceBraceletService>().To<DeviceBraceletService>();
+            Kernel.Bind<IDeviceBraceletConnectRecordService>().To<DeviceBraceletConnectRecordService>();
             Kernel.Bind<IOrderService>().To<OrderService>();
             Kernel.Bind<IOrderUsageService>().To<OrderUsageService>();
             Kernel.Bind<ISpeakRecordService>().To<SpeakRecordService>();

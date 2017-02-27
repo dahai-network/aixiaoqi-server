@@ -120,7 +120,7 @@ namespace Unitoys.WebApi.Controllers
                                 Weight = userShape == null ? "" : userShape.Weight.ToString(),
                                 MovingTarget = userShape == null ? "" : userShape.MovingTarget.ToString(),
                                 BraceletIMEI = deviceBracelet == null ? "" : deviceBracelet.IMEI.ToString(),
-                                BraceletVersion = deviceBracelet == null ? "" : deviceBracelet.Version.ToString(),
+                                BraceletVersion = deviceBracelet == null ? "" : deviceBracelet.Version == null ? "" : deviceBracelet.Version,
                                 NotificaCall = notificaCall == null ? "0" : ((int)notificaCall.Status) + "",
                                 NotificaSMS = notificaSMS == null ? "0" : ((int)notificaSMS.Status) + "",
                                 NotificaWeChat = notificaWeChat == null ? "0" : ((int)notificaWeChat.Status) + "",

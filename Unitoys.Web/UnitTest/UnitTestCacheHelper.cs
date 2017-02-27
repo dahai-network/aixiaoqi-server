@@ -1,9 +1,12 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Unitoys.Core;
+using Unitoys.ESIM_MVNO;
+using Unitoys.ESIM_MVNO.Model;
 
 namespace UnitTest
 {
+//FEFEFE5CC04CE0FBCFAB47A62E7632CB9CCEB5F8626687F8878C86D4CBE0495C19C4AE29CA3BCFC0F9C5529D51B67E27430157ECF4B92E44AD3AA0A891C250ED569F7587DF4058135E535397435FA5984F8F885A5AF81BBE772EA4397ECE21B3F840C8FB9D98CBFF1934B5ED686B00FE58845EE63B294D76123839A527DD42A4E21CD35F325EBB4AA2EC5C
     [TestClass]
     public class UnitTest1
     {
@@ -70,6 +73,45 @@ namespace UnitTest
             absoluteExpiration = System.Web.Caching.Cache.NoAbsoluteExpiration;
             slidingExpiration = System.Web.Caching.Cache.NoSlidingExpiration;
             //Unitoys.Core.CacheHelper.Set("key5", "444", new string[] { "key2" }, RunOptionsUpdateCallback);
+        }
+
+
+        [TestMethod]
+        public void TestSimDataSTK()
+        {
+            //SimDataSTK simdata = new SimDataSTK("", new WriteCardSTK()
+            //{
+            //    iccid = "89860113937500391111",
+            //    imsi = "460013833979554",
+            //    ki = "F8684A722087E1B76D5E410B994B2222",
+            //    //SMSC = "8613800773500F",
+            //    //OP = "71CB7A4ABEEC399E06F6FBEA550D3333",
+            //    opc = "71CB7A4ABEEC399E06F6FBEA550D3333",
+            //    //ISDN = "18012341234F",
+            //    //SMSP = "FFFFFFFFFFFFFFFFFFFFFFFFFDFFFFFFFFFFFFFFFFFFFFFFFF0891683110700205F0FFFFFFFFFFFF",
+            //    //MSISDN = "FFFFFFFFFFFFFFFFFFFFFFFFFFFF0891688186888888F8FFFFFFFFFF",
+            //    //PREFER_NETWORK = "460F01FFFFFFFFFFFFFFFFFFFF",
+            //    //EXP_DATE = "1512080000000000",
+            //});
+            //string writeData = simdata.GetData();
+
+            SimDataSTK simdata = new SimDataSTK("", new WriteCardSTK()
+            {
+                iccid = "89852031600002515631",
+                imsi = "454030220251563",
+                ki = "7B173A5B0DABE9564AACF92421A1EE0C",
+                //SMSC = "8613800773500F",
+                //OP = "71CB7A4ABEEC399E06F6FBEA550D3333",
+                opc = "D8314DEF156D27EA9B2ABB4D525991CD",
+                PREFER_NETWORK = "268F01214F01214F06204F04230F03255F03208F01262F02250F99232F05232F10202F05272F05272F02234F20206F20242F05270F77219F02246F03226F01238F06222F99228F01240F02286F02244F05244F21260F06",
+                //ISDN = "18012341234F",
+                //SMSP = "FFFFFFFFFFFFFFFFFFFFFFFFFDFFFFFFFFFFFFFFFFFFFFFFFF0891683110700205F0FFFFFFFFFFFF",
+                //MSISDN = "FFFFFFFFFFFFFFFFFFFFFFFFFFFF0891688186888888F8FFFFFFFFFF",
+                //PREFER_NETWORK = "460F01FFFFFFFFFFFFFFFFFFFF",
+                //EXP_DATE = "1512080000000000",
+            });
+            string writeData = simdata.GetData();
+            Console.WriteLine(writeData);
         }
     }
 }

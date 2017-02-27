@@ -48,7 +48,15 @@ namespace Unitoys.WebApi.Controllers
         public async Task<IHttpActionResult> Send(SendSMSBindingModelForContent model)
         {
             model.SMSContent = System.Web.HttpUtility.UrlDecode(model.SMSContent, System.Text.Encoding.UTF8);
+            model.To = System.Web.HttpUtility.UrlDecode(model.To, System.Text.Encoding.UTF8);
             long TryParseInt = 0;
+
+            LoggerHelper.Info(model.To);
+            foreach (var item in model.To.Split(','))
+            {
+                LoggerHelper.Info("item：" + item);
+                LoggerHelper.Info("item TryParse：" + Int64.TryParse(item, out TryParseInt));
+            }
 
             if (model.To.Split(',').Any(x => !Int64.TryParse(x, out TryParseInt)))
             {
@@ -108,7 +116,7 @@ namespace Unitoys.WebApi.Controllers
                 IccId = IccId,
                 TId = TId,
                 IsRead = true,
-                UpdateDate =0// CommonHelper.GetDateTimeInt()
+                UpdateDate = 0// CommonHelper.GetDateTimeInt()
             };
 
             if (await _smsService.InsertAsync(entity))

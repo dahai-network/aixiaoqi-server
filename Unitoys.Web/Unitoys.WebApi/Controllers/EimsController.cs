@@ -210,7 +210,7 @@ namespace Unitoys.WebApi.Controllers
 
                     var to = item[1];
 
-                    var entity = await _smsService.GetEntityFirstOrDefaultAsync(model.rpts.tid, to, SMSStatusType.Int);
+                    var entity = await _smsService.GetEntityFirstOrDefaultAsync(model.rpts.tid, string.Join(",", model.rpts.sdr.Select(x => x[1])), SMSStatusType.Int);
                     if (entity != null)
                     {
                         entity.Status = SMSStatusType.Success;
@@ -236,7 +236,7 @@ namespace Unitoys.WebApi.Controllers
 
                     var to = item[1];
 
-                    var entity = await _smsService.GetEntityFirstOrDefaultAsync(model.rpts.tid, to, SMSStatusType.Int);
+                    var entity = await _smsService.GetEntityFirstOrDefaultAsync(model.rpts.tid, string.Join(",", model.rpts.fdr.Select(x => x[1])), SMSStatusType.Int);
                     if (entity != null)
                     {
                         entity.Status = SMSStatusType.Error;

@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "手环连接记录记录";
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="easyui-layout" fit="true">
+    <div data-options="region:'north',border:false" style="height:90px">
+        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10px;">
+            <form id="ff" method="post">
+                <span>设备号:</span>
+                <input id="iMEI" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>手机号:</span>
+                <input id="tel" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>连接状态:</span>
+                <select id="isOnLinessss" class="easyui-combobox" name="isOnLinessss" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true">在线</option>
+                    <option value="false">离线</option>
+                </select>
+                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="grid" class="easyui-datagrid" title="手环连接记录管理" style="width:100%;height:100%"
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/DeviceBraceletConnectRecord/GetList',method:'get',pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'Tel',width:120">用户名</th>
+                    <th data-options="field:'SessionId',width:120">TCP会话</th>
+                    <th data-options="field:'IMEI',width:120">设备号</th>
+                    <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">创建时间</th>
+                    @*<th data-options="field:'ConnectDate',width:100,formatter:formatDateTimeInt">连接时间</th>*@
+                    <th data-options="field:'DisconnectDate',width:100,formatter:formatDateTimeInt">断开时间</th>
+                    <th data-options="field:'ConnectDuration',width:100">连接时长</th>
+                    <th data-options="field:'EjoinDevNameAndPort',width:100">分配设备</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    var grid;
+    var dlg_Edit;
+    var dlg_Edit_form;
+
+    $(function () {
+        grid = $("#grid");
+        dlg_Edit = $("#dlg-edit").dialog();
+        dlg_Edit_form = dlg_Edit.find('form');
+    })
+
+    function doSearch() {
+        $("#grid").datagrid('load', {
+            tel: $("#tel").val() == null ? "" : $("#tel").val(),
+            iMEI: $("#iMEI").val() == null ? "" : $("#iMEI").val(),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
+            isOnline: $("#isOnLinessss").combobox("getValue"),
+        });
+    }
+</script>

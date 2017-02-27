@@ -62,6 +62,9 @@ namespace Unitoys.Model
             this.HasMany(t => t.UT_GiftCard).WithOptional(t => t.UT_Users).HasForeignKey(t => t.UserId);
             //一正设备端口一对多
             this.HasMany(t => t.UT_EjoinDevSlot).WithOptional(t => t.UT_Users).HasForeignKey(t => t.UserId);
+            //手环设备连接记录表1对多
+            this.HasMany(t => t.UT_DeviceBraceletConnectRecord).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
+
             this.Property(t => t.PassWord).HasMaxLength(32).IsRequired();
 
             this.Property(t => t.NickName).HasMaxLength(20).IsOptional();

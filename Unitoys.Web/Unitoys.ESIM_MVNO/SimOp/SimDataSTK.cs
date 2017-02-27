@@ -23,7 +23,7 @@ namespace Unitoys.ESIM_MVNO
             //1.敏感数据加密
             writeCardSTK.ki = DesHelper.DesEncodeECB(writeCardSTK.ki, 敏感数据加密密钥);
             writeCardSTK.opc = DesHelper.DesEncodeECB(writeCardSTK.opc, 敏感数据加密密钥);
-            //writeCardSTK.EXP_DATE = Encrypt_DES16(EXP_DATE, 敏感数据加密密钥);
+            //writeCardSTK.EXP_DATE = DesHelper.DesEncodeECB(writeCardSTK.EXP_DATE, 敏感数据加密密钥);
 
             //获取组装的TLV格式16进制
             string writeCardSTKTlvHex = GetWriteCardSTKTlv(writeCardSTK);
@@ -55,7 +55,10 @@ namespace Unitoys.ESIM_MVNO
             sb.Append("110A" + ReverseStrTwo(model.iccid));
             sb.Append("1209" + "08" + ReverseStrTwo("9" + model.imsi));
             sb.Append("1310" + model.ki);
-            sb.Append("1800");//+ model.SMSP
+            if (!string.IsNullOrEmpty(model.SMSP))
+            {
+                sb.Append("18" + DataHelper.DecToHex(model.SMSP.Length / 2) + model.SMSP);//+ model.SMSP
+            }
             sb.Append("1500");
             sb.Append("1610" + model.opc);
             if (!string.IsNullOrEmpty(model.PREFER_NETWORK))
@@ -64,7 +67,11 @@ namespace Unitoys.ESIM_MVNO
             }
             else
             {
-                sb.Append("1A00");
+                //sb.Append("1A00");
+            }
+            if (!string.IsNullOrEmpty(model.EXP_DATE))
+            {
+                sb.Append("1B08" + model.EXP_DATE);
             }
             return sb.ToString();
         }

@@ -59,6 +59,8 @@ namespace Unitoys.Services
                     order.RemainingCallMinutes = package.CallMinutes;
                     order.PackageFeatures = package.Features;
                     order.PackageDetails = package.Details;
+                    order.PackageIsSupport4G = package.IsSupport4G;
+                    order.PackageIsApn = package.IsApn;
                     //order.PayUserAmount = PayUserAmount;
                     //order.IsPayUserAmount = IsPayUserAmount;
                     order.PaymentMethod = PaymentMethod;
@@ -408,7 +410,7 @@ namespace Unitoys.Services
         /// <param name="userId">用户</param>
         /// <param name="payStatus">支付状态</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus)
+        public async Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -420,6 +422,11 @@ namespace Unitoys.Services
                 }
                 query = query.Where(x => x.OrderStatus != OrderStatusType.Cancel);
                 query = query.Where(x => x.UserId == userId);
+
+                if (PackageCategory.HasValue)
+                {
+                    query = query.Where(x => x.PackageCategory == PackageCategory.Value);
+                }
 
                 var result = await query.OrderByDescending(x => x.OrderStatus != OrderStatusType.HasExpired).ThenByDescending(x => x.OrderDate).Skip((page - 1) * row).Take(row).ToListAsync();
 

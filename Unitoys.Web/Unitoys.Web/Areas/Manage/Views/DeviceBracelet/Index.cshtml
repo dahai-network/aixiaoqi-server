@@ -29,7 +29,10 @@
                     <th data-options="field:'IMEI',width:150">设备号</th>
                     <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">绑定时间</th>
                     <th data-options="field:'UpdateDate',width:100,formatter:formatDateTimeInt">更新时间</th>
+                    <th data-options="field:'ConnectDate',width:100,formatter:formatDateTimeInt">连接时间</th>
                     <th data-options="field:'Version',width:100">固件版本号</th>
+                    <th data-options="field:'Power',width:100">电量</th>
+                    <th data-options="field:'DeviceType',width:100,formatter:formatDeviceType">设备类型</th>
                     <th data-options="field:'Tel',width:100">绑定用户</th>
                 </tr>
             </thead>
@@ -49,6 +52,15 @@
     $(function () {
         grid = $("#grid").datagrid();
     })
+    function formatDeviceType(value, rec, index) {
+        if (value == 0) {
+            return "手环";
+        }
+        if (value == 1) {
+            return "钥匙扣";
+        }
+        return "未识别的设备";
+    }
 
 
     function doSearch() {

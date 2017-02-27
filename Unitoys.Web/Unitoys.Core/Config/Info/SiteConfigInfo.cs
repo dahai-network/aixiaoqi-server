@@ -97,6 +97,14 @@ namespace Unitoys.Core.Config
         /// </summary>
         public string UserAgreementUrl { get; set; }
         /// <summary>
+        /// 双卡双待教程地址
+        /// </summary>
+        public string DualSimStandbyTutorialUrl { get; set; }
+        /// <summary>
+        /// 出国前教程地址
+        /// </summary>
+        public string BeforeGoingAbroadTutorialUrl { get; set; }
+        /// <summary>
         /// 更新配置的时间戳
         /// </summary>
         public string UpdateConfigTime { get; set; }

@@ -155,6 +155,15 @@ namespace Unitoys.Core.Security
 
         #endregion
 
+        #region DeviceBraceletConnectRecord
+
+        public const string Can_Add_DeviceBraceletConnectRecord = "Can_Add_DeviceBraceletConnectRecord";
+        public const string Can_View_DeviceBraceletConnectRecord = "Can_View_DeviceBraceletConnectRecord";
+        public const string Can_Modify_DeviceBraceletConnectRecord = "Can_Modify_DeviceBraceletConnectRecord";
+        public const string Can_Delete_DeviceBraceletConnectRecord = "Can_Delete_DeviceBraceletConnectRecord";
+
+        #endregion
+
         #region Feedback
 
         public const string Can_Add_Feedback = "Can_Add_Feedback";
@@ -411,6 +420,12 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_OperationRecord = new Tuple<string, string, int>("Can_Modify_OperationRecord", "修改操作记录", 28);
                 Tuple<string, string, int> Can_Delete_OperationRecord = new Tuple<string, string, int>("Can_Delete_OperationRecord", "删除操作记录", 28);
 
+
+                Tuple<string, string, int> Can_Add_DeviceBraceletConnectRecord = new Tuple<string, string, int>("Can_Add_DeviceBraceletConnectRecord", "添加手环设备连接记录", 29);
+                Tuple<string, string, int> Can_View_DeviceBraceletConnectRecord = new Tuple<string, string, int>("Can_View_DeviceBraceletConnectRecord", "查看手环设备连接记录", 29);
+                Tuple<string, string, int> Can_Modify_DeviceBraceletConnectRecord = new Tuple<string, string, int>("Can_Modify_DeviceBraceletConnectRecord", "修改手环设备连接记录", 29);
+                Tuple<string, string, int> Can_Delete_DeviceBraceletConnectRecord = new Tuple<string, string, int>("Can_Delete_DeviceBraceletConnectRecord", "删除手环设备连接记录", 29);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -550,6 +565,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_OperationRecord);
                 returnList.Add(Can_Modify_OperationRecord);
                 returnList.Add(Can_Delete_OperationRecord);
+
+                returnList.Add(Can_Add_DeviceBraceletConnectRecord);
+                returnList.Add(Can_View_DeviceBraceletConnectRecord);
+                returnList.Add(Can_Modify_DeviceBraceletConnectRecord);
+                returnList.Add(Can_Delete_DeviceBraceletConnectRecord);
                 #endregion
 
                 return returnList;

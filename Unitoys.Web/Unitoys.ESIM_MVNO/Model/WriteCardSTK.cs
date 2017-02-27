@@ -40,5 +40,6 @@ namespace Unitoys.ESIM_MVNO.Model
         /// 同：移动写卡PLMP
         /// </summary>
         public string PREFER_NETWORK { get; set; }
+        public string EXP_DATE { get; set; }
     }
 }

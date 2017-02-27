@@ -164,7 +164,7 @@ namespace Unitoys.WebApi.Controllers
             model.PageSize = model.PageSize ?? 10;
 
             //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
-            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment);
+            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment, model.PackageCategory);
 
             var totalRows = searchOrders.Key;
 
@@ -253,6 +253,8 @@ namespace Unitoys.WebApi.Controllers
                 PackageCategory = (int)orderResult.PackageCategory + "",
                 PackageFeatures = orderResult.PackageFeatures,
                 PackageDetails = orderResult.PackageDetails,
+                PackageIsSupport4G = orderResult.PackageIsSupport4G,
+                PackageIsApn = orderResult.PackageIsApn,
                 Flow = orderResult.Flow,
                 Quantity = orderResult.Quantity.ToString(),
                 UnitPrice = orderResult.UnitPrice,
@@ -312,7 +314,14 @@ namespace Unitoys.WebApi.Controllers
                         {
                             //2.购买订单卡
                             //var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
-                            var result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity * package.ExpireDays);
+
+                            ResponseModel<BuyProduct> result = null;
+
+                            //如果是不能购买多个的套餐则认为有效天数字段只是用于描述
+                            if (package.IsCanBuyMultiple)
+                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity * package.ExpireDays);
+                            else
+                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity);
 
                             if (result.status != "1")
                             {

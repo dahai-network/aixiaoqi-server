@@ -229,7 +229,6 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetAllMessage(int pageNumber = 1, int pageSize = 10, string country = "")
         {
-            
             //查询Expression
             Expression<Func<UT_Message, bool>> exp ;
             if (country == "" || country == null)

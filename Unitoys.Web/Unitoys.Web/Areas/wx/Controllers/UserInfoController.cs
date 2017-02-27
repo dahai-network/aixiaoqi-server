@@ -64,10 +64,10 @@ namespace Unitoys.Web.Areas.wx.Controllers
         {
             //var result = AccessTokenContainer.TryGetAccessToken(appId, appSecret);
             var openid = WebHelper.GetCookie("openid");
-            
+
             if (openid == "") return Redirect("/wx/oauth2");
 
-            UT_Users user =await _userService.GetEntityByOpenIdAsync(openid);
+            UT_Users user = await _userService.GetEntityByOpenIdAsync(openid);
 
             ViewBag.Amount = user.Amount;
             ViewBag.Tel = user.Tel;
@@ -92,7 +92,7 @@ namespace Unitoys.Web.Areas.wx.Controllers
 
 
             //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
-            var searchOrders = await _orderService.GetUserOrderList(1, 100, user.ID, PayStatusType.YesPayment);
+            var searchOrders = await _orderService.GetUserOrderList(1, 100, user.ID, PayStatusType.YesPayment, null);
 
             IEnumerable<RazorUserOrder> result = from i in searchOrders.Value
                                                  select new RazorUserOrder
@@ -127,7 +127,7 @@ namespace Unitoys.Web.Areas.wx.Controllers
             }
             else if (packageResult.UserId != user.ID)
             {
-                return Content("订单不属于此用户！"); 
+                return Content("订单不属于此用户！");
             }
 
             ViewBag.LastCanActivationDate = CommonHelper.GetTime(packageResult.OrderDate.ToString()).AddMonths(6).ToString("yyyy年MM月dd日");
@@ -151,11 +151,11 @@ namespace Unitoys.Web.Areas.wx.Controllers
             if (openid == "") return Redirect("/wx/oauth2");
             UT_Users user = await _userService.GetEntityByOpenIdAsync(openid);
 
-            var result =await _userBillService.GetEntitiesForPagingAsync(1, 100, x => new { x.CreateDate }, "desc", a=>a.UserId == user.ID);
+            var result = await _userBillService.GetEntitiesForPagingAsync(1, 100, x => new { x.CreateDate }, "desc", a => a.UserId == user.ID);
 
             return View(result);
         }
-        
+
         /// <summary>
         /// 获取订单有效天数的描述
         /// </summary>
@@ -183,7 +183,7 @@ namespace Unitoys.Web.Areas.wx.Controllers
                                          ? (i.ExpireDays * i.Quantity).ToString()
                                          : CommonHelper.GetTime(i.EffectiveDate.Value.ToString()) + " " + (i.ExpireDays * i.Quantity).ToString();
         }
-	}
+    }
     public class RazorUserOrder
     {
         public Guid OrderId { get; set; }

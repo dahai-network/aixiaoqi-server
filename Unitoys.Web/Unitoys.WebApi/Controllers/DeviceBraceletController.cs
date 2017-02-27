@@ -44,7 +44,8 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                return Ok(new StatusCodeRes(StatusCodeType.失败, "empty"));
+                //return Ok(new StatusCodeRes(StatusCodeType.成功, "empty") {});
+                return Ok(new { status = 1, msg = "empty", data = new { } });
             }
         }
 
@@ -120,7 +121,7 @@ namespace Unitoys.WebApi.Controllers
             UT_DeviceBracelet entity = new UT_DeviceBracelet()
             {
                 IMEI = model.IMEI,
-                Version = string.IsNullOrEmpty(model.Version) ? "0" : model.Version,
+                Version = "", //string.IsNullOrEmpty(model.Version) ? "0" : model.Version,
                 CreateDate = CommonHelper.GetDateTimeInt(),
                 UserId = currentUser.ID
             };
@@ -134,16 +135,27 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
-        /// 更新版本号
+        /// 连接信息
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IHttpActionResult> UpdateVersion([FromBody]DeviceBraceletBindingModels model)
+        public async Task<IHttpActionResult> UpdateConnectInfo([FromBody]DeviceBraceletConnectInfoModels model)
         {
             model.Version = string.IsNullOrEmpty(model.Version) ? "0" : model.Version;
-
-            switch (await UpdateVersion(model.Version))
+            if (string.IsNullOrEmpty(model.Power))
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "电量为空"));
+            }
+            if (string.IsNullOrEmpty(model.Version))
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "版本号为空"));
+            }
+            if (!model.DeviceType.HasValue)
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "设备类型为空"));
+            }
+            switch (await UpdateVersion(model))
             {
                 case 0:
                     return Ok(new StatusCodeRes(StatusCodeType.失败, "更新失败"));
@@ -164,7 +176,7 @@ namespace Unitoys.WebApi.Controllers
         /// </summary>
         /// <param name="version"></param>
         /// <returns>0失败/1成功/2用户未绑定设备</returns>
-        private async Task<int> UpdateVersion(string version)
+        private async Task<int> UpdateVersion(DeviceBraceletConnectInfoModels model)
         {
             var currentUser = WebUtil.GetApiUserSession();
 
@@ -173,7 +185,10 @@ namespace Unitoys.WebApi.Controllers
             if (entity != null)
             {
                 //更新设备版本号
-                entity.Version = version;
+                entity.Power = model.Power;
+                entity.ConnectDate = CommonHelper.GetDateTimeInt();
+                entity.DeviceType = model.DeviceType.Value;
+                entity.Version = model.Version;
                 entity.UpdateDate = CommonHelper.GetDateTimeInt();
 
                 return await _deviceBraceletService.UpdateAsync(entity) == true ? 1 : 0;
@@ -219,15 +234,15 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> OTA(double Version)
         {
-            switch (await UpdateVersion(Version + ""))
-            {
-                case 0:
-                    return Ok(new StatusCodeRes(StatusCodeType.失败, "更新失败"));
-                    break;
-                //case 2:
-                //    return Ok(new StatusCodeRes(StatusCodeType.用户未绑定设备, "未绑定设备"));
-                //    break;
-            }
+            //switch (await UpdateVersion(Version + ""))
+            //{
+            //    case 0:
+            //        return Ok(new StatusCodeRes(StatusCodeType.失败, "更新失败"));
+            //        break;
+            //    //case 2:
+            //    //    return Ok(new StatusCodeRes(StatusCodeType.用户未绑定设备, "未绑定设备"));
+            //    //    break;
+            //}
             if (Version < Convert.ToDouble(UTConfig.DeviceBraceletOTAConfigInfo.Version))
             {
                 return Ok(new

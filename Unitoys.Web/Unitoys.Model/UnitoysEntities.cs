@@ -74,6 +74,7 @@ namespace Unitoys.Model
         public DbSet<UT_ZCSelectionNumber> UT_ZCSelectionNumber { get; set; }
         public DbSet<UT_GiftCard> UT_GiftCard { get; set; }
         public DbSet<UT_OperationRecord> UT_OperationRecord { get; set; }
+        public DbSet<UT_DeviceBraceletConnectRecord> UT_DeviceBraceletConnectRecord { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -119,6 +120,7 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new ZCSelectionNumberConfiguration());
             modelBuilder.Configurations.Add(new GiftCardConfiguration());
             modelBuilder.Configurations.Add(new OperationRecordConfiguration());
+            modelBuilder.Configurations.Add(new DeviceBraceletConnectRecordConfiguration());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();  //表中都统一设置禁用一对多级联删除
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>(); //表中都统一设置禁用多对多级联删除

@@ -255,7 +255,11 @@ namespace Unitoys.ESIM_263mobile
 
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var responseMsg = await client.PostAsync(String.Format("http://roam.263mobile.cn:28080" + url), httpContent);
+
+            //沙箱：http://roam.263mobile.cn:28080
+            //测试：http://roam.263mobile.cn:30001
+            //正式：https://ubss.263mobile.cn:8443
+            var responseMsg = await client.PostAsync(String.Format("https://ubss.263mobile.cn:8443" + url), httpContent);
 
             if (responseMsg.IsSuccessStatusCode)
             {

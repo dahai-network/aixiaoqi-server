@@ -60,6 +60,7 @@ namespace Unitoys.ESIM_263mobile
         public string beginTime { get; set; }
         public DateTime endTime { get; set; }
         public ImsiResource imsiResource { get; set; }
+        public string fplmn { get; set; }
     }
     public class ImsiResource
     {
@@ -95,6 +96,14 @@ namespace Unitoys.ESIM_263mobile
         /// 
         /// </summary>
         public string msisdn { get; set; }
+        /// <summary>
+        /// fplmn
+        /// </summary>
+        public string[] fplmn { get; set; }
+        /// <summary>
+        /// plmn
+        /// </summary>
+        public string[] plmn { get; set; }
     }
 
     public class Remain

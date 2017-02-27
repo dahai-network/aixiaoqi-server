@@ -20,6 +20,7 @@ namespace Unitoys.Model
             this.UT_SMS = new HashSet<UT_SMS>();
             this.UT_Order = new HashSet<UT_Order>();
             this.UT_DeviceBracelet = new HashSet<UT_DeviceBracelet>();
+            this.UT_DeviceBraceletConnectRecord = new HashSet<UT_DeviceBraceletConnectRecord>();
             this.UT_Message = new HashSet<UT_Message>();
             this.UT_MessageComment = new HashSet<UT_MessageComment>();
             this.UT_MessageLike = new HashSet<UT_MessageLike>();
@@ -34,7 +35,6 @@ namespace Unitoys.Model
             this.UT_UsersConfig = new HashSet<UT_UsersConfig>();
             this.UT_OrderByZCConfirmation = new HashSet<UT_OrderByZCConfirmation>();
             this.UT_OrderByZCSelectionNumber = new HashSet<UT_OrderByZCSelectionNumber>();
-            
         }
         /// <summary>
         /// 手机号码（需要短信验证）
@@ -108,6 +108,7 @@ namespace Unitoys.Model
         public virtual ICollection<UT_SMS> UT_SMS { get; set; }
         public virtual ICollection<UT_Order> UT_Order { get; set; }
         public virtual ICollection<UT_DeviceBracelet> UT_DeviceBracelet { get; set; }
+        public virtual ICollection<UT_DeviceBraceletConnectRecord> UT_DeviceBraceletConnectRecord { get; set; }
         public virtual ICollection<UT_AlarmClock> UT_AlarmClock { get; set; }
         public virtual ICollection<UT_UsersConfig> UT_UsersConfig { get; set; }
         public virtual ICollection<UT_Sport> UT_Sport { get; set; }

@@ -34,6 +34,10 @@ namespace Unitoys.WebApi.Models
         public int? OrderStatus { get; set; }
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
+        /// <summary>
+        /// 套餐类型
+        /// </summary>
+        public CategoryType? PackageCategory { get; set; }
     }
 
     public class ActivationBindingModel

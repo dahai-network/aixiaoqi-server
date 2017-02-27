@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceBraceletConnectRecordService.cs" />
     <Compile Include="EjoinDevSlotService.cs" />
     <Compile Include="EjoinDevService.cs" />
     <Compile Include="OperationRecordService.cs" />

@@ -57,8 +57,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                ID = i.ID,
                                IMEI = i.IMEI,
                                CreateDate = i.CreateDate.ToString(),
-                               UpdateDate=i.UpdateDate.ToString(),
+                               UpdateDate = i.UpdateDate.ToString(),
                                Version = i.Version,
+                               Power = i.Power,
+                               ConnectDate = i.ConnectDate,
+                               DeviceType = i.DeviceType,
                                Tel = i.UT_Users == null ? "" : i.UT_Users.Tel,
                            };
 

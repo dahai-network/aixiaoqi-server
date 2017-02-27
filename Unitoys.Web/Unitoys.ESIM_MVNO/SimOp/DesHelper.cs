@@ -241,6 +241,14 @@ namespace Unitoys.ESIM_MVNO
         {
             try
             {
+                var dataLength = DataHelper.HexToByte(dataHex).Length;
+                if (dataLength % 8 > 0)
+                {
+                    for (int i = 0; i < 8 - dataLength % 8; i++)
+                    {
+                        dataHex += "00";
+                    }
+                }
                 byte[] in_data = DataHelper.HexToByte(dataHex);
                 byte[] DES_KEY = DataHelper.HexToByte(keyHex);
 
@@ -248,6 +256,7 @@ namespace Unitoys.ESIM_MVNO
                 desEncrypt.Mode = CipherMode.ECB;
                 //desEncrypt.Key = ASCIIEncoding.ASCII.GetBytes(str_DES_KEY);
                 desEncrypt.Key = DES_KEY;
+                desEncrypt.Padding = PaddingMode.Zeros;
 
                 byte[] R;
 
@@ -273,6 +282,27 @@ namespace Unitoys.ESIM_MVNO
             {
                 throw e;
             }
+        }
+
+        public static string DesDecryptECB(string dataHex, string keyHex)//数据和密钥为十六进制
+        {
+            byte[] shuju = DataHelper.HexToByte(dataHex);
+            byte[] keys = DataHelper.HexToByte(keyHex);
+            DES desDecrypt = new DESCryptoServiceProvider();
+            desDecrypt.Mode = CipherMode.ECB;
+            desDecrypt.Key = keys;
+            //desDecrypt.Padding = System.Security.Cryptography.PaddingMode.None;
+            desDecrypt.Padding = PaddingMode.Zeros;
+            byte[] Buffer = shuju;
+            ICryptoTransform transForm = desDecrypt.CreateDecryptor();
+            byte[] R;
+            R = transForm.TransformFinalBlock(Buffer, 0, Buffer.Length);
+            string return_str = "";
+            foreach (byte b in R)
+            {
+                return_str += b.ToString("X2");
+            }
+            return return_str;
         }
         #endregion
     }

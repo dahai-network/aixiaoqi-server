@@ -126,11 +126,15 @@ namespace Unitoys.WebApi.Controllers
                            Desction = packageResult.Desction,
                            Pic = packageResult.UT_Country != null ? packageResult.UT_Country.Pic.GetCountryPicCompleteUrl() : packageResult.Pic.GetPackageCompleteUrl(),
                            LogoPic = packageResult.UT_Country != null ? packageResult.UT_Country.LogoPic.GetPackageCompleteUrl() : packageResult.Pic.GetPackageCompleteUrl(),
+                           CountryName = packageResult.UT_Country != null ? packageResult.UT_Country.CountryName : "",
                            ExpireDays = packageResult.ExpireDays.ToString(),
                            Features = packageResult.Features,
                            Details = packageResult.Details,
                            UseDescr = packageResult.UseDescr,
-                           IsCanBuyMultiple = packageResult.IsCanBuyMultiple
+                           IsCanBuyMultiple = packageResult.IsCanBuyMultiple,
+                           IsSupport4G = packageResult.IsSupport4G,
+                           IsApn = packageResult.IsApn,
+
                        };
             return Ok(new { status = 1, data = new { list = data } });
         }

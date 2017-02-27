@@ -68,6 +68,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                UseDescr = i.UseDescr,
                                DisplayOrder = i.DisplayOrder,
                                IsCanBuyMultiple = i.IsCanBuyMultiple,
+                               IsSupport4G = i.IsSupport4G,
+                               IsApn = i.IsApn,
                                //Category=i.Category
                            };
 
@@ -132,6 +134,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.DisplayOrder = model.DisplayOrder;
                 package.Category = model.Category;
                 package.IsCanBuyMultiple = model.IsCanBuyMultiple;
+                package.IsSupport4G = model.IsSupport4G;
+                package.IsApn = model.IsApn;
 
                 if (await _packageService.InsertAsync(package))
                 {
@@ -209,6 +213,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.DisplayOrder = model.DisplayOrder;
                     package.Category = model.Category;
                     package.IsCanBuyMultiple = model.IsCanBuyMultiple;
+                    package.IsSupport4G = model.IsSupport4G;
+                    package.IsApn = model.IsApn;
 
                     if (await _packageService.UpdateAsync(package))
                     {

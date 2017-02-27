@@ -86,6 +86,14 @@ namespace Unitoys.Model
         /// </summary>
         public bool IsCanBuyMultiple { get; set; }
         /// <summary>
+        /// 是否支持4G
+        /// </summary>
+        public bool IsSupport4G { get; set; }
+        /// <summary>
+        /// 是否需要Apn
+        /// </summary>
+        public bool IsApn { get; set; }
+        /// <summary>
         /// 分类
         /// </summary>
         public CategoryType Category { get; set; }

@@ -80,6 +80,10 @@
       <Project>{1f194709-6c28-4ac1-b6b4-b36c79a3a479}</Project>
       <Name>Unitoys.ESIM_263mobile</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Unitoys.ESIM_MVNO\Unitoys.ESIM_MVNO.csproj">
+      <Project>{f5ba37e4-3816-4b60-bffe-8e03fe49510b}</Project>
+      <Name>Unitoys.ESIM_MVNO</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

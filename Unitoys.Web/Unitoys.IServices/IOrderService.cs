@@ -64,7 +64,7 @@ namespace Unitoys.IServices
         /// <param name="userId">用户</param>
         /// <param name="payStatus">支付状态</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus);
+        Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory);
 
         /// <summary>
         /// 是否包含正在使用的套餐

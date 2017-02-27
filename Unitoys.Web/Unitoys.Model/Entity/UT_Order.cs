@@ -42,6 +42,14 @@ namespace Unitoys.Model
         /// </summary>
         public string PackageDetails { get; set; }
         /// <summary>
+        /// 是否支持4G
+        /// </summary>
+        public bool PackageIsSupport4G { get; set; }
+        /// <summary>
+        /// 是否需要Apn
+        /// </summary>
+        public bool PackageIsApn { get; set; }
+        /// <summary>
         /// 套餐流量
         /// </summary>
         public int Flow { get; set; }
