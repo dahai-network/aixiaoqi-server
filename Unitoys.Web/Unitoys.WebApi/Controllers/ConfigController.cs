@@ -173,7 +173,7 @@ namespace Unitoys.WebApi.Controllers
                     userAgreementUrl = UTConfig.SiteConfig.UserAgreementUrl,
                     dualSimStandbyTutorialUrl = UTConfig.SiteConfig.DualSimStandbyTutorialUrl,
                     beforeGoingAbroadTutorialUrl = UTConfig.SiteConfig.BeforeGoingAbroadTutorialUrl,
-                    paymentOfTerms = "●(1) 先购买，后使用，不必担心费用超支\n●(2) 购买后未激活使用，可随时申请退款\n●(3) 若到达后无法使用，可随时申请退款",
+                    paymentOfTerms = "(1) 先购买，后使用，不必担心费用超支\n(2) 购买后未激活使用，可随时申请退款\n(3) 若到达后无法使用，可随时申请退款",
                     //howToUse = "●购买好爱小器手环，以及套餐后，按照如下步骤操作。\n●(1) 出国前安装“爱小器”App，登陆后点击“快速设置”，进入设置页，按照指引连接手环，激活套餐\n●(2) 出国后将手环与手机的SIM卡位置交换，即可享受无限流量\n●(3) “快速设置”页面开启电话，短信功能。可享受免费国内手机号拨打接听电话，收发短信。\n●(4) 回国在“快速设置”页面关闭电话，短信功能。回国后恢复手机与手环内SIM卡的位置。"
                 }
             });

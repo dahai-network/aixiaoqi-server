@@ -319,9 +319,13 @@ namespace Unitoys.WebApi.Controllers
 
                             //如果是不能购买多个的套餐则认为有效天数字段只是用于描述
                             if (package.IsCanBuyMultiple)
+                            {
                                 result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity * package.ExpireDays);
+                            }
                             else
+                            {
                                 result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity);
+                            }
 
                             if (result.status != "1")
                             {

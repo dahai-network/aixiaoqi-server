@@ -241,6 +241,7 @@ namespace Unitoys.ESIM_MVNO
         {
             try
             {
+                //不足8位补0
                 var dataLength = DataHelper.HexToByte(dataHex).Length;
                 if (dataLength % 8 > 0)
                 {
