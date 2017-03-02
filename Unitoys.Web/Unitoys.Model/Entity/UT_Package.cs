@@ -94,9 +94,29 @@ namespace Unitoys.Model
         /// </summary>
         public bool IsApn { get; set; }
         /// <summary>
+        /// Apn名称
+        /// </summary>
+        public string ApnName { get; set; }
+        /// <summary>
         /// 分类
         /// </summary>
         public CategoryType Category { get; set; }
+        /// <summary>
+        /// 是否流量类型
+        /// </summary>
+        public bool IsCategoryFlow { get; set; }
+        /// <summary>
+        /// 是否通话类型
+        /// </summary>
+        public bool IsCategoryCall { get; set; }
+        /// <summary>
+        /// 是否双卡双待类型
+        /// </summary>
+        public bool IsCategoryDualSimStandby { get; set; }
+        /// <summary>
+        /// 是否大王卡类型
+        /// </summary>
+        public bool IsCategoryKingCard { get; set; }
         public virtual ICollection<UT_Order> UT_Order { get; set; }
         public virtual UT_Country UT_Country { get; set; }
     }

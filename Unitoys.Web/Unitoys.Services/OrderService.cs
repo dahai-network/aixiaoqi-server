@@ -48,6 +48,10 @@ namespace Unitoys.Services
                     order.PackageId = packageId;
                     order.PackageName = package.PackageName;
                     order.PackageCategory = package.Category;
+                    order.PackageIsCategoryFlow = package.IsCategoryFlow;
+                    order.PackageIsCategoryCall = package.IsCategoryCall;
+                    order.PackageIsCategoryDualSimStandby = package.IsCategoryDualSimStandby;
+                    order.PackageIsCategoryKingCard = package.IsCategoryKingCard;
                     order.OrderDate = CommonHelper.GetDateTimeInt();
                     order.PayStatus = 0; //添加时付款状态默认为0：未付款。
                     order.Quantity = quantity;
@@ -61,6 +65,7 @@ namespace Unitoys.Services
                     order.PackageDetails = package.Details;
                     order.PackageIsSupport4G = package.IsSupport4G;
                     order.PackageIsApn = package.IsApn;
+                    order.PackageApnName = package.ApnName;
                     //order.PayUserAmount = PayUserAmount;
                     //order.IsPayUserAmount = IsPayUserAmount;
                     order.PaymentMethod = PaymentMethod;
@@ -127,12 +132,23 @@ namespace Unitoys.Services
                         payOrder.PayStatus = PayStatusType.YesPayment;
 
                         //如果属于通话套餐或双卡双待套餐则默认激活
+                        //if ((payOrder.PackageIsCategoryDualSimStandby || payOrder.PackageIsCategoryCall) && payOrder.PackageIsCategoryFlow == false)
+                        //{
+                        //    payOrder.OrderStatus = OrderStatusType.Used;
+                        //    payOrder.EffectiveDate = CommonHelper.GetDateTimeInt();
+                        //    payOrder.ActivationDate = CommonHelper.GetDateTimeInt();
+
+                        //    var remark = "add：PackageCategory" + payOrder.PackageIsCategoryFlow.ToString() + payOrder.PackageIsCategoryCall.ToString() + payOrder.PackageIsCategoryDualSimStandby.ToString() + payOrder.PackageIsCategoryKingCard.ToString();
+                        //    payOrder.Remark = string.IsNullOrEmpty(payOrder.Remark) ? remark : payOrder.Remark + remark;
+                        //}
+
+                        //如果属于通话套餐或双卡双待套餐则默认激活
                         if (payOrder.PackageCategory == CategoryType.DualSimStandby || payOrder.PackageCategory == CategoryType.Call)
                         {
                             payOrder.OrderStatus = OrderStatusType.Used;
                             payOrder.EffectiveDate = CommonHelper.GetDateTimeInt();
                             payOrder.ActivationDate = CommonHelper.GetDateTimeInt();
-                            payOrder.Remark = payOrder.Remark == null ? payOrder.PackageCategory.ToString() : payOrder.Remark + payOrder.PackageCategory.ToString();
+                            payOrder.Remark = string.IsNullOrEmpty(payOrder.Remark) ? payOrder.PackageCategory.ToString() : payOrder.Remark + payOrder.PackageCategory.ToString();
                         }
 
                         db.UT_Users.Attach(payUser);
@@ -206,13 +222,24 @@ namespace Unitoys.Services
                     order.PayDate = CommonHelper.GetDateTimeInt();
                     order.PayStatus = PayStatusType.YesPayment;
 
+                    ////如果属于通话套餐或双卡双待套餐则默认激活
+                    //if ((order.PackageIsCategoryDualSimStandby || order.PackageIsCategoryCall) && order.PackageIsCategoryFlow == false)
+                    //{
+                    //    order.OrderStatus = OrderStatusType.Used;
+                    //    order.EffectiveDate = CommonHelper.GetDateTimeInt();
+                    //    order.ActivationDate = CommonHelper.GetDateTimeInt();
+
+                    //    var remark = "add：PackageCategory" + order.PackageIsCategoryFlow.ToString() + order.PackageIsCategoryCall.ToString() + order.PackageIsCategoryDualSimStandby.ToString() + order.PackageIsCategoryKingCard.ToString();
+                    //    order.Remark = string.IsNullOrEmpty(order.Remark) ? remark : order.Remark + remark;
+                    //}
+
                     //如果属于通话套餐或双卡双待套餐则默认激活
                     if (order.PackageCategory == CategoryType.DualSimStandby || order.PackageCategory == CategoryType.Call)
                     {
                         order.OrderStatus = OrderStatusType.Used;
                         order.EffectiveDate = CommonHelper.GetDateTimeInt();
                         order.ActivationDate = CommonHelper.GetDateTimeInt();
-                        order.Remark = order.Remark == null ? order.PackageCategory.ToString() : order.Remark + order.PackageCategory.ToString();
+                        order.Remark = string.IsNullOrEmpty(order.Remark) ? order.PackageCategory.ToString() : order.Remark + order.PackageCategory.ToString();
                     }
 
                     db.UT_Order.Attach(order);
@@ -410,7 +437,7 @@ namespace Unitoys.Services
         /// <param name="userId">用户</param>
         /// <param name="payStatus">支付状态</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory)
+        public async Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory, bool? packageIsCategoryFlow, bool? packageIsCategoryCall, bool? packageIsCategoryDualSimStandby, bool? packageIsCategoryKingCard)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -426,6 +453,22 @@ namespace Unitoys.Services
                 if (PackageCategory.HasValue)
                 {
                     query = query.Where(x => x.PackageCategory == PackageCategory.Value);
+                }
+                if (packageIsCategoryFlow.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryFlow == packageIsCategoryFlow.Value);
+                }
+                if (packageIsCategoryCall.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryCall == packageIsCategoryCall.Value);
+                }
+                if (packageIsCategoryDualSimStandby.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryDualSimStandby == packageIsCategoryDualSimStandby.Value);
+                }
+                if (packageIsCategoryKingCard.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryKingCard == packageIsCategoryKingCard.Value);
                 }
 
                 var result = await query.OrderByDescending(x => x.OrderStatus != OrderStatusType.HasExpired).ThenByDescending(x => x.OrderDate).Skip((page - 1) * row).Take(row).ToListAsync();
@@ -464,11 +507,33 @@ namespace Unitoys.Services
         /// 根据套餐类型判断当前用户是否有正在使用的套餐
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> IsStatusUsed(Guid userId, CategoryType PackageCategory)
+        public async Task<bool> IsStatusUsed(Guid userId, CategoryType? PackageCategory, bool? packageIsCategoryFlow, bool? packageIsCategoryCall, bool? packageIsCategoryDualSimStandby, bool? packageIsCategoryKingCard)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                return await db.UT_Order.AnyAsync(a => a.OrderStatus == OrderStatusType.Used && a.UserId == userId && a.PackageCategory == PackageCategory);
+                var query = db.UT_Order.Where(a => a.OrderStatus == OrderStatusType.Used && a.UserId == userId);
+
+                if (PackageCategory.HasValue)
+                {
+                    query = query.Where(x => x.PackageCategory == PackageCategory.Value);
+                }
+                if (packageIsCategoryFlow.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryFlow == packageIsCategoryFlow.Value);
+                }
+                if (packageIsCategoryCall.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryCall == packageIsCategoryCall.Value);
+                }
+                if (packageIsCategoryDualSimStandby.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryDualSimStandby == packageIsCategoryDualSimStandby.Value);
+                }
+                if (packageIsCategoryKingCard.HasValue)
+                {
+                    query = query.Where(x => x.PackageIsCategoryKingCard == packageIsCategoryKingCard.Value);
+                }
+                return await query.AnyAsync();
             }
         }
     }

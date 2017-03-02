@@ -170,6 +170,10 @@ namespace Unitoys.Services
                             order.PackageId = packageId;
                             order.PackageName = package.PackageName;
                             order.PackageCategory = package.Category;
+                            order.PackageIsCategoryFlow = package.IsCategoryFlow;
+                            order.PackageIsCategoryCall = package.IsCategoryCall;
+                            order.PackageIsCategoryDualSimStandby = package.IsCategoryDualSimStandby;
+                            order.PackageIsCategoryKingCard = package.IsCategoryKingCard;
                             order.OrderDate = CommonHelper.GetDateTimeInt();
                             order.PayStatus = 0; //添加时付款状态默认为0：未付款。
                             order.Quantity = quantity;

@@ -50,6 +50,10 @@ namespace Unitoys.Model
         /// </summary>
         public bool PackageIsApn { get; set; }
         /// <summary>
+        /// 套餐Apn名称
+        /// </summary>
+        public string PackageApnName { get; set; }
+        /// <summary>
         /// 套餐流量
         /// </summary>
         public int Flow { get; set; }
@@ -57,6 +61,22 @@ namespace Unitoys.Model
         /// 套餐分类
         /// </summary>
         public CategoryType PackageCategory { get; set; }
+        /// <summary>
+        /// 是否流量套餐
+        /// </summary>
+        public bool PackageIsCategoryFlow { get; set; }
+        /// <summary>
+        /// 是否通话套餐
+        /// </summary>
+        public bool PackageIsCategoryCall { get; set; }
+        /// <summary>
+        /// 是否双卡双待套餐
+        /// </summary>
+        public bool PackageIsCategoryDualSimStandby { get; set; }
+        /// <summary>
+        /// 是否大王卡套餐
+        /// </summary>
+        public bool PackageIsCategoryKingCard { get; set; }
         /// <summary>
         /// 订单项数量
         /// </summary>

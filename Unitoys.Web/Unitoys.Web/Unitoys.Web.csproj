@@ -1054,7 +1054,7 @@
     <Content Include="Content\js\ckeditor\README.md" />
     <Content Include="Content\js\ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Manage\Views\Config\Index.cshtml" />
-    <Content Include="Areas\Manage\Views\OrderByZC\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Order\OrderByZC\Index.cshtml" />
     <Content Include="Areas\Manage\Views\ZCSelectionNumber\Index.cshtml" />
     <Content Include="Areas\Manage\Views\EjoinDev\Index.cshtml" />
     <Content Include="Areas\Manage\Views\GiftCard\Index.cshtml" />

@@ -202,5 +202,93 @@ namespace Unitoys.Web.Areas.Manage.Controllers
 
             return Json(pageRows, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 锁定操作
+        /// </summary>
+        /// <param name="LoginName"></param>
+        /// <param name="PassWord"></param>
+        /// <param name="TrueName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_ManageUser)]
+        public async Task<ActionResult> Lock(Guid? ID)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+            if (ID.HasValue)
+            {
+
+                UT_ManageUsers entity = await _manageUserService.GetEntityByIdAsync(ID.Value);
+                if (entity.Lock4 != 1)
+                {
+                    entity.Lock4 = 1;
+                    if (await _manageUserService.UpdateAsync(entity))
+                    {
+                        result.Success = true;
+                        result.Msg = "锁定操作成功！";
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Msg = "锁定操作失败！";
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "该管理员已经是锁定状态！";
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "请求失败！";
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 解除锁定操作
+        /// </summary>
+        /// <param name="LoginName"></param>
+        /// <param name="PassWord"></param>
+        /// <param name="TrueName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_ManageUser)]
+        public async Task<ActionResult> UnLock(Guid? ID)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+            if (ID.HasValue)
+            {
+
+                UT_ManageUsers entity = await _manageUserService.GetEntityByIdAsync(ID.Value);
+                if (entity.Lock4 != 0)
+                {
+                    entity.Lock4 = 0;
+                    if (await _manageUserService.UpdateAsync(entity))
+                    {
+                        result.Success = true;
+                        result.Msg = "取消锁定操作成功！";
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Msg = "取消锁定操作失败！";
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "该管理员已经是未锁定状态！";
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "请求失败！";
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

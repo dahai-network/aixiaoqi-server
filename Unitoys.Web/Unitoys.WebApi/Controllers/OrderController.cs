@@ -73,7 +73,9 @@ namespace Unitoys.WebApi.Controllers
                         ExpireDays = GetExpireDaysDescr(order),
                         Flow = order.Flow + "",
                         RemainingCallMinutes = order.RemainingCallMinutes + "",
-                        PaymentMethod = (int)order.PaymentMethod + ""
+                        PaymentMethod = (int)order.PaymentMethod + "",
+                        PackageCategory = order.PackageCategory,
+                        PackageIsCategoryFlow = order.PackageIsCategoryFlow
                     };
                     return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
                 }
@@ -164,7 +166,7 @@ namespace Unitoys.WebApi.Controllers
             model.PageSize = model.PageSize ?? 10;
 
             //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
-            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment, model.PackageCategory);
+            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment, model.PackageCategory, model.PackageIsCategoryFlow, model.PackageIsCategoryCall, model.PackageIsCategoryDualSimStandby, model.PackageIsCategoryKingCard);
 
             var totalRows = searchOrders.Key;
 
@@ -177,6 +179,10 @@ namespace Unitoys.WebApi.Controllers
                              PackageId = i.PackageId,
                              PackageName = i.PackageName,
                              PackageCategory = (int)i.PackageCategory + "",
+                             PackageIsCategoryFlow = i.PackageIsCategoryFlow,
+                             PackageIsCategoryCall = i.PackageIsCategoryCall,
+                             PackageIsCategoryDualSimStandby = i.PackageIsCategoryDualSimStandby,
+                             PackageIsCategoryKingCard = i.PackageIsCategoryKingCard,
                              Flow = i.Flow + "",
                              Quantity = i.Quantity.ToString(),
                              UnitPrice = i.UnitPrice,
@@ -251,10 +257,15 @@ namespace Unitoys.WebApi.Controllers
                 PackageId = orderResult.PackageId,
                 PackageName = orderResult.PackageName,
                 PackageCategory = (int)orderResult.PackageCategory + "",
+                PackageIsCategoryFlow = orderResult.PackageIsCategoryFlow,
+                PackageIsCategoryCall = orderResult.PackageIsCategoryCall,
+                PackageIsCategoryDualSimStandby = orderResult.PackageIsCategoryDualSimStandby,
+                PackageIsCategoryKingCard = orderResult.PackageIsCategoryKingCard,
                 PackageFeatures = orderResult.PackageFeatures,
                 PackageDetails = orderResult.PackageDetails,
                 PackageIsSupport4G = orderResult.PackageIsSupport4G,
                 PackageIsApn = orderResult.PackageIsApn,
+                PackageApnName = orderResult.PackageApnName,
                 Flow = orderResult.Flow,
                 Quantity = orderResult.Quantity.ToString(),
                 UnitPrice = orderResult.UnitPrice,
@@ -649,13 +660,21 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "套餐类型不能为空"));
             }
+            if (model == null || (!model.PackageCategory.HasValue && !model.PackageIsCategoryFlow.HasValue && !model.PackageIsCategoryCall.HasValue && !model.PackageIsCategoryDualSimStandby.HasValue && !model.PackageIsCategoryKingCard.HasValue))
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "套餐类型不能为空"));
+            }
             else
             {
                 if (model.PackageCategory.HasValue && model.PackageCategory == CategoryType.Call)
                 {
                     model.PackageCategory = CategoryType.DualSimStandby;
                 }
-                bool result = await _orderService.IsStatusUsed(currentUser.ID, model.PackageCategory.Value);
+                if (model.PackageIsCategoryCall.HasValue && model.PackageIsCategoryCall == true)
+                {
+                    model.PackageIsCategoryDualSimStandby = true;
+                }
+                bool result = await _orderService.IsStatusUsed(currentUser.ID, model.PackageCategory, model.PackageIsCategoryFlow, model.PackageIsCategoryCall, model.PackageIsCategoryDualSimStandby, model.PackageIsCategoryKingCard);
                 return Ok(new { status = 1, data = new { Used = result ? "1" : "0" } });
             }
         }

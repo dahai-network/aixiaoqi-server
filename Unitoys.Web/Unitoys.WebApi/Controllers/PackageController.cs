@@ -25,33 +25,40 @@ namespace Unitoys.WebApi.Controllers
         /// 查询套餐列表
         /// </summary>
         /// <returns></returns>
-        public async Task<IHttpActionResult> Get(int? pageNumber, int? pageSize, CategoryType? category)
+        public async Task<IHttpActionResult> Get([FromUri]GetPackageBindingModels model)
         {
-            if (category.HasValue && category == CategoryType.Call)
+            if (model.Category.HasValue && model.Category == CategoryType.Call)
             {
-                category = CategoryType.DualSimStandby;
+                model.Category = CategoryType.DualSimStandby;
             }
-            Expression<Func<UT_Package, bool>> exp;
+            //Expression<Func<UT_Package, bool>> exp;
 
-            if (!category.HasValue)
-            {
-                exp = x => x.Lock4 == 0 && x.IsDeleted == false;
-            }
-            else
-            {
-                exp = x => x.Category == category && x.Lock4 == 0 && x.IsDeleted == false;
-            }
+            //exp = x => x.Lock4 == 0 && x.IsDeleted == false;
+
+            //if (!category.HasValue)
+            //{
+
+            //}
+            //else
+            //{
+            //    exp = x => x.Category == category && x.Lock4 == 0 && x.IsDeleted == false;
+            //}
+
+            //查询Expression
+            Expression<Func<UT_Package, bool>> exp = GetPackageSearchExpression<UT_Package>(model);
+
+
 
             //排序Expression
             Expression<Func<UT_Package, object>> packageExp = x => new { x.DisplayOrder };
 
             //如果pageNumber和pageSize为null，则设置默认值。
-            pageNumber = pageNumber ?? 1;
-            pageSize = pageSize ?? 10;
+            model.PageNumber = model.PageNumber ?? 1;
+            model.PageSize = model.PageSize ?? 10;
 
             //var packageResult = await _packageService.GetEntitiesAsync(exp);
             //如果查询条件不为空，则根据查询条件查询，反则查询所有。
-            var packageResult = _packageService.GetEntitiesForPagingAsync((int)pageNumber, (int)pageSize, packageExp, "DESC", exp);
+            var packageResult = _packageService.GetEntitiesForPagingAsync((int)model.PageNumber, (int)model.PageSize, packageExp, "DESC", exp);
 
 
             var totalRows = _packageService.GetEntitiesCountAsync(exp);
@@ -134,9 +141,85 @@ namespace Unitoys.WebApi.Controllers
                            IsCanBuyMultiple = packageResult.IsCanBuyMultiple,
                            IsSupport4G = packageResult.IsSupport4G,
                            IsApn = packageResult.IsApn,
-
+                           ApnName = packageResult.ApnName,
                        };
             return Ok(new { status = 1, data = new { list = data } });
         }
+
+        #region 获取查询的Expression表达式
+        /// <summary>
+        /// 获取查询表达式
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        private Expression<Func<TEntity, bool>> GetPackageSearchExpression<TEntity>(GetPackageBindingModels model)
+        {
+            Expression expression = null;
+            ParameterExpression parameter = Expression.Parameter(typeof(TEntity), "entity");
+
+            try
+            {
+                Expression searchExpression = null;
+                Expression inExpression;
+                MemberExpression left = null;
+                ConstantExpression right;
+
+                left = Expression.Property(parameter, "Lock4");
+                right = Expression.Constant(0, typeof(int));
+                inExpression = Expression.Equal(left, right);
+                searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+
+                left = Expression.Property(parameter, "IsDeleted");
+                right = Expression.Constant(false, typeof(bool));
+                inExpression = Expression.Equal(left, right);
+                searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+
+                if (model.Category.HasValue)
+                {
+                    left = Expression.Property(parameter, "Category");
+                    right = Expression.Constant(model.Category.Value, typeof(CategoryType));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.IsCategoryFlow.HasValue)
+                {
+                    left = Expression.Property(parameter, "IsCategoryFlow");
+                    right = Expression.Constant(model.IsCategoryFlow.Value, typeof(bool));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.IsCategoryCall.HasValue)
+                {
+                    left = Expression.Property(parameter, "IsCategoryCall");
+                    right = Expression.Constant(model.IsCategoryCall.Value, typeof(bool));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.IsCategoryDualSimStandby.HasValue)
+                {
+                    left = Expression.Property(parameter, "IsCategoryDualSimStandby");
+                    right = Expression.Constant(model.IsCategoryDualSimStandby.Value, typeof(bool));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                if (model.IsCategoryKingCard.HasValue)
+                {
+                    left = Expression.Property(parameter, "IsCategoryKingCard");
+                    right = Expression.Constant(model.IsCategoryKingCard.Value, typeof(bool));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+
+                expression = expression == null ? searchExpression : Expression.And(expression, searchExpression);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return expression == null ? x => true : Expression.Lambda<Func<TEntity, bool>>(expression, parameter);
+        }
+        #endregion
     }
 }

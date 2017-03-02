@@ -58,21 +58,26 @@
 	    var dlg_Edit;
 	    var dlg_Edit_form;
 
-		var toolbar = [{
-			text:'添加管理员',
-			iconCls:'icon-add',
-			handler: function () {
-			    dlg_Edit_form.form('clear');
-			    dlg_Edit.dialog('open');
-			    dlg_Edit.dialog('setTitle', '添加管理员');
-			    $("#LoginName").removeAttr("readonly"); //移除只读   
-			    dlg_Edit_form.url = '/Manage/ManageUser/Add/';
-			}
-		},{
-			text:'删除管理员',
-			iconCls:'icon-cut',
-			handler: del
-		}];
+	    var toolbar = [{
+	        text: '添加管理员',
+	        iconCls: 'icon-add',
+	        handler: function () {
+	            dlg_Edit_form.form('clear');
+	            dlg_Edit.dialog('open');
+	            dlg_Edit.dialog('setTitle', '添加管理员');
+	            $("#LoginName").removeAttr("readonly"); //移除只读
+	            dlg_Edit_form.url = '/Manage/ManageUser/Add/';
+	        }
+	    }, {
+	        text: '锁定管理员',
+	        iconCls: 'icon-lock',
+	        handler: lock
+	    }, {
+	        text: '取消锁定管理员',
+	        iconCls: 'icon-lock',
+	        handler: unLock
+	    }
+	    ];
 		function stylerFun(value, row, index) {
 		    if (value ==1) {
 		        return 'background-color:#ffee00;color:red;';
@@ -144,6 +149,66 @@
 
 		    }
 		}
-		
+		//锁定
+		function lock() {
+		    var arr = getSelectedArr();
+		    if (arr.length > 0) {
+		        $.messager.confirm('提示信息', '您确认锁定该管理员吗?', function (data) {
+		            if (data) {
+		                $.ajax({
+		                    url: '/Manage/ManageUser/Lock',
+		                    type: 'post',
+		                    data: "ID=" + getSelectedID(),
+		                    error: function () {
+		                        Msgalert('错误', '设置失败!', 'error');
+		                        grid.datagrid('clearSelections');
+		                    },
+		                    success: function (data) {
+		                        if (data.Success) {
+		                            Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+		                            grid.datagrid('reload');
+		                            grid.datagrid('clearSelections'); //清除所有选中的元素
+		                        } else {
+		                            Msgalert('错误', data.Msg, 'error');
+		                        }
+		                    }
+		                });
+		            }
+		        });
+		    } else {
+		        Msgshow('请先选择要锁定的数据。');
+		    }
+		}
+
+		//取消锁定
+		function unLock() {
+		    var arr = getSelectedArr();
+		    if (arr.length > 0) {
+		        $.messager.confirm('提示信息', '您确认取消该管理员的锁定吗?', function (data) {
+		            if (data) {
+		                $.ajax({
+		                    url: '/Manage/ManageUser/UnLock',
+		                    type: 'post',
+		                    data: "ID=" + getSelectedID(),
+		                    error: function () {
+		                        Msgalert('错误', '设置失败!', 'error');
+		                        grid.datagrid('clearSelections');
+		                    },
+		                    success: function (data) {
+		                        if (data.Success) {
+		                            Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+		                            grid.datagrid('reload');
+		                            grid.datagrid('clearSelections'); //清除所有选中的元素
+		                        } else {
+		                            Msgalert('错误', data.Msg, 'error');
+		                        }
+		                    }
+		                });
+		            }
+		        });
+		    } else {
+		        Msgshow('请先选择要取消锁定的数据。');
+		    }
+		}
 		
 	</script>

@@ -39,9 +39,9 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string packageName, Guid? countryId, string operators, CategoryType? category)
+        public async Task<ActionResult> GetList(int page, int rows, string packageName, Guid? countryId, string operators, CategoryType? category, bool? isCategoryFlow, bool? isCategoryCall, bool? isCategoryDualSimStandby, bool? isCategoryKingCard)
         {
-            var pageRowsDb = await _packageService.SearchAsync(page, rows, packageName, countryId, operators, category);
+            var pageRowsDb = await _packageService.SearchAsync(page, rows, packageName, countryId, operators, category, isCategoryFlow, isCategoryCall, isCategoryDualSimStandby, isCategoryKingCard);
 
             int totalNum = pageRowsDb.Key;
 
@@ -61,6 +61,10 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                CountryName = i.UT_Country == null ? "" : i.UT_Country.CountryName,
                                Category = i.Category,
                                CategoryDescr = i.Category.GetDescription(),
+                               IsCategoryFlow = i.IsCategoryFlow,
+                               IsCategoryCall = i.IsCategoryCall,
+                               IsCategoryDualSimStandby = i.IsCategoryDualSimStandby,
+                               IsCategoryKingCard = i.IsCategoryKingCard,
                                Lock4 = i.Lock4,
                                Operators = i.Operators,
                                Features = i.Features,
@@ -70,7 +74,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                IsCanBuyMultiple = i.IsCanBuyMultiple,
                                IsSupport4G = i.IsSupport4G,
                                IsApn = i.IsApn,
-                               //Category=i.Category
+                               ApnName = i.ApnName
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -133,9 +137,14 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.UseDescr = model.UseDescr;
                 package.DisplayOrder = model.DisplayOrder;
                 package.Category = model.Category;
+                package.IsCategoryFlow = model.IsCategoryFlow;
+                package.IsCategoryCall = model.IsCategoryCall;
+                package.IsCategoryDualSimStandby = model.IsCategoryDualSimStandby;
+                package.IsCategoryKingCard = model.IsCategoryKingCard;
                 package.IsCanBuyMultiple = model.IsCanBuyMultiple;
                 package.IsSupport4G = model.IsSupport4G;
                 package.IsApn = model.IsApn;
+                package.ApnName = string.IsNullOrEmpty(model.ApnName) ? "" : model.ApnName;
 
                 if (await _packageService.InsertAsync(package))
                 {
@@ -212,9 +221,14 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.UseDescr = model.UseDescr;
                     package.DisplayOrder = model.DisplayOrder;
                     package.Category = model.Category;
+                    package.IsCategoryFlow = model.IsCategoryFlow;
+                    package.IsCategoryCall = model.IsCategoryCall;
+                    package.IsCategoryDualSimStandby = model.IsCategoryDualSimStandby;
+                    package.IsCategoryKingCard = model.IsCategoryKingCard;
                     package.IsCanBuyMultiple = model.IsCanBuyMultiple;
                     package.IsSupport4G = model.IsSupport4G;
                     package.IsApn = model.IsApn;
+                    package.ApnName = string.IsNullOrEmpty(model.ApnName) ? "" : model.ApnName;
 
                     if (await _packageService.UpdateAsync(package))
                     {

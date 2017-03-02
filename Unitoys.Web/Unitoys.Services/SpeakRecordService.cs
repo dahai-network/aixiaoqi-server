@@ -74,7 +74,7 @@ namespace Unitoys.Services
                     UT_Order order = await db.UT_Order.Where(x => x.UserId == user.ID
                             && x.OrderStatus == OrderStatusType.Used
                             && x.PayStatus == PayStatusType.YesPayment
-                            && (x.PackageCategory == CategoryType.Call || x.PackageCategory == CategoryType.DualSimStandby)
+                            && (x.PackageIsCategoryCall || x.PackageIsCategoryDualSimStandby)
                             && x.RemainingCallMinutes > 0).OrderByDescending(x => x.ActivationDate).FirstOrDefaultAsync();
 
                     int callMinutes = 0;

@@ -10,7 +10,7 @@ namespace Unitoys.Services
 {
     public class PackageService : BaseService<UT_Package>, IPackageService
     {
-        public async Task<KeyValuePair<int, List<UT_Package>>> SearchAsync(int page, int rows, string packageName, Guid? countryId, string operators, CategoryType? category)
+        public async Task<KeyValuePair<int, List<UT_Package>>> SearchAsync(int page, int rows, string packageName, Guid? countryId, string operators, CategoryType? category, bool? isCategoryFlow, bool? isCategoryCall, bool? isCategoryDualSimStandby, bool? isCategoryKingCard)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -30,10 +30,25 @@ namespace Unitoys.Services
                 {
                     query = query.Where(x => x.Operators.Contains(operators));
                 }
-
                 if (category.HasValue)
                 {
                     query = query.Where(x => x.Category == category);
+                }
+                if (isCategoryFlow.HasValue)
+                {
+                    query = query.Where(x => x.IsCategoryFlow == isCategoryFlow.Value);
+                }
+                if (isCategoryCall.HasValue)
+                {
+                    query = query.Where(x => x.IsCategoryCall == isCategoryCall.Value);
+                }
+                if (isCategoryDualSimStandby.HasValue)
+                {
+                    query = query.Where(x => x.IsCategoryDualSimStandby == isCategoryDualSimStandby.Value);
+                }
+                if (isCategoryKingCard.HasValue)
+                {
+                    query = query.Where(x => x.IsCategoryKingCard == isCategoryKingCard.Value);
                 }
 
                 query = query.Where(x => x.IsDeleted == false);

@@ -64,7 +64,7 @@ namespace Unitoys.IServices
         /// <param name="userId">用户</param>
         /// <param name="payStatus">支付状态</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory);
+        Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory, bool? packageIsCategoryFlow, bool? packageIsCategoryCall, bool? packageIsCategoryDualSimStandby, bool? packageIsCategoryKingCard);
 
         /// <summary>
         /// 是否包含正在使用的套餐
@@ -81,6 +81,6 @@ namespace Unitoys.IServices
         /// 根据套餐类型判断当前用户是否有正在使用的套餐
         /// </summary>
         /// <returns></returns>
-        Task<bool> IsStatusUsed(Guid userId, CategoryType PackageCategory);
+        Task<bool> IsStatusUsed(Guid userId, CategoryType? PackageCategory, bool? packageIsCategoryFlow, bool? packageIsCategoryCall, bool? packageIsCategoryDualSimStandby, bool? packageIsCategoryKingCard);
     }
 }

@@ -118,6 +118,7 @@
     <Compile Include="Controllers\Util\WeatherController.cs" />
     <Compile Include="Models\ConfigBindingModels.cs" />
     <Compile Include="Models\GiftCardBindingModels.cs" />
+    <Compile Include="Models\PackageBindingModels.cs" />
     <Compile Include="Models\StatusCodeManager.cs" />
     <Compile Include="Models\ZCSelectionNumberBindingModel.cs" />
     <Compile Include="Models\OrderByZCSelectionNumberBindingModel.cs" />

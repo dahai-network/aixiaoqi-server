@@ -38,6 +38,23 @@ namespace Unitoys.WebApi.Models
         /// 套餐类型
         /// </summary>
         public CategoryType? PackageCategory { get; set; }
+
+        /// <summary>
+        /// 是否流量套餐
+        /// </summary>
+        public bool? PackageIsCategoryFlow { get; set; }
+        /// <summary>
+        /// 是否通话套餐
+        /// </summary>
+        public bool? PackageIsCategoryCall { get; set; }
+        /// <summary>
+        /// 是否双卡双待套餐
+        /// </summary>
+        public bool? PackageIsCategoryDualSimStandby { get; set; }
+        /// <summary>
+        /// 是否大王卡套餐
+        /// </summary>
+        public bool? PackageIsCategoryKingCard { get; set; }
     }
 
     public class ActivationBindingModel
@@ -71,6 +88,23 @@ namespace Unitoys.WebApi.Models
     public class IsStatusUsedByCategoryBindingModel
     {
         public CategoryType? PackageCategory { get; set; }
+
+        /// <summary>
+        /// 是否流量套餐
+        /// </summary>
+        public bool? PackageIsCategoryFlow { get; set; }
+        /// <summary>
+        /// 是否通话套餐
+        /// </summary>
+        public bool? PackageIsCategoryCall { get; set; }
+        /// <summary>
+        /// 是否双卡双待套餐
+        /// </summary>
+        public bool? PackageIsCategoryDualSimStandby { get; set; }
+        /// <summary>
+        /// 是否大王卡套餐
+        /// </summary>
+        public bool? PackageIsCategoryKingCard { get; set; }
     }
 
 }

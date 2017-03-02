@@ -52,11 +52,17 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             {
                 UT_ManageUsers user = _manageUserService.CheckUserLogin(loginName, passWord);
 
-
                 if (user != null)
                 {
-                    WebUtil.SetManageUserSession(new LoginUserInfo() { ID = user.ID, LoginName = user.LoginName, TrueName = user.TrueName, LoginIp = WebHelper.GetIP() });
-                    result = "OK";
+                    if (user.Lock4 == 0)
+                    {
+                        WebUtil.SetManageUserSession(new LoginUserInfo() { ID = user.ID, LoginName = user.LoginName, TrueName = user.TrueName, LoginIp = WebHelper.GetIP() });
+                        result = "OK";
+                    }
+                    else
+                    {
+                        result = "账户已被锁定！";
+                    }
                 }
                 else
                 {

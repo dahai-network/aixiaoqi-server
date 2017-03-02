@@ -21,12 +21,37 @@
                 <span>运营商:</span>
                 <input id="operators" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>套餐类型:</span>
+                <span>套餐类型:</span>
                 <select id="category" class="easyui-combobox" name="category" style="width:200px;">
                     <option value="">-- 请选择 --</option>
                     <option value="0">流量</option>
                     <option value="1">通话</option>
                     <option value="2">大王卡</option>
                     <option value="3">双卡双待</option>
+                </select>
+                <span>流量:</span>
+                <select id="isCategoryFlow" class="easyui-combobox" name="isCategoryFlow" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+                <span>通话:</span>
+                <select id="isCategoryCall" class="easyui-combobox" name="isCategoryCall" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+                <span>双卡双待:</span>
+                <select id="isCategoryDualSimStandby" class="easyui-combobox" name="isCategoryDualSimStandby" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+                <span>大王卡:</span>
+                <select id="isCategoryKingCard" class="easyui-combobox" name="isCategoryKingCard" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
                 </select>
                 <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
             </form>
@@ -187,6 +212,14 @@
                 </td>
             </tr>
             <tr>
+                <td style="text-align:right" width="100">
+                    Apn信息：
+                </td>
+                <td>
+                    <input type="text" name="ApnName" id="ApnName" class="easyui-textbox" style="width: 250px;height:33px;" maxlength="50" /> &nbsp;
+                </td>
+            </tr>
+            <tr>
                 <td style="text-align:right">
                     类型：
                 </td>
@@ -197,6 +230,17 @@
                         <option value="2">大王卡</option>
                         <option value="3">双卡双待</option>
                     </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    包括类型：
+                </td>
+                <td>
+                    <input type="checkbox" id="IsCategoryFlow" name="IsCategoryFlow" value="true" />流量
+                    <input type="checkbox" id="IsCategoryCall" name="IsCategoryCall" value="true" />通话
+                    <input type="checkbox" id="IsCategoryDualSimStandby" name="IsCategoryDualSimStandby" value="true" />双卡双待
+                    <input type="checkbox" id="IsCategoryKingCard" name="IsCategoryKingCard" value="true" />大王卡
                 </td>
             </tr>
             <tr>
@@ -386,8 +430,12 @@
         $("#grid").datagrid('load', {
             packageName: $("#packageName").val() == null ? "" : $("#packageName").val(),
             operators: $("#operators").val() == null ? "" : $("#operators").val(),
-            category: $("#category").combobox("getValue"),
             countryId: $("#countryId").combobox("getValue"),
+            isCategoryFlow: $("#isCategoryFlow").combobox("getValue"),
+            isCategoryCall: $("#isCategoryCall").combobox("getValue"),
+            isCategoryDualSimStandby: $("#isCategoryDualSimStandby").combobox("getValue"),
+            isCategoryKingCard: $("#isCategoryKingCard").combobox("getValue"),
+            category: $("#category").combobox("getValue")
         });
     }
 
