@@ -22,7 +22,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 var secret = SecureHelper.MD5(SecureHelper.MD5(SecureHelper.MD5(UTConfig.SiteConfig.PublicKey + userTel) + "voipcc2015"));
 
-                var result = MySqlDBHelper.ExecuteNonQuery(string.Format(@"Replace INTO sip_buddies (NAME, defaultuser, secret, context,canreinvite, HOST, nat, qualify, TYPE)  VALUES ('{0}', '{0}', '{1}', 'unitoysapp','no', 'dynamic', 'yes', 'no', 'friend')", userTel, secret));
+                var result = MySqlDBHelper.ExecuteNonQuery(string.Format(@"Replace INTO sip_buddies (NAME, defaultuser, secret, context,canreinvite, HOST, nat, qualify, TYPE)  VALUES ('{0}', '{0}', '{1}', 'unitoysapp','no', 'dynamic', 'yes', 'yes', 'friend')", userTel, secret));
 
                 if (result <= 0)
                 {

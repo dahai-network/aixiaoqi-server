@@ -12,10 +12,10 @@ namespace Unitoys.ESIM_MVNO
     /// </summary>
     public class SimDataSTK
     {
-        private string 敏感数据加密密钥 = "B01CE14D86EFB356";
-        private string 传输密钥 = "D7A49F2689AF0AF6";
+        private string 敏感数据加密密钥 = "962CDEF35F3C5024";//"B01CE14D86EFB356";
+        private string 传输密钥 = "82E64288CDBB0FA4";//"D7A49F2689AF0AF6";
         private string 会话密钥随机八位 = "C501CBE8A849B3E7";
-        private string TAR = "FEFEFE";
+        private string TAR = "BFBFBF";
 
         private string simData { get; set; }
         public SimDataSTK(string EmptyCardSerialNumber, WriteCardSTK writeCardSTK)
@@ -33,6 +33,9 @@ namespace Unitoys.ESIM_MVNO
             //4.用传输密钥加密会话密钥
             string data = DesHelper.DesEncodeECB(会话密钥随机八位, 传输密钥) + DesHelper.DesEncodeECB(writeCardSTKTlvHex, 会话密钥随机八位);
 
+            //Base64算法
+            //string data = DesHelper.DesEncodeECB(会话密钥随机八位, 传输密钥) + DesHelper.DesEncodeECB(DesHelper.DesEncodeECB(writeCardSTKTlvHex, 敏感数据加密密钥), 会话密钥随机八位);
+
             //5.加上传输命令头（TAR）
             data = TAR + data;
 
@@ -41,7 +44,7 @@ namespace Unitoys.ESIM_MVNO
 
         public string GetData()
         {
-            return simData;
+            return Convert.ToBase64String(DataHelper.HexToByte(simData));
         }
 
         /// <summary>
@@ -52,26 +55,27 @@ namespace Unitoys.ESIM_MVNO
         private string GetWriteCardSTKTlv(WriteCardSTK model)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("110A" + ReverseStrTwo(model.iccid));
-            sb.Append("1209" + "08" + ReverseStrTwo("9" + model.imsi));
-            sb.Append("1310" + model.ki);
+            sb.Append("010A" + ReverseStrTwo(model.iccid));
+            sb.Append("0209" + "08" + ReverseStrTwo("9" + model.imsi));
+            sb.Append("0310" + model.ki);
+           
+            //sb.Append("1500");
+            sb.Append("0410" + model.opc);
             if (!string.IsNullOrEmpty(model.SMSP))
             {
-                sb.Append("18" + DataHelper.DecToHex(model.SMSP.Length / 2) + model.SMSP);//+ model.SMSP
+                sb.Append("05" + DataHelper.DecToHex(model.SMSP.Length / 2) + model.SMSP);//+ model.SMSP
             }
-            sb.Append("1500");
-            sb.Append("1610" + model.opc);
-            if (!string.IsNullOrEmpty(model.PREFER_NETWORK))
+            if (!string.IsNullOrEmpty(model.ISDN))
             {
-                sb.Append("1A" + DataHelper.DecToHex(model.PREFER_NETWORK.Length / 2) + ReverseStrTwo(model.PREFER_NETWORK));
+                sb.Append("06" + DataHelper.DecToHex(model.ISDN.Length / 2) + model.ISDN);//+ model.SMSP
+            }
+            if (!string.IsNullOrEmpty(model.PLMN))
+            {
+                sb.Append("07" + DataHelper.DecToHex(model.PLMN.Length / 2) + ReverseStrTwo(model.PLMN));
             }
             else
             {
                 //sb.Append("1A00");
-            }
-            if (!string.IsNullOrEmpty(model.EXP_DATE))
-            {
-                sb.Append("1B08" + model.EXP_DATE);
             }
             return sb.ToString();
         }

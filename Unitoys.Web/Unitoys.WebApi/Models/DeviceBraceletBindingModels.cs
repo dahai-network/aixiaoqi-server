@@ -10,6 +10,7 @@ namespace Unitoys.WebApi.Models
     public class DeviceBraceletBindingModels
     {
         public string IMEI { get; set; }
+        public DeviceType? DeviceType { get; set; }
     }
     public class DeviceBraceletConnectInfoModels
     {

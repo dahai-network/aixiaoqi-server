@@ -526,7 +526,7 @@ namespace Unitoys.WebApi.Controllers
                                 imsi = result.data.esimResource.imsi,
                                 ki = result.data.esimResource.ki,
                                 opc = result.data.esimResource.opc,
-                                PREFER_NETWORK = result.data.esimResource.plmn,
+                                PLMN = result.data.esimResource.plmn,
                             });
                             writeData = simdata.GetData();
                         }

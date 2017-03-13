@@ -121,9 +121,10 @@ namespace Unitoys.WebApi.Controllers
             UT_DeviceBracelet entity = new UT_DeviceBracelet()
             {
                 IMEI = model.IMEI,
-                Version = "", //string.IsNullOrEmpty(model.Version) ? "0" : model.Version,
+                Version = "0", //string.IsNullOrEmpty(model.Version) ? "0" : model.Version,
                 CreateDate = CommonHelper.GetDateTimeInt(),
-                UserId = currentUser.ID
+                UserId = currentUser.ID,
+                DeviceType = model.DeviceType ?? DeviceType.Bracelet
             };
 
             var result = await _deviceBraceletService.InsertAsync(entity);
@@ -234,6 +235,7 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> OTA(double Version)
         {
+            //todo 空中升级区分钥匙扣和手环
             //switch (await UpdateVersion(Version + ""))
             //{
             //    case 0:
