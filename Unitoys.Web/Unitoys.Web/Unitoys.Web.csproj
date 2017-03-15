@@ -1065,6 +1065,9 @@
     <Content Include="Areas\Manage\Views\OperationRecord\Index.cshtml" />
     <Content Include="Areas\Manage\Views\OperationRecord\LogIndex.cshtml" />
     <Content Include="Areas\Manage\Views\DeviceBraceletConnectRecord\Index.cshtml" />
+    <Content Include="App_Data\deviceBraceletUniBoxOTA.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>

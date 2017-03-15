@@ -135,6 +135,7 @@
     <Compile Include="AliPay\RSA.cs" />
     <Compile Include="Config\ConfigStrategy.cs" />
     <Compile Include="Config\IConfigStrategy.cs" />
+    <Compile Include="Config\Info\DeviceBraceletUniBoxOTAConfigInfo.cs" />
     <Compile Include="Config\Info\IConfigInfo.cs" />
     <Compile Include="Config\Info\DeviceBraceletOTAConfigInfo.cs" />
     <Compile Include="Config\Info\SiteConfigInfo.cs" />

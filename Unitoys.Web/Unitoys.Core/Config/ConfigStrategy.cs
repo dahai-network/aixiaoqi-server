@@ -13,6 +13,7 @@ namespace Unitoys.Core.Config
     {
         private readonly string _siteConfigFilePath = "/App_Data/site.config";//关系数据库配置信息文件路径
         private readonly string _deviceBraceletOTAConfigFilePath = "/App_Data/deviceBraceletOTA.config";//手环设备空中升级固件
+        private readonly string _deviceBraceletUniBoxOTAConfigFilePath = "/App_Data/deviceBraceletUniBoxOTA.config";//手环设备空中升级固件
 
         /// <summary>
         /// 从文件中加载配置信息
@@ -69,6 +70,24 @@ namespace Unitoys.Core.Config
         public bool SaveDeviceBraceletOTAConfig(DeviceBraceletOTAConfigInfo configInfo)
         {
             return SaveConfigInfo(configInfo, IOHelper.GetMapPath(_deviceBraceletOTAConfigFilePath));
+        }
+
+        /// <summary>
+        /// 获得配置
+        /// </summary>
+        public DeviceBraceletUniBoxOTAConfigInfo GetDeviceBraceletUniBoxOTAConfig()
+        {
+            return (DeviceBraceletUniBoxOTAConfigInfo)LoadConfigInfo(typeof(DeviceBraceletUniBoxOTAConfigInfo), IOHelper.GetMapPath(_deviceBraceletUniBoxOTAConfigFilePath));
+        }
+
+        /// <summary>
+        /// 保存配置
+        /// </summary>
+        /// <param name="configInfo">短信配置信息</param>
+        /// <returns>是否保存结果</returns>
+        public bool SaveDeviceBraceletUniBoxOTAConfig(DeviceBraceletUniBoxOTAConfigInfo configInfo)
+        {
+            return SaveConfigInfo(configInfo, IOHelper.GetMapPath(_deviceBraceletUniBoxOTAConfigFilePath));
         }
     }
 }

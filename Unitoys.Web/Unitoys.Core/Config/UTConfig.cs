@@ -18,6 +18,7 @@ namespace Unitoys.Core
 
         private static SiteConfigInfo _siteconfiginfo = null;//基础配置信息
         private static DeviceBraceletOTAConfigInfo _deviceBraceletOTAconfiginfo = null;//手环设备OTA配置信息
+        private static DeviceBraceletUniBoxOTAConfigInfo _deviceBraceletUniBoxOTAConfigInfo = null;//手环设备钥匙扣OTA配置信息
 
         static UTConfig()
         {
@@ -75,6 +76,33 @@ namespace Unitoys.Core
         public static void SetDeviceBraceletOTAConfig(DeviceBraceletOTAConfigInfo config)
         {
             _deviceBraceletOTAconfiginfo = config;
+        }
+
+        /// <summary>
+        /// 手环钥匙扣固件OTA信息
+        /// </summary>
+        public static DeviceBraceletUniBoxOTAConfigInfo DeviceBraceletUniBoxOTAConfigInfo
+        {
+            get
+            {
+                if (_deviceBraceletUniBoxOTAConfigInfo == null)
+                {
+                    lock (_locker)
+                    {
+                        if (_deviceBraceletUniBoxOTAConfigInfo == null)
+                        {
+                            _deviceBraceletUniBoxOTAConfigInfo = _iconfigstrategy.GetDeviceBraceletUniBoxOTAConfig();
+                        }
+                    }
+                }
+
+                return _deviceBraceletUniBoxOTAConfigInfo;
+            }
+        }
+
+        public static void SetDeviceBraceletOTAConfig(DeviceBraceletUniBoxOTAConfigInfo config)
+        {
+            _deviceBraceletUniBoxOTAConfigInfo = config;
         }
     }
 }

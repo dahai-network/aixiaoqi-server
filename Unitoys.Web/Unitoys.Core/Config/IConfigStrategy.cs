@@ -19,5 +19,10 @@ namespace Unitoys.Core.Config
         /// 获得配置
         /// </summary>
         DeviceBraceletOTAConfigInfo GetDeviceBraceletOTAConfig();
+        /// <summary>
+        /// 获得配置
+        /// </summary>
+        /// <returns></returns>
+        DeviceBraceletUniBoxOTAConfigInfo GetDeviceBraceletUniBoxOTAConfig();
     }
 }

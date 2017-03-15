@@ -18,4 +18,9 @@ namespace Unitoys.WebApi.Models
         public DeviceType? DeviceType { get; set; }
         public string Version { get; set; }
     }
+    public class DeviceBraceletOTABindingModels
+    {
+        public double Version { get; set; }
+        public DeviceType? DeviceType { get; set; }
+    }
 }

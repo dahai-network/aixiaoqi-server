@@ -233,9 +233,8 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> OTA(double Version)
+        public async Task<IHttpActionResult> OTA([FromUri]DeviceBraceletOTABindingModels model)
         {
-            //todo 空中升级区分钥匙扣和手环
             //switch (await UpdateVersion(Version + ""))
             //{
             //    case 0:
@@ -245,31 +244,64 @@ namespace Unitoys.WebApi.Controllers
             //    //    return Ok(new StatusCodeRes(StatusCodeType.用户未绑定设备, "未绑定设备"));
             //    //    break;
             //}
-            if (Version < Convert.ToDouble(UTConfig.DeviceBraceletOTAConfigInfo.Version))
+
+            if (!model.DeviceType.HasValue || model.DeviceType.Value == Unitoys.Model.DeviceType.Bracelet)
             {
-                return Ok(new
+                if (model.Version < Convert.ToDouble(UTConfig.DeviceBraceletOTAConfigInfo.Version))
                 {
-                    status = 1,
-                    data = new
+                    return Ok(new
                     {
-                        Version = UTConfig.DeviceBraceletOTAConfigInfo.Version,// "20",
-                        VersionName = UTConfig.DeviceBraceletOTAConfigInfo.VersionName,// "1.0.1",
-                        Descr = UTConfig.DeviceBraceletOTAConfigInfo.Descr.Replace("\\n", "\n"),//"1.更新时间更新\n2.优化传输速度",
-                        Url = UTConfig.DeviceBraceletOTAConfigInfo.Url//"https://api.unitoys.com/unitoys6.zip",
-                    }
-                });
+                        status = 1,
+                        data = new
+                        {
+                            Version = UTConfig.DeviceBraceletOTAConfigInfo.Version,// "20",
+                            VersionName = UTConfig.DeviceBraceletOTAConfigInfo.VersionName,// "1.0.1",
+                            Descr = UTConfig.DeviceBraceletOTAConfigInfo.Descr.Replace("\\n", "\n"),//"1.更新时间更新\n2.优化传输速度",
+                            Url = UTConfig.DeviceBraceletOTAConfigInfo.Url//"https://api.unitoys.com/unitoys6.zip",
+                        }
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = 1,
+                        msg = "已是最新版本",
+                        data = new
+                        {
+
+                        }
+                    });
+                }
             }
             else
             {
-                return Ok(new
+                if (model.Version < Convert.ToDouble(UTConfig.DeviceBraceletUniBoxOTAConfigInfo.Version))
                 {
-                    status = 1,
-                    msg = "已是最新版本",
-                    data = new
+                    return Ok(new
                     {
+                        status = 1,
+                        data = new
+                        {
+                            Version = UTConfig.DeviceBraceletUniBoxOTAConfigInfo.Version,// "20",
+                            VersionName = UTConfig.DeviceBraceletUniBoxOTAConfigInfo.VersionName,// "1.0.1",
+                            Descr = UTConfig.DeviceBraceletUniBoxOTAConfigInfo.Descr.Replace("\\n", "\n"),//"1.更新时间更新\n2.优化传输速度",
+                            Url = UTConfig.DeviceBraceletUniBoxOTAConfigInfo.Url//"https://api.unitoys.com/unitoys6.zip",
+                        }
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = 1,
+                        msg = "已是最新版本",
+                        data = new
+                        {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         }
 
