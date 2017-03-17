@@ -37,6 +37,7 @@ namespace Unitoys.WebApi.Controllers
                 var data = new
                 {
                     IMEI = entity.IMEI,
+                    DeviceType = ((int)entity.DeviceType).ToString(),
                     Version = entity.Version == null ? "" : entity.Version,
                     CreateDate = entity.CreateDate.ToString()
                 };
@@ -124,7 +125,7 @@ namespace Unitoys.WebApi.Controllers
                 Version = "0", //string.IsNullOrEmpty(model.Version) ? "0" : model.Version,
                 CreateDate = CommonHelper.GetDateTimeInt(),
                 UserId = currentUser.ID,
-                DeviceType = model.DeviceType ?? DeviceType.Bracelet
+                DeviceType = model.DeviceType.HasValue ? model.DeviceType.Value : DeviceType.Bracelet
             };
 
             var result = await _deviceBraceletService.InsertAsync(entity);
@@ -152,10 +153,10 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "版本号为空"));
             }
-            if (!model.DeviceType.HasValue)
-            {
-                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "设备类型为空"));
-            }
+            //if (!model.DeviceType.HasValue)
+            //{
+            //    return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "设备类型为空"));
+            //}
             switch (await UpdateVersion(model))
             {
                 case 0:
@@ -188,7 +189,8 @@ namespace Unitoys.WebApi.Controllers
                 //更新设备版本号
                 entity.Power = model.Power;
                 entity.ConnectDate = CommonHelper.GetDateTimeInt();
-                entity.DeviceType = model.DeviceType.Value;
+                if (model.DeviceType.HasValue)
+                    entity.DeviceType = model.DeviceType.Value;
                 entity.Version = model.Version;
                 entity.UpdateDate = CommonHelper.GetDateTimeInt();
 

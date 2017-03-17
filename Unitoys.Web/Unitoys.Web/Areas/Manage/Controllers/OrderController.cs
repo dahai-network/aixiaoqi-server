@@ -35,7 +35,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         [HttpGet]
         public async Task<ActionResult> GetOrders(int page, int rows, string orderNum, string tel, string packageName, PayStatusType? payStatus, OrderStatusType? orderStatus)
         {
-            var result = await _orderService.SearchAsync(page, rows,orderNum, tel, packageName, payStatus, orderStatus);
+            var result = await _orderService.SearchAsync(page, rows, orderNum, tel, packageName, payStatus, orderStatus);
 
             int totalNum = result.Key;
 
@@ -52,6 +52,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                PackageName = i.PackageName,
                                Flow = i.Flow,
                                CallMinutes = i.UT_Package == null ? "" : i.UT_Package.CallMinutes + "",
+                               CountryName = i.UT_Package.UT_Country == null ? "" : i.UT_Package.UT_Country.CountryName,
                                RemainingCallMinutes = i.RemainingCallMinutes,
                                ExpireDays = i.ExpireDays,
                                Quantity = i.Quantity,

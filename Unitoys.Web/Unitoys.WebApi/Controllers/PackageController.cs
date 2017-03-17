@@ -27,10 +27,10 @@ namespace Unitoys.WebApi.Controllers
         /// <returns></returns>
         public async Task<IHttpActionResult> Get([FromUri]GetPackageBindingModels model)
         {
-            if (model.Category.HasValue && model.Category == CategoryType.Call)
-            {
-                model.Category = CategoryType.DualSimStandby;
-            }
+            //if (model.Category.HasValue && model.Category == CategoryType.Call)
+            //{
+            //    model.Category = CategoryType.DualSimStandby;
+            //}
             //Expression<Func<UT_Package, bool>> exp;
 
             //exp = x => x.Lock4 == 0 && x.IsDeleted == false;
@@ -59,7 +59,6 @@ namespace Unitoys.WebApi.Controllers
             //var packageResult = await _packageService.GetEntitiesAsync(exp);
             //如果查询条件不为空，则根据查询条件查询，反则查询所有。
             var packageResult = _packageService.GetEntitiesForPagingAsync((int)model.PageNumber, (int)model.PageSize, packageExp, "DESC", exp);
-
 
             var totalRows = _packageService.GetEntitiesCountAsync(exp);
 

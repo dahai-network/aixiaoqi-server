@@ -394,7 +394,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var query = db.UT_Order.Include(x => x.UT_Users).Include(x => x.UT_Package);
+                var query = db.UT_Order.Include(x => x.UT_Users).Include(x => x.UT_Package).Include(x => x.UT_Package.UT_Country);
 
                 if (!string.IsNullOrEmpty(orderNum))
                 {
