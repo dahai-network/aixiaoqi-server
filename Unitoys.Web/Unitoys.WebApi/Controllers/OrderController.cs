@@ -341,7 +341,9 @@ namespace Unitoys.WebApi.Controllers
                             if (result.status != "1")
                             {
                                 LoggerHelper.Error("订单ID:" + order.ID + ",购买产品失败,返回msg：" + result.msg);
-                                return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期));
+
+                                return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "暂时无法激活,请联系客服"));
+                                //return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期));
                             }
 
                             //3.保存订单Id

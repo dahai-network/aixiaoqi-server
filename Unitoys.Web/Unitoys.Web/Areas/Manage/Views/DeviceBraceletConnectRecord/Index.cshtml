@@ -51,7 +51,7 @@
         grid = $("#grid");
         dlg_Edit = $("#dlg-edit").dialog();
         dlg_Edit_form = dlg_Edit.find('form');
-        setInterval(function () { doSearch(); }, 5000)
+        setInterval(function () { grid.datagrid('reload'); }, 5000)
     })
 
     function doSearch() {
