@@ -148,5 +148,9 @@ namespace Unitoys.Core.Config
         /// EIMS的IP地址
         /// </summary>
         public string EIMSServerIp { get; set; }
+        /// <summary>
+        /// 苹果极光推送生产环境1或开发环境0
+        /// </summary>
+        public string IOSApnsProduction { get; set; }
     }
 }

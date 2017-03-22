@@ -32,6 +32,8 @@ namespace Unitoys.Core.JiGuang
                 JPushClient client = new JPushClient(app_key, master_secret);
                 PushPayload payload = PushObject_ios_alias_alert(alias, title, dicExtra);
                 payload.notification.setAlert(alert);
+                //设置IOS推送环境，生产或开发
+                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
                 client.SendPush(payload);
                 return true;
             }
@@ -58,6 +60,8 @@ namespace Unitoys.Core.JiGuang
             {
                 JPushClient client = new JPushClient(app_key, master_secret);
                 PushPayload payload = PushObject_android_alias_message(alias, msgContent, contentType, dicExtra);
+                //设置IOS推送环境，生产或开发
+                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
                 client.SendPush(payload);
                 return true;
             }
@@ -83,6 +87,8 @@ namespace Unitoys.Core.JiGuang
             {
                 JPushClient client = new JPushClient(app_key, master_secret);
                 PushPayload payload = PushObject_all_alias_message(alias, msgContent, contentType, dicExtra);
+                //设置IOS推送环境，生产或开发
+                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
                 client.SendPush(payload);
                 return true;
             }

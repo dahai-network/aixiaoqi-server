@@ -23,7 +23,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         public ActionResult Index()
         {
             var SiteConfigNameList = UTConfig.SiteConfig.GetType().GetProperties()
-               .Select(x => x.Name )
+               .Select(x => x.Name)
                .ToList();
 
             ViewBag.SiteConfigNameList = SiteConfigNameList;
