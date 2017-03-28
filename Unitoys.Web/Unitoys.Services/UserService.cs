@@ -206,5 +206,37 @@ namespace Unitoys.Services
             }
             return -1;
         }
+
+        /// <summary>
+        /// 直接充值
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> Recharge(Guid userId, decimal price)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                //根据PaymentCard的UserId获取User，添加充值金额到用户上，并保存。
+                UT_Users user = await db.UT_Users.FindAsync(userId);
+                user.Amount += price;
+
+                db.UT_Users.Attach(user);
+                db.Entry<UT_Users>(user).State = System.Data.Entity.EntityState.Modified;
+
+                //建立UserBill记录账单。
+                UT_UserBill userBill = new UT_UserBill();
+                userBill.UserId = userId;
+                userBill.Amount = price;
+                userBill.UserAmount = user.Amount;
+                userBill.CreateDate = CommonHelper.GetDateTimeInt();
+                userBill.LoginName = user.Tel;
+                userBill.BillType = 1;
+                userBill.PayType = 0; //充值
+                userBill.Descr = "官方充值";
+
+                db.UT_UserBill.Add(userBill);
+
+                return await db.SaveChangesAsync() > 0;
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="userTel">用户电话</param>
         /// <param name="isOpen">是否为打开功能</param>
         /// <returns>0失败1成功2系统异常</returns>
-        internal static int SetSip_Buddies(string userTel)
+        public static int SetSip_Buddies(string userTel)
         {
             try
             {

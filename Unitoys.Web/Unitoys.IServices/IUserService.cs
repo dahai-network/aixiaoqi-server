@@ -79,5 +79,12 @@ namespace Unitoys.IServices
         /// <param name="id"></param>
         /// <returns>-1/失败->0通话秒数</returns>
         Task<int> GetAmountAndOrderMaximumPhoneCallTime(Guid id);
+        /// <summary>
+        /// 直接充值
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="price"></param>
+        /// <returns></returns>
+        Task<bool> Recharge(Guid userId, decimal price);
     }
 }

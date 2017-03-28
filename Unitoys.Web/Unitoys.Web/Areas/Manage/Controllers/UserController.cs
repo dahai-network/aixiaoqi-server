@@ -24,7 +24,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         {
             this._userService = userService;
         }
-        
+
         public ActionResult Index()
         {
             return View();
@@ -36,9 +36,9 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows,  string tel, DateTime? createStartDate, DateTime? createEndDate, int? status)
+        public async Task<ActionResult> GetList(int page, int rows, string tel, DateTime? createStartDate, DateTime? createEndDate, int? status)
         {
-            var pageRowsDb = await _userService.SearchAsync(page, rows,  tel, createStartDate, createEndDate, status);
+            var pageRowsDb = await _userService.SearchAsync(page, rows, tel, createStartDate, createEndDate, status);
 
             int totalNum = pageRowsDb.Key;
 
@@ -95,7 +95,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Add_User)]
-        public async Task<ActionResult> Add(string passWord, string tel, string email = "",string trueName="")
+        public async Task<ActionResult> Add(string passWord, string tel, string email = "", string trueName = "")
         {
             JsonAjaxResult result = new JsonAjaxResult();
             if (passWord.Trim() == "" || passWord.Length < 6)
@@ -123,13 +123,32 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 user.TrueName = trueName;
                 user.Score = 0;
                 user.Amount = 0;
-                user.GroupId =Guid.Parse("688a3245-2628-4488-bf35-9c029ff80988");
+                user.GroupId = Guid.Parse("688a3245-2628-4488-bf35-9c029ff80988");
                 user.Status = 0;
                 user.CreateDate = DateTime.Now;
                 user.UserHead = "/Unitoys/2015/12/1512291755292460937.png";
 
+                switch (Unitoys.WebApi.Controllers.PhoneServerByMySqlServices.SetSip_Buddies(user.Tel))
+                {
+                    case 2:
+                        result.Success = true;
+                        result.Msg = "系统繁忙_请重试！";
+                        return Json(result, JsonRequestBehavior.AllowGet);
+                    //return Ok(new StatusCodeRes(StatusCodeType.系统繁忙_请重试));
+                    case 0:
+                        result.Success = true;
+                        result.Msg = "注册失败_请重试！";
+                        return Json(result, JsonRequestBehavior.AllowGet);
+                    //return Ok(new StatusCodeRes(StatusCodeType.注册失败_请重试));
+                }
+
                 if (await _userService.InsertAsync(user))
                 {
+                    //默认运动目标8000
+                    if (await _userService.ModifyUserInfoAndUserShape(user.ID, null, null, null, null, null, 8000))
+                    {
+
+                    }
                     result.Success = true;
                     result.Msg = "添加成功！";
                 }
@@ -177,7 +196,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     result.Success = false;
                     result.Msg = "该用户已经是锁定状态！";
                 }
-                
+
             }
             else
             {
@@ -229,5 +248,35 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 充值
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_User)]
+        public async Task<ActionResult> recharge(Guid? ID, decimal price)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+            if (ID.HasValue)
+            {
+                if (await _userService.Recharge(ID.Value, price))
+                {
+                    result.Success = true;
+                    result.Msg = "更新成功！";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "操作失败！";
+                }
+
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "请求失败！";
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

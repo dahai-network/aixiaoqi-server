@@ -43,5 +43,6 @@ namespace Unitoys.Model
         /// 描述
         /// </summary>
         public string Descr { get; set; }
+        //public string Remark { get; set; }
     }
 }
