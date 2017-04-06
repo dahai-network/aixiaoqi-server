@@ -50,7 +50,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                CallAgoRemainingCallSeconds = i.CallAgoRemainingCallSeconds,
                                CallSourceIp = i.CallSourceIp,
                                CallServerIp = i.CallServerIp,
-                               Acctterminatedirection = i.Acctterminatedirection
+                               Acctterminatedirection = i.Acctterminatedirection,
+                               Status = i.Status
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };

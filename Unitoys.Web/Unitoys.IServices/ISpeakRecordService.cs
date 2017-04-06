@@ -22,7 +22,19 @@ namespace Unitoys.IServices
         /// <param name="acctterminatedirection">挂断方</param>
         /// <returns></returns>
         Task<bool> AddRecordAndDeDuction(string deviceName, string calledTelNum, DateTime callStartTime, DateTime callStopTime, int callSessionTime, string callSourceIp, string callServerIp, string acctterminatedirection);
-
+        /// <summary>
+        /// 添加漏接通话记录
+        /// </summary>
+        /// <param name="deviceName">主叫号码</param>
+        /// <param name="calledTelNum">被叫号码</param>
+        /// <param name="callStartTime">开始拨打时间</param>
+        /// <param name="callStopTime">结束通话时间</param>
+        /// <param name="callSessionTime">通话时间</param>
+        /// <param name="callSourceIp">拨打源IP</param>
+        /// <param name="callServerIp">服务器IP</param>
+        /// <param name="acctterminatedirection">挂断方</param>
+        /// <returns></returns>
+        Task<bool> AddRecordMissing(string deviceName, string calledTelNum, DateTime callStartTime, DateTime callStopTime, int callSessionTime, string callSourceIp, string callServerIp, string acctterminatedirection);
         /// <summary>
         /// 异步搜索
         /// </summary>

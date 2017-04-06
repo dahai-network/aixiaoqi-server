@@ -33,6 +33,7 @@
                     <th data-options="field:'QQ',width:60">QQ</th>
                     <th data-options="field:'Amount',width:60,formatter:formatMoney">账户余额</th>
                     <th data-options="field:'Sex',width:50,formatter:formatSex">性别</th>
+                    <th data-options="field:'Remark',width:50">备注</th>
                     <th data-options="field:'CreateDate',width:100">创建时间</th>
                     <th data-options="field:'Status',width:60,formatter:formatLock,styler:stylerFun">是否锁定</th>
                 </tr>
@@ -114,12 +115,40 @@
         </table>
     </form>
 </div>
+
+<div id="dlg-edit-setRemark" class="easyui-dialog" title="充值" style="width:500px;height:200px;padding:20px"
+     data-options="
+                    iconCls: 'icon-save',
+                    closed:true,
+                    buttons: [{
+                        text:'保存',
+                        iconCls:'icon-ok',
+                        handler:saveDataSetRemark
+                    }]
+                ">
+    <form method="post" id="Form" data-options="novalidate:true">
+        <input type="hidden" value="" id="ID" name="ID" />
+        <table cellpadding="5" class="tb_form">
+            <tr>
+                <td style="text-align:right">
+                    备注：
+                </td>
+                <td>
+                    <input type="text" name="remark" id="remark" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
 <script type="text/javascript">
     var grid;
     var dlg_Edit;
     var dlg_Edit_form;
     var dlg_Edit_Recharge;
     var dlg_Edit_Recharge_form;
+    var dlg_Edit_SetRemark;
+    var dlg_Edit_SetRemark_form;
 
     var toolbar = [{
         text: '添加用户',
@@ -143,6 +172,10 @@
         text: '充值',
         iconCls: 'icon-add',
         handler: recharge
+    }, {
+        text: '备注',
+        iconCls: 'icon-add',
+        handler: setRemark
     }];
     function LockFun() {
         var arr = getSelectedArr();
@@ -220,7 +253,22 @@
             Msgshow('请先选择要充值的用户。');
         }
     }
+    function setRemark(index, rowData, value) {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            dlg_Edit_SetRemark.dialog('open');
+            dlg_Edit_SetRemark_form.form('clear'); //清除之前面选中的表单
+            //dlg_Edit_SetRemark.dialog('setTitle', '您正在查看的是：' + rowData.PackageName + " 的信息");
+            rowData = {};
+            rowData.ID = getSelectedID();
+            rowData.price = 200;
+            dlg_Edit_SetRemark_form.form('load', rowData); //加载到表单的控件上
 
+            dlg_Edit_SetRemark_form.url = '/Manage/User/setRemark';
+        } else {
+            Msgshow('请先选择要备注的用户。');
+        }
+    }
     function stylerFun(value, row, index) {
         if (value == 1) {
             return 'background-color:#ffee00;color:red;';
@@ -255,6 +303,9 @@
 
         dlg_Edit_Recharge = $("#dlg-edit-recharge").dialog();
         dlg_Edit_Recharge_form = dlg_Edit_Recharge.find('form');
+
+        dlg_Edit_SetRemark = $("#dlg-edit-setRemark").dialog();
+        dlg_Edit_SetRemark_form = dlg_Edit_SetRemark.find('form');
     })
     //保存数据
     function saveData() {
@@ -294,7 +345,34 @@
             }
         });
     }
-
+    //保存备注数据
+    function saveDataSetRemark() {
+        dlg_Edit_SetRemark_form.form('submit', {
+            url: dlg_Edit_SetRemark_form.url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                //result为请求处理后的返回值
+                var result = eval('(' + result + ')');
+                if (result.Success) {
+                    $.messager.show({
+                        title: '成功',
+                        msg: result.Msg,
+                        timeout: 2000,
+                        showType: 'fade'
+                    });
+                    dlg_Edit_SetRemark.dialog('close'); //dlg_Edit与其他文件中的一致  才能公共调用
+                    grid.datagrid('reload'); //grid变量要与其他文件中的一致
+                } else {
+                    $.messager.show({
+                        title: '错误提示',
+                        msg: result.Msg
+                    });
+                }
+            }
+        });
+    }
 
     function doSearch() {
         $("#grid").datagrid('load', {

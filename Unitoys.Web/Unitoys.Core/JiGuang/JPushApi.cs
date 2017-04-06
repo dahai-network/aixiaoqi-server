@@ -25,6 +25,13 @@ namespace Unitoys.Core.JiGuang
             PushPayload payload = PushObject_All_All_alert(title, dicExtra);
             client.SendPush(payload);
         }
+        public void Push_all_alias_alert(string alias, string title, string alert, Dictionary<string, string> dicExtra)
+        {
+            JPushClient client = new JPushClient(app_key, master_secret);
+            PushPayload payload = PushObject_all_alias_alert(alias, title, dicExtra);
+            payload.notification.setAlert(alert);
+            client.SendPush(payload);
+        }
         public bool Push_ios_alias_alert(string alias, string title, string alert, Dictionary<string, string> dicExtra)
         {
             try

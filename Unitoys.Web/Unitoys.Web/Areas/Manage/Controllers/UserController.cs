@@ -55,7 +55,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                Status = i.Status,
                                Score = i.Score,
                                Sex = i.Sex,
-                               Amount = i.Amount
+                               Amount = i.Amount,
+                               Remark = i.Remark
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -260,6 +261,39 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             if (ID.HasValue)
             {
                 if (await _userService.Recharge(ID.Value, price))
+                {
+                    result.Success = true;
+                    result.Msg = "更新成功！";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "操作失败！";
+                }
+
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "请求失败！";
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 充值
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_User)]
+        public async Task<ActionResult> setRemark(Guid? ID, string remark)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+            if (ID.HasValue)
+            {
+                UT_Users user = await _userService.GetEntityByIdAsync(ID.Value);
+                user.Remark = remark;
+                if (await _userService.UpdateAsync(user))
                 {
                     result.Success = true;
                     result.Msg = "更新成功！";

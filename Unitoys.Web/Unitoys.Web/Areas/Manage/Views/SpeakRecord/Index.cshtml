@@ -43,12 +43,13 @@
                     <th data-options="field:'CallSourceIp',width:50">拨打源IP</th>
                     <th data-options="field:'CallServerIp',width:50">服务器IP</th>
                     <th data-options="field:'Acctterminatedirection',width:40,formatter:formatAcct">挂断方</th>
+                    <th data-options="field:'Status',width:40,formatter:formatStatus">状态</th>
+
                 </tr>
             </thead>
         </table>
     </div>
 </div>
-
 <script type="text/javascript">
     function formatAcct(value, rec, index) {
         if (value == "source") {
@@ -59,7 +60,15 @@
         }
         return value;
     }
-
+    function formatStatus(value, rec, index) {
+        if (value == "0") {
+            return "正常";
+        }
+        if (value == "1") {
+            return "<span style='color:#ff0000'>漏接</span>";
+        }
+        return value;
+    }
     function doSearch() {
         $("#grid").datagrid('load', {
             deviceName: $("#deviceName").val() == null ? "" : $("#deviceName").val(),

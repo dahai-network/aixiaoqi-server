@@ -59,7 +59,19 @@ namespace Unitoys.Model
         /// 通话类型，1：回拨，2：直拨
         /// </summary>
         public int CallType { get; set; }
+        public SpeakRecordStatus Status { get; set; }
 
         public virtual UT_Users UT_Users { get; set; }
+    }
+    public enum SpeakRecordStatus
+    {
+        /// <summary>
+        /// 正常
+        /// </summary>
+        Normal = 0,
+        /// <summary>
+        /// 漏接
+        /// </summary>
+        Missing = 1,
     }
 }

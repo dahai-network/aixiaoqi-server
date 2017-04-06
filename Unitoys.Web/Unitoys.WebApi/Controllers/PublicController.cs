@@ -75,20 +75,36 @@ namespace Unitoys.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [NoLogin]
-        public async Task<IHttpActionResult> Upgrade(int TerminalCode)
+        public async Task<IHttpActionResult> Upgrade([FromUri]PublicUpgradeBindingModel model)
         {
-            return Ok(new
+            if (Convert.ToDouble(model.Version.Replace(".", "")) < Convert.ToDouble(UTConfig.SiteConfig.IosVersion.Replace(".", "")))
             {
-                status = 1,
-                data = new
+                return Ok(new
                 {
-                    Version = UTConfig.SiteConfig.IosVersion,// "版本号",
-                    Mandatory = "0",// "是否强制",
-                    Descr = "1.更新时间更新/r/n2.优化传输速度",//"升级内容",
-                    Url = "",//"升级地址url（地址可为空）",
-                    TerminalCode = TerminalCode + ""//终端标识
-                }
-            });
+                    status = 1,
+                    data = new
+                    {
+                        Version = UTConfig.SiteConfig.IosVersion,// "版本号",
+                        Mandatory = "0",// "是否强制",
+                        Descr = "1.更新时间更新\n2.优化传输速度",//"升级内容",
+                        Url = "",//"升级地址url（地址可为空）",
+                        TerminalCode = model.TerminalCode + ""//终端标识
+                    }
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    status = 1,
+                    msg = "已是最新版本",
+                    data = new
+                    {
+
+                    }
+                });
+
+            }
         }
     }
 }

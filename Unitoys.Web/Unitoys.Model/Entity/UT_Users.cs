@@ -98,6 +98,10 @@ namespace Unitoys.Model
         /// </summary>
         public int Birthday { get; set; }
         /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
+        /// <summary>
         /// 乐观并发
         /// </summary>
         [Timestamp]

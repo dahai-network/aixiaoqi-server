@@ -166,7 +166,8 @@ namespace Unitoys.Services
                         CallSourceIp = callSourceIp,
                         CallServerIp = callServerIp,
                         Acctterminatedirection = acctterminatedirection,
-                        CallType = callType
+                        CallType = callType,
+                        Status = SpeakRecordStatus.Missing
                     };
                     db.UT_SpeakRecord.Add(speakRecord);
 
@@ -191,6 +192,108 @@ namespace Unitoys.Services
 
                         db.UT_UserBill.Add(userBill);
                     }
+
+                    return await db.SaveChangesAsync() > 0;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 添加漏接通话记录
+        /// </summary>
+        /// <param name="deviceName">主叫号码</param>
+        /// <param name="calledTelNum">被叫号码</param>
+        /// <param name="callStartTime">开始拨打时间</param>
+        /// <param name="callStopTime">结束通话时间</param>
+        /// <param name="callSessionTime">通话时间</param>
+        /// <param name="callSourceIp">拨打源IP</param>
+        /// <param name="callServerIp">服务器IP</param>
+        /// <param name="acctterminatedirection">挂断方</param>
+        /// <returns></returns>
+        public async Task<bool> AddRecordMissing(string deviceName, string calledTelNum, DateTime callStartTime, DateTime callStopTime, int callSessionTime, string callSourceIp, string callServerIp, string acctterminatedirection)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                //1. 根据主叫号码获取用户。
+                UT_Users user = await db.UT_Users.Where(x => x.Tel == calledTelNum).SingleOrDefaultAsync();
+
+                if (user != null)
+                {
+                    //2. 判断被叫号码前缀是否为972，973则为回拨记录，若前缀为0或者1则为直拨。
+                    int callType = 0;
+
+                    //if (calledTelNum.StartsWith("972") || calledTelNum.StartsWith("973"))
+                    //{
+                    //    if (ValidateHelper.IsMobile(calledTelNum.Substring(3)))
+                    //    {
+                    //        callType = 1;
+                    //    }
+                    //}
+                    //else if (calledTelNum.StartsWith("981"))
+                    //{
+                    //    //会有座机的情况
+                    //    //if (ValidateHelper.IsMobile(calledTelNum.Substring(1)))
+                    //    //{
+                    //    callType = 2;
+                    //    //}
+                    //}
+                    //else
+                    //{
+                    //    return false;
+                    //}
+
+                    //用户需支付的通话分钟费用
+                    int userAmountCallSessionTimeMinutes = Convert.ToInt32(Math.Ceiling(callSessionTime / 60m));
+
+                    decimal userTotalAmount = 0m;
+
+                    if (userAmountCallSessionTimeMinutes > 0)
+                    {
+                        if (callType == 1)
+                        {
+                            //3.1 计算回拨的费用。
+                            userTotalAmount = userAmountCallSessionTimeMinutes * UTConfig.SiteConfig.CallBackPricePerMinutes;
+                        }
+                        else if (callType == 2)
+                        {
+                            //3.2 计算直拨的费用。
+                            userTotalAmount = userAmountCallSessionTimeMinutes * UTConfig.SiteConfig.CallDirectPricePerMinutes;
+                        }
+                    }
+
+                    int CallAgoRemainingCallSeconds = 0;
+                    //calledTelNum = calledTelNum.Substring(3);
+                    //if (calledTelNum.IndexOf('#') > -1)
+                    //{
+                    //    if (Int32.TryParse(calledTelNum.Substring(calledTelNum.IndexOf('#') + 1), out CallAgoRemainingCallSeconds))
+                    //    {
+                    //        calledTelNum = calledTelNum.Substring(0, calledTelNum.IndexOf('#'));
+                    //    };
+                    //}
+
+                    //不依赖与网络电话端传递过来的剩余秒数
+                    CallAgoRemainingCallSeconds = await _userService.GetAmountAndOrderMaximumPhoneCallTime(user.ID);
+
+                    //4. 添加通话记录。
+                    UT_SpeakRecord speakRecord = new UT_SpeakRecord()
+                    {
+                        UserId = user.ID,
+                        DeviceName = deviceName,
+                        CalledTelNum = calledTelNum,
+                        CallAgoRemainingCallSeconds = CallAgoRemainingCallSeconds,
+                        CallStartTime = callStartTime,
+                        CallStopTime = callStopTime,
+                        CallSessionTime = callSessionTime,
+                        TotalAmount = userTotalAmount,//除去订单剩余通话分钟数后，实际支付金额
+                        CallSourceIp = callSourceIp,
+                        CallServerIp = callServerIp,
+                        Acctterminatedirection = acctterminatedirection,
+                        CallType = callType,
+                        Status = SpeakRecordStatus.Missing
+                    };
+                    db.UT_SpeakRecord.Add(speakRecord);
 
                     return await db.SaveChangesAsync() > 0;
                 }
