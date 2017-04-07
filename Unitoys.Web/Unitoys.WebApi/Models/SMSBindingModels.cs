@@ -77,5 +77,6 @@ namespace Unitoys.WebApi.Models
         public Guid Id { get; set; }
         public Guid[] Ids { get; set; }
         public string Tel { get; set; }
+        public string[] Tels { get; set; }
     }
 }

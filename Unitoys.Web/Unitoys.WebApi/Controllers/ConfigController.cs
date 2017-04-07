@@ -18,10 +18,12 @@ namespace Unitoys.WebApi.Controllers
     {
         private IUserService _userService;
         private IBannerService _bannerService;
-        public ConfigController(IUserService userService, IBannerService bannerService)
+        private IProductService _productService;
+        public ConfigController(IUserService userService, IBannerService bannerService, IProductService productService)
         {
             this._userService = userService;
             this._bannerService = bannerService;
+            this._productService = productService;
         }
         /// <summary>
         /// app初始化获取配置信息
@@ -145,6 +147,31 @@ namespace Unitoys.WebApi.Controllers
                            Title = x.Title,
                            Url = x.Url,
                            Image = x.Image.GetCompleteUrl(),
+                       };
+
+            return Ok(new
+            {
+                status = 1,
+                msg = "success",
+                data = data
+            });
+        }
+        /// <summary>
+        /// 获取首页产品列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [NoAuthenticate]
+        public async Task<IHttpActionResult> GetProductList()
+        {
+            var data = from x in await _productService.GetAll()
+                       orderby x.DisplayOrder ascending
+                       select new
+                       {
+                           Title = x.Title,
+                           Url = x.Url,
+                           Image = x.Image.GetCompleteUrl(),
+                           Price = x.Price,
                        };
 
             return Ok(new

@@ -60,6 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\BlackListConfiguration.cs" />
+    <Compile Include="Configuration\ProductConfiguration.cs" />
     <Compile Include="Configuration\EjoinDevConfiguration.cs" />
     <Compile Include="Configuration\EjoinDevSlotConfiguration.cs.cs" />
     <Compile Include="Configuration\OperationRecordConfiguration.cs" />
@@ -111,6 +113,8 @@
     <Compile Include="Entity\UT_OrderByZCConfirmation.cs" />
     <Compile Include="Entity\UT_GiftCard.cs" />
     <Compile Include="Entity\UT_DeviceBraceletConnectRecord.cs" />
+    <Compile Include="Entity\UT_BlackList.cs" />
+    <Compile Include="Entity\UT_Product.cs" />
     <Compile Include="Entity\UT_ZCSelectionNumber.cs" />
     <Compile Include="Entity\UT_OrderByZCSelectionNumber.cs" />
     <Compile Include="Entity\UT_PageShow.cs" />

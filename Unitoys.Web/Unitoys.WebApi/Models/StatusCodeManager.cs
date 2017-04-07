@@ -56,6 +56,7 @@ namespace Unitoys.WebApi
         参数错误 = 9940,
         必填参数为空 = 9944,
         用户不能为空 = 9945,
+        重复数据 = 9946,
 
         内部错误 = 9950,
         #endregion

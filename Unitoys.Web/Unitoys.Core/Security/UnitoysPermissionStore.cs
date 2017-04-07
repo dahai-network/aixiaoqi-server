@@ -272,6 +272,23 @@ namespace Unitoys.Core.Security
 
         #endregion
 
+        #region Product
+
+        public const string Can_Add_Product = "Can_Add_Product";
+        public const string Can_View_Product = "Can_View_Product";
+        public const string Can_Modify_Product = "Can_Modify_Product";
+        public const string Can_Delete_Product = "Can_Delete_Product";
+
+        #endregion
+
+        #region BlackList
+
+        public const string Can_Add_BlackList = "Can_Add_BlackList";
+        public const string Can_View_BlackList = "Can_View_BlackList";
+        public const string Can_Modify_BlackList = "Can_Modify_BlackList";
+        public const string Can_Delete_BlackList = "Can_Delete_BlackList";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -426,6 +443,16 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_DeviceBraceletConnectRecord = new Tuple<string, string, int>("Can_Modify_DeviceBraceletConnectRecord", "修改手环设备连接记录", 29);
                 Tuple<string, string, int> Can_Delete_DeviceBraceletConnectRecord = new Tuple<string, string, int>("Can_Delete_DeviceBraceletConnectRecord", "删除手环设备连接记录", 29);
 
+                Tuple<string, string, int> Can_Add_Product = new Tuple<string, string, int>("Can_Add_Product", "添加产品列表", 30);
+                Tuple<string, string, int> Can_View_Product = new Tuple<string, string, int>("Can_View_Product", "查看产品列表", 30);
+                Tuple<string, string, int> Can_Modify_Product = new Tuple<string, string, int>("Can_Modify_Product", "修改产品列表", 30);
+                Tuple<string, string, int> Can_Delete_Product = new Tuple<string, string, int>("Can_Delete_Product", "删除产品列表", 30);
+
+                Tuple<string, string, int> Can_Add_BlackList = new Tuple<string, string, int>("Can_Add_BlackList", "添加用户黑名单", 31);
+                Tuple<string, string, int> Can_View_BlackList = new Tuple<string, string, int>("Can_View_BlackList", "查看用户黑名单", 31);
+                Tuple<string, string, int> Can_Modify_BlackList = new Tuple<string, string, int>("Can_Modify_BlackList", "修改用户黑名单", 31);
+                Tuple<string, string, int> Can_Delete_BlackList = new Tuple<string, string, int>("Can_Delete_BlackList", "删除用户黑名单", 31);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -570,6 +597,16 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_DeviceBraceletConnectRecord);
                 returnList.Add(Can_Modify_DeviceBraceletConnectRecord);
                 returnList.Add(Can_Delete_DeviceBraceletConnectRecord);
+
+                returnList.Add(Can_Add_Product);
+                returnList.Add(Can_View_Product);
+                returnList.Add(Can_Modify_Product);
+                returnList.Add(Can_Delete_Product);
+
+                returnList.Add(Can_Add_BlackList);
+                returnList.Add(Can_View_BlackList);
+                returnList.Add(Can_Modify_BlackList);
+                returnList.Add(Can_Delete_BlackList);
                 #endregion
 
                 return returnList;

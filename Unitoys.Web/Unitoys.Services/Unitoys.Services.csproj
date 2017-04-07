@@ -58,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeviceBraceletConnectRecordService.cs" />
+    <Compile Include="ProductService.cs" />
+    <Compile Include="BlackListService.cs" />
     <Compile Include="EjoinDevSlotService.cs" />
     <Compile Include="EjoinDevService.cs" />
     <Compile Include="OperationRecordService.cs" />

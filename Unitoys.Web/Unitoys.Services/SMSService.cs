@@ -219,6 +219,38 @@ namespace Unitoys.Services
         }
 
         /// <summary>
+        /// 批量删除多个联系人短信
+        /// </summary>
+        /// <param name="UserId">用户</param>
+        /// <param name="Tel">用户手机号码</param>
+        /// <param name="ContactTel">联系人电话</param>
+        /// <returns></returns>
+        public async Task<bool> DeletesByTelsAsync(Guid UserId, string Tel, string[] ContactTels)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var listEntity = new List<UT_SMS>();
+
+                foreach (var ContactTel in ContactTels)
+                {
+                    listEntity.AddRange(await GetUserAndContactTel(UserId, Tel, ContactTel).ToListAsync());
+                }
+                //if (listEntity.Count == ids.Length)
+                //{
+
+                //}
+
+                foreach (var entity in listEntity)
+                {
+                    db.UT_SMS.Attach(entity);
+                    db.Entry<UT_SMS>(entity).State = EntityState.Deleted;
+                }
+
+                return await db.SaveChangesAsync() > 0;
+            }
+        }
+
+        /// <summary>
         /// 获取短信实体,并允许出现重复的tid,获取首行
         /// </summary>
         /// <param name="tid"></param>

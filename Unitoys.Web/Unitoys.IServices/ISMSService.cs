@@ -81,6 +81,14 @@ namespace Unitoys.IServices
         /// <param name="ContactTel">联系人电话</param>
         /// <returns></returns>
         Task<bool> DeletesByTelAsync(Guid UserId, string Tel, string ContactTel);
+        /// <summary>
+        /// 批量删除多个联系人短信
+        /// </summary>
+        /// <param name="UserId">用户</param>
+        /// <param name="Tel">用户手机号码</param>
+        /// <param name="ContactTel">联系人电话</param>
+        /// <returns></returns>
+        Task<bool> DeletesByTelsAsync(Guid UserId, string Tel, string[] ContactTels);
 
         /// <summary>
         /// 获取短信实体,并允许出现重复的tid,获取首行

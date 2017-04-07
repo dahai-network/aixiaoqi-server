@@ -197,7 +197,6 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
-
         /// <summary>
         /// 更新用户头像
         /// </summary>
@@ -303,7 +302,6 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
-
         /// <summary>
         /// 找回密码
         /// </summary>
@@ -361,7 +359,6 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(errorMsg);
         }
-
         /// <summary>
         /// 获取用户消费记录
         /// </summary>
@@ -396,7 +393,6 @@ namespace Unitoys.WebApi.Controllers
 
             return Ok(new { status = 1, msg = "获取成功！", data = new { totalRows = await totalRows, list = data } });
         }
-
         /// <summary>
         /// 查询账户余额
         /// </summary>
@@ -416,7 +412,6 @@ namespace Unitoys.WebApi.Controllers
 
             return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
         }
-
         /// <summary>
         /// 获取本次可以通话的最长秒数
         /// </summary>
@@ -437,7 +432,6 @@ namespace Unitoys.WebApi.Controllers
 
             return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
         }
-
         /// <summary>
         /// 获取指定用户手机号是否在线
         /// </summary>
