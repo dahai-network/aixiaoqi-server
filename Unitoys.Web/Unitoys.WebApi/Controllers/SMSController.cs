@@ -515,7 +515,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "删除成功！" });
             }
-            return Ok(new { status = 0, Msg = "删除失败！" });
+            return Ok(new { status = 0, msg = "删除失败！" });
         }
 
         /// <summary>
@@ -532,7 +532,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "删除成功！" });
             }
-            return Ok(new { status = 0, Msg = "删除失败！" });
+            return Ok(new { status = 0, msg = "删除失败！" });
         }
         /// <summary>
         /// 删除多个联系人短信
@@ -548,7 +548,7 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new { status = 1, msg = "删除成功！" });
             }
-            return Ok(new { status = 0, Msg = "删除失败！" });
+            return Ok(new { status = 0, msg = "删除失败！" });
         }
     }
 }

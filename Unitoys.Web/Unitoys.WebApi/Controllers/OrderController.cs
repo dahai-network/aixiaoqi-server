@@ -670,14 +670,16 @@ namespace Unitoys.WebApi.Controllers
             {
                 if (model.PackageCategory.HasValue && model.PackageCategory == CategoryType.Call)
                 {
+                    return Ok(new { status = 1, data = new { Used = "1" } });
                     //model.PackageCategory = CategoryType.DualSimStandby;
-                    model.PackageIsCategoryDualSimStandby = true;
-                    model.PackageCategory = null;
+                    //model.PackageIsCategoryDualSimStandby = true;
+                    //model.PackageCategory = null;
                 }
                 if (model.PackageCategory.HasValue && model.PackageCategory == CategoryType.DualSimStandby)
                 {
-                    model.PackageIsCategoryDualSimStandby = true;
-                    model.PackageCategory = null;
+                    return Ok(new { status = 1, data = new { Used = "1" } });
+                    //model.PackageIsCategoryDualSimStandby = true;
+                    //model.PackageCategory = null;
                 }
                 if (model.PackageIsCategoryCall.HasValue && model.PackageIsCategoryCall == true)
                 {

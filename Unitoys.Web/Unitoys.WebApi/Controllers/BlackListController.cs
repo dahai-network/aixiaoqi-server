@@ -91,7 +91,7 @@ namespace Unitoys.WebApi.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public async Task<IHttpActionResult> Delete([FromBody]BlackListBindingModels model)
         {
             var currentUser = WebUtil.GetApiUserSession();
