@@ -92,7 +92,7 @@ namespace Unitoys.Web.Areas.wx.Controllers
 
 
             //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
-            var searchOrders = await _orderService.GetUserOrderList(1, 100, user.ID, PayStatusType.YesPayment,null, null, null, null, null);
+            var searchOrders = await _orderService.GetUserOrderList(1, 100, user.ID, PayStatusType.YesPayment,null,null, null, null, null, null);
 
             IEnumerable<RazorUserOrder> result = from i in searchOrders.Value
                                                  select new RazorUserOrder

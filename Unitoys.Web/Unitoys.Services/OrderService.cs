@@ -437,7 +437,7 @@ namespace Unitoys.Services
         /// <param name="userId">用户</param>
         /// <param name="payStatus">支付状态</param>
         /// <returns></returns>
-        public async Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, CategoryType? PackageCategory, bool? packageIsCategoryFlow, bool? packageIsCategoryCall, bool? packageIsCategoryDualSimStandby, bool? packageIsCategoryKingCard)
+        public async Task<KeyValuePair<int, List<UT_Order>>> GetUserOrderList(int page, int row, Guid userId, PayStatusType? payStatus, OrderStatusType? orderStatus, CategoryType? PackageCategory, bool? packageIsCategoryFlow, bool? packageIsCategoryCall, bool? packageIsCategoryDualSimStandby, bool? packageIsCategoryKingCard)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -446,6 +446,10 @@ namespace Unitoys.Services
                 if (payStatus != null)
                 {
                     query = query.Where(x => x.PayStatus == payStatus);
+                }
+                if (orderStatus.HasValue)
+                {
+                    query = query.Where(x => x.OrderStatus == orderStatus);
                 }
                 query = query.Where(x => x.OrderStatus != OrderStatusType.Cancel);
                 query = query.Where(x => x.UserId == userId);

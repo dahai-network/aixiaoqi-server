@@ -31,7 +31,7 @@ namespace Unitoys.WebApi.Models
         public DateTime PayStartDate { get; set; }
         public DateTime PayEndDate { get; set; }
         public int? PayStatus { get; set; }
-        public int? OrderStatus { get; set; }
+        public OrderStatusType? OrderStatus { get; set; }
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
         /// <summary>

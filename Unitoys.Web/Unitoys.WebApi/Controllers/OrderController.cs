@@ -166,7 +166,7 @@ namespace Unitoys.WebApi.Controllers
             model.PageSize = model.PageSize ?? 10;
 
             //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
-            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment, model.PackageCategory, model.PackageIsCategoryFlow, model.PackageIsCategoryCall, model.PackageIsCategoryDualSimStandby, model.PackageIsCategoryKingCard);
+            var searchOrders = await _orderService.GetUserOrderList((int)model.PageNumber, (int)model.PageSize, currentUser.ID, PayStatusType.YesPayment, model.OrderStatus, model.PackageCategory, model.PackageIsCategoryFlow, model.PackageIsCategoryCall, model.PackageIsCategoryDualSimStandby, model.PackageIsCategoryKingCard);
 
             var totalRows = searchOrders.Key;
 
