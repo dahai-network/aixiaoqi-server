@@ -48,6 +48,7 @@ namespace Unitoys.WebApi.Controllers
                            Pic = i.Pic.GetCountryPicCompleteUrl(),
                            LogoPic = i.LogoPic.GetPackageCompleteUrl(),
                            Rate = i.Rate,
+                           Descr = string.IsNullOrEmpty(i.Descr) ? "" : i.Descr,
                        };
             return Ok(new { status = 1, data = data });
         }

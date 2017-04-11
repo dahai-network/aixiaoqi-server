@@ -54,6 +54,10 @@ namespace Unitoys.Model
         /// 显示顺序
         /// </summary>
         public int DisplayOrder { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Descr { get; set; }
     }
     public enum ContinentsType
     {

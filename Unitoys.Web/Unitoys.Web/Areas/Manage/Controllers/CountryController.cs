@@ -52,7 +52,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                Rate = i.Rate,
                                IsHot = i.IsHot,
                                DisplayOrder=i.DisplayOrder,
-                               Continents = i.Continents
+                               Continents = i.Continents,
+                               Descr = i.Descr,
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -124,6 +125,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 country.LogoPic = modal.LogoPic;
                 country.CreateDate = DateTime.Now;
                 country.DisplayOrder = modal.DisplayOrder;
+                country.Descr = modal.Descr;
 
                 if (await _countryService.InsertAsync(country))
                 {
@@ -172,6 +174,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 entity.Pic = StringHelper.TrimStart(model.Pic, UTConfig.SiteConfig.ImageHandleHost);
                 entity.LogoPic = StringHelper.TrimStart(model.LogoPic, UTConfig.SiteConfig.ImageHandleHost);
                 entity.DisplayOrder = model.DisplayOrder;
+                entity.Descr = model.Descr;
 
                 if (await _countryService.UpdateAsync(entity))
                 {

@@ -42,6 +42,7 @@
                     <th data-options="field:'CountryCode',width:100">国家代码</th>
                     <th data-options="field:'Rate',width:100">费率标准</th>
                     <th data-options="field:'IsHot',width:60,formatter:formatIsHot">是否热门</th>
+                    <th data-options="field:'Descr',width:60">描述</th>
                     <th data-options="field:'DisplayOrder',width:60">显示顺序</th>
                     <th data-options="field:'Pic',width:100,formatter:formatPic">国旗</th>
                     <th data-options="field:'LogoPic',width:100,formatter:formatPic">Logo</th>
@@ -50,7 +51,6 @@
         </table>
     </div>
 </div>
-
 <div id="dlg-edit" class="easyui-dialog" title="添加管理员" style="width:500px;height:330px;padding:20px"
      data-options="
                 iconCls: 'icon-save',
@@ -123,6 +123,14 @@
             </tr>
             <tr>
                 <td style="text-align:right">
+                    描述：
+                </td>
+                <td>
+                    <input type="text" name="Descr" id="Descr" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
                     logo图片：
                 </td>
                 <td>
@@ -157,7 +165,6 @@
                     </script>
                 </td>
             </tr>
-
             <tr>
                 <td style="text-align:right">
                     图片：
