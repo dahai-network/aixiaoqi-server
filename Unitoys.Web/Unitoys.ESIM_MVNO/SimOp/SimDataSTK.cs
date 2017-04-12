@@ -44,7 +44,8 @@ namespace Unitoys.ESIM_MVNO
 
         public string GetData()
         {
-            return Convert.ToBase64String(DataHelper.HexToByte(simData));
+            return simData;
+            //return Convert.ToBase64String(DataHelper.HexToByte(simData));
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace Unitoys.ESIM_MVNO
             sb.Append("010A" + ReverseStrTwo(model.iccid));
             sb.Append("0209" + "08" + ReverseStrTwo("9" + model.imsi));
             sb.Append("0310" + model.ki);
-           
+
             //sb.Append("1500");
             sb.Append("0410" + model.opc);
             if (!string.IsNullOrEmpty(model.SMSP))

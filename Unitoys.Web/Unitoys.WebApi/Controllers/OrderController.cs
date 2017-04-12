@@ -565,7 +565,6 @@ namespace Unitoys.WebApi.Controllers
             return result;
         }
 
-
         /// <summary>
         /// 订单套餐激活本地完成
         /// </summary>
@@ -741,6 +740,73 @@ namespace Unitoys.WebApi.Controllers
 
         }
 
+        /// <summary>
+        /// 根据条件查询订单使用余量
+        /// </summary>
+        /// <param name="queryModel">订单查询模型</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserOrderUsageRemaining()
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            //如果查询条件不为空，则根据查询条件查询，反则查询所有订单。
+            var searchOrders = await _orderService.GetEntitiesAsync(x =>
+                x.UserId == currentUser.ID
+                && x.OrderStatus == OrderStatusType.Used
+                && x.PayStatus == PayStatusType.YesPayment
+                && (x.PackageCategory == CategoryType.Call || x.PackageCategory == CategoryType.Flow));
+            int TotalNumFlow = searchOrders.Count(x => x.PackageCategory == CategoryType.Flow);
+
+            var unCount = await _orderService.GetEntitiesCountAsync(x =>
+                x.UserId == currentUser.ID
+                && x.OrderStatus == OrderStatusType.Unactivated
+                && x.PackageCategory == CategoryType.Flow
+                && x.PayStatus == PayStatusType.YesPayment);
+
+            //如果只有一个已激活流量套餐，那么显示名称
+            if (TotalNumFlow == 1)
+            {
+                return Ok(new
+                {
+                    status = 1,
+                    data = new
+                    {
+                        Used = new
+                        {
+                            TotalNum = searchOrders.Count().ToString(),//总数量
+                            TotalNumFlow = TotalNumFlow.ToString(),//流量套餐总数量
+                            FlowPackageName = searchOrders.FirstOrDefault(x => x.PackageCategory == CategoryType.Flow).PackageName,//
+                            TotalRemainingCallMinutes = searchOrders.Sum(x => x.RemainingCallMinutes).ToString(),//总剩余通话分钟数
+                        },
+                        Unactivated = new
+                        {
+                            TotalNumFlow = unCount.ToString(),//总未激活流量套餐书
+                        }
+                    }
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    status = 1,
+                    data = new
+                    {
+                        Used = new
+                        {
+                            TotalNum = searchOrders.Count().ToString(),
+                            TotalNumFlow = TotalNumFlow.ToString(),
+                            TotalRemainingCallMinutes = searchOrders.Sum(x => x.RemainingCallMinutes).ToString(),
+                        },
+                        Unactivated = new
+                        {
+                            TotalNumFlow = unCount.ToString(),
+                        }
+                    }
+                });
+            }
+        }
 
         #region 获取查询的Expression表达式
         /// <summary>
