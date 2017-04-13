@@ -184,7 +184,7 @@
             return "<span style='color:#a5a5a5'>无SIM卡</span>";
         }
         if (value == 1) {
-            return "<span style='color:#a5a5a5'>有SIM卡，没有注册</span>"; 
+            return "<span style='color:#a5a5a5'>有SIM卡，没有注册</span>";
         }
         if (value == 2) {
             return "<span style='color:#c9f2b8'>SIM卡注册中</span>";
@@ -245,14 +245,16 @@
             rownumbers: true,
             loadMsg: '',
             height: 'auto',
+            remoteSort: false,
+            sortName: "PortNum", sortOrder: "asc",
             columns: [[
-                { field: 'PortNum', title: '端口号', width: 20 },
+                { field: 'PortNum', title: '端口号', width: 20, sortable: true },
                 { field: 'IMEI', title: '端口的IMEI码', width: 100 },
                 { field: 'ICCID', title: 'SIM卡ICCID', width: 100 },
                 { field: 'SimNum', title: 'SIM卡号码', width: 100 },
-                { field: 'Status', title: '状态', width: 100, formatter: formatSlotStatus },
-                { field: 'RegDate', title: '注册时间', width: 100, formatter: formatDateTimeInt },
-                { field: 'Tel', title: '用户', width: 60 },
+                { field: 'Status', title: '状态', width: 100, formatter: formatSlotStatus, sortable: true },
+                { field: 'RegDate', title: '注册时间', width: 100, formatter: formatDateTimeInt, sortable: true },
+                { field: 'Tel', title: '用户', width: 60, sortable: true },
             ]],
             onResize: function () {
                 sender.datagrid('fixDetailRowHeight', index);
