@@ -555,6 +555,8 @@
     <Content Include="Content\js\ckeditor\styles.js" />
     <Content Include="Content\js\datagrid-detailview.js" />
     <Content Include="Content\js\easyloader.js" />
+    <Content Include="Content\js\echarts\echarts.js" />
+    <Content Include="Content\js\echarts\echarts.min.js" />
     <Content Include="Content\js\jquery-1.7.2.min.js" />
     <Content Include="Content\js\jquery.easyui.min.js" />
     <Content Include="Content\js\jquery.min.js" />

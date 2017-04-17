@@ -57,9 +57,9 @@ namespace Unitoys.WebApi.Controllers
             {
                 var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod);
 
-                if (result.Key == 1 && result.Value != null)
+                if (result.Value.Key == 1 && result.Value.Value != null)
                 {
-                    var order = result.Value;
+                    var order = result.Value.Value;
                     var resultModel = new
                     {
                         OrderID = order.ID,
@@ -75,13 +75,16 @@ namespace Unitoys.WebApi.Controllers
                         RemainingCallMinutes = order.RemainingCallMinutes + "",
                         PaymentMethod = (int)order.PaymentMethod + "",
                         PackageCategory = order.PackageCategory,
-                        PackageIsCategoryFlow = order.PackageIsCategoryFlow
+                        PackageIsCategoryFlow = order.PackageIsCategoryFlow,
+                        PackageIsSupport4G = order.PackageIsSupport4G,
+                        ExpireDaysInt = (order.ExpireDays * order.Quantity).ToString(),
+                        CountryName = result.Key
                     };
                     return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
                 }
                 else
                 {
-                    switch (result.Key)
+                    switch (result.Value.Key)
                     {
                         case 1:
                             return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
@@ -282,6 +285,7 @@ namespace Unitoys.WebApi.Controllers
                 LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
                 PaymentMethod = (int)orderResult.PaymentMethod + "",
                 LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString(),
+                CountryName = orderResult.UT_Package.UT_Country.CountryName
             };
             return Ok(new { status = 1, data = new { list = data } });
         }
@@ -294,7 +298,7 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Activation([FromBody]ActivationBindingModel model)
         {
-            if (model.BeginTime == 0)
+            if ((!model.BeginTime.HasValue || model.BeginTime == 0) && !model.BeginDateTime.HasValue)
             {
                 return Ok(new StatusCodeRes(StatusCodeType.参数错误, "激活失败，时间格式错误"));
             }
@@ -328,14 +332,19 @@ namespace Unitoys.WebApi.Controllers
 
                             ResponseModel<BuyProduct> result = null;
 
+                            //服务生效时间，激活时间。兼容时间戳版本
+                            string beginTime = model.BeginDateTime.HasValue
+                                ? model.BeginDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                                : CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss");
+
                             //如果是不能购买多个的套餐则认为有效天数字段只是用于描述
                             if (package.IsCanBuyMultiple)
                             {
-                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity * package.ExpireDays);
+                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, beginTime, order.Quantity * package.ExpireDays);
                             }
                             else
                             {
-                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss"), order.Quantity);
+                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, beginTime, order.Quantity);
                             }
 
                             if (result.status != "1")
@@ -350,6 +359,7 @@ namespace Unitoys.WebApi.Controllers
                             order.PackageOrderId = result.data.orderId;
                             //order.PackageOrderData = result.data.data;
                             order.EffectiveDate = model.BeginTime;
+                            order.EffectiveDateDesc = model.BeginDateTime;
                             order.OrderStatus = OrderStatusType.UnactivatError;//默认是激活失败
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
                             if (!await _orderService.UpdateAsync(order))

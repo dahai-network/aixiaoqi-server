@@ -40,4 +40,9 @@ namespace Unitoys.Model
         /// </summary>
         public bool IsConfirmed { get; set; }
     }
+    public enum EnumSMSConfirmationType
+    {
+        Register = 1,
+        ForgotPassword = 2,
+    }
 }

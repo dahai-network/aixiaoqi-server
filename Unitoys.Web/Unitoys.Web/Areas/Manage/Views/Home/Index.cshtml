@@ -13,6 +13,8 @@
     <script type="text/javascript" src="@Url.Content("~/Content/js/jquery-1.7.2.min.js")"></script>
     <script type="text/javascript" src="@Url.Content("~/Content/js/jquery.easyui.min.js")"></script>
     <script type="text/javascript" src='@Url.Content("~/Content/js/Unitoys.Util.js")'> </script>
+    <script type="text/javascript" src="@Url.Content("~/Content/js/locale/easyui-lang-zh_CN.js")"></script>
+    <script type="text/javascript" src='@Url.Content("~/Content/js/echarts/echarts.min.js")'> </script>
     <script type="text/javascript">
         var _menus = {
             "menus": [{
@@ -288,6 +290,103 @@
 
         }
 
+        var eChartUser;
+        var eChartPayment;
+        var eChartOrderYesPayment;
+        var eChartOrderActivation;
+        var eChartOrderSmsConfirmation;
+        function doSearch() {
+            $.post("/User/GetOptionByBarChart", {
+                createStartDate: $("input[name$='createStartDate']").val(),
+                createEndDate: $("input[name$='createEndDate']").val()
+            }, function (data) {
+                eChartUser.setOption(data.opUser);
+                eChartPayment.setOption(data.opPayment);
+                eChartOrderYesPayment.setOption(data.opOrderYesPayment);
+                eChartOrderActivation.setOption(data.opOrderActivation);
+                eChartOrderSmsConfirmation.setOption(data.opOrderSmsConfirmation);
+            })
+        }
+        function setDateRange(interval, number) {
+            var today = new Date();
+
+            if (number == 0) {
+                $('#createEndDate').datebox('setValue', today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() + 1));
+            }
+            else {
+                $('#createEndDate').datebox('setValue', today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate()));
+            }
+
+            var dateEnd = DateAdd(interval, number, today);
+            var year = dateEnd.getFullYear();
+            var month = dateEnd.getMonth() + 1;
+            var date = dateEnd.getDate();
+
+            $('#createStartDate').datebox('setValue', year + '-' + month + '-' + date);
+
+            doSearch();
+        }
+        /*
+        *---------------Begin  DateAdd(interval,number,date)  -----------------
+        *  DateAdd(interval,number,date)
+        *  功能:实现JavaScript的DateAdd功能.
+        *  参数:interval,字符串表达式，表示要添加的时间间隔.
+        *  参数:number,数值表达式，表示要添加的时间间隔的个数.
+        *  参数:date,时间对象.
+        *  返回:新的时间对象.
+        *  var  now  =  new  Date();
+        *  var  newDate  =  DateAdd("d",5,now);
+        *---------------End  DateAdd(interval,number,date)  -----------------
+        */
+        function DateAdd(interval, number, date) {
+            switch (interval) {
+                case "y": {
+                    date.setFullYear(date.getFullYear() + number);
+                    return date;
+                    break;
+                }
+                case "q": {
+                    date.setMonth(date.getMonth() + number * 3);
+                    return date;
+                    break;
+                }
+                case "m": {
+                    date.setMonth(date.getMonth() + number);
+                    return date;
+                    break;
+                }
+                case "w": {
+                    date.setDate(date.getDate() + number * 7);
+                    return date;
+                    break;
+                }
+                case "d": {
+                    date.setDate(date.getDate() + number);
+                    return date;
+                    break;
+                }
+                case "h": {
+                    date.setHours(date.getHours() + number);
+                    return date;
+                    break;
+                }
+                case "m": {
+                    date.setMinutes(date.getMinutes() + number);
+                    return date;
+                    break;
+                }
+                case "s": {
+                    date.setSeconds(date.getSeconds() + number);
+                    return date;
+                    break;
+                }
+                default: {
+                    date.setDate(date.getDate() + number);
+                    return date;
+                    break;
+                }
+            }
+        }
         $(function () {
 
             openPwd();
@@ -310,33 +409,16 @@
                     }
                 });
             })
-            wsApi();
+
+            // 基于准备好的dom，初始化echarts实例
+            eChartUser = echarts.init(document.getElementById('eChartUser'));
+            eChartPayment = echarts.init(document.getElementById('eChartPayment'));
+            eChartOrderYesPayment = echarts.init(document.getElementById('eChartOrderYesPayment'));
+            eChartOrderActivation = echarts.init(document.getElementById('eChartOrderActivation'));
+            eChartOrderSmsConfirmation = echarts.init(document.getElementById('eChartOrderSmsConfirmation'));
+            //doSearch();
+            setDateRange('d', -1);
         });
-
-        function wsApi() {
-            var url = '/Manage/Home/TestWsApi';
-
-            $('#txtimsi').parent().children('button').click(function () {
-                var method = $(this).attr('id').substring(3, $(this).attr('id').length);
-                //alert(method);
-                $.post(url,
-                    {
-                        method: method,
-                        imsi: $('#txtimsi').val(),
-                        planName: $('#txtplanName').val(),
-                        noOfDays: $('#txtnoOfDays').val(),
-                        tariff: $('#txttariff').val(),
-                        currency: $('#txtcurrency').val(),
-                        actionCode: $('#txtactionCode').val(),
-                        alertType: $('#txtalertType').val(),
-                        authenticationTime: $('#txtauthenticationTime').val()
-                    }, function (data) {
-                        //alert(JSON.stringify(data));
-                        //alert(data);
-                        $('#divShowResult').html(JSON.stringify(data));
-                    })
-            })
-        }
     </script>
 </head>
 <body class="easyui-layout" style="overflow-y: hidden" fit="true" scroll="no">
@@ -365,31 +447,36 @@
     </div>
     <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
         <div id="tabs" class="easyui-tabs" fit="true" border="false">
-            <div title="欢迎使用" style="padding:20px;overflow:hidden; color:red; ">
-                <h1 style="font-size:24px;">欢迎进入本系统！</h1>
-                @*中信接口测试*@
-                imsi<input type="text" id="txtimsi" value="454011091000089" />
-                planName<input type="text" id="txtplanName" value="XM_MAC_500M_7D_VOL" />
-                noOfDays<input type="text" id="txtnoOfDays" value="7" />
-                tariff<input type="text" id="txttariff" value="100" />
-                currency<input type="text" id="txtcurrency" value="CNY" />
-                <br />
-                <button id="btnPackagePlanAdd">PackagePlanAdd</button>
-                <button id="btnPackagePlanActivate">PackagePlanActivate</button>
-                <button id="btnPackagePlanQuery">PackagePlanQuery</button>
-                <button id="btnPackagePlanDelete">PackagePlanDelete</button>
-                <br />
-                开关订阅<input type="text" id="txtactionCode" value="1" placeholder="1或者2" />
-                <button id="btnSubscriptionUpdate">SubscriptionUpdate</button>
-                <button id="btnSubscriptionQuery">SubscriptionQuery</button>
-                <br />
-                <button id="btnKeepAlive">KeepAlive</button>
-                <br />
-                alertType<input type="text" id="txtalertType" value="21%Balance" />
-                <button id="btnBalanceRemind">BalanceRemind</button>
-                authenticationTime<input type="text" id="txtauthenticationTime" value="2015-07-02 15:00:00" />
-                <button id="btnDataActivationTimeRemind">DataActivationTimeRemind</button>
-                <div id="divShowResult"></div>
+            <div title="欢迎使用" style="">
+                <div class="easyui-layout" fit="true">
+                    <div data-options="region:'north',border:false" style="height:90px">
+                        <div id="p" class="easyui-panel" title="高级查询" style="width:100%;height:90px;padding:10>
+                            x;">
+                            <h1 style="font-size: 24px; padding: 0 20px; overflow: hidden; color: red; float: left; margin: 0px; ">欢迎进入本系统！</h1>
+                            <form id="ff" method="post">
+                                <span>创建时间:</span>
+                                <input id="createStartDate" type="text" class="easyui-datebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                                <span>-</span>
+                                <input id="createEndDate" type="text" class="easyui-datebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                                <a href="#" class="easyui-linkbutton " onclick="setDateRange('d',-1)">昨天</a>
+                                <a href="#" class="easyui-linkbutton " onclick="setDateRange('d',0)">今天</a>
+                                <a href="#" class="easyui-linkbutton " onclick="setDateRange('w',-1)">近一周</a>
+                                <a href="#" class="easyui-linkbutton " onclick="setDateRange('m',-1)">近一月</a>
+                                <a href="#" class="easyui-linkbutton " onclick="setDateRange('m', -3)">近三月</a>
+                                <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
+                            </form>
+                        </div>
+                    </div>
+                    <div data-options="region:'center',border:false">
+                        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                        <div id="eChartUser" style="width: 600px;height:400px;float:left;"></div>
+                        <div id="eChartPayment" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartOrderYesPayment" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartOrderActivation" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartOrderSmsConfirmation" style="width: 600px; height: 400px; float: left;"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

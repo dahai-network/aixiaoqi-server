@@ -24,20 +24,20 @@ namespace Unitoys.Services
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
         /// <returns>0失败/1成功/2套餐被锁定</returns>
-        public async Task<KeyValuePair<int, UT_Order>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod)
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                UT_Package package = await db.UT_Package.FindAsync(packageId);
+                UT_Package package = await db.UT_Package.Include(x => x.UT_Country).SingleOrDefaultAsync(x => x.ID == packageId);
                 //套餐被锁定
                 if (package.Lock4 == 1)
                 {
-                    return new KeyValuePair<int, UT_Order>(2, null);
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(2, null));
                 }
                 //该套餐不允许购买多个
                 if (!package.IsCanBuyMultiple && quantity != 1)
                 {
-                    return new KeyValuePair<int, UT_Order>(3, null);
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(3, null));
                 }
                 if (package != null)
                 {
@@ -73,10 +73,11 @@ namespace Unitoys.Services
 
                     if (await db.SaveChangesAsync() > 0)
                     {
-                        return new KeyValuePair<int, UT_Order>(1, order);
+                        //返回区域名称
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>(package.UT_Country.CountryName, new KeyValuePair<int, UT_Order>(1, order));
                     }
                 }
-                return new KeyValuePair<int, UT_Order>(0, null);
+                return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
             }
         }
 

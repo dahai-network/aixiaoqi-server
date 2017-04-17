@@ -64,7 +64,14 @@ namespace Unitoys.WebApi.Models
         /// </summary>
         public string EmptyCardSerialNumber { get; set; }
         public Guid OrderID { get; set; }
-        public int BeginTime { get; set; }
+        /// <summary>
+        /// 激活时间戳
+        /// </summary>
+        public int? BeginTime { get; set; }
+        /// <summary>
+        /// 激活时间日期传递。BeginTime和BeginDateTime必须传一个
+        /// </summary>
+        public DateTime? BeginDateTime { get; set; }
     }
 
     public class ActivationKindCardBindingModel

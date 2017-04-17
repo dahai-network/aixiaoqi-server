@@ -136,6 +136,10 @@ namespace Unitoys.Model
         /// </summary>
         public int? EffectiveDate { get; set; }
         /// <summary>
+        /// 生效日期描述
+        /// </summary>
+        public DateTime? EffectiveDateDesc { get; set; }
+        /// <summary>
         /// 激活时间
         /// </summary>
         public int? ActivationDate { get; set; }

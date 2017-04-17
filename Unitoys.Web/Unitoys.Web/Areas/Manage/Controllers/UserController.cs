@@ -17,18 +17,25 @@ namespace Unitoys.Web.Areas.Manage.Controllers
     public class UserController : BaseController
     {
         private IUserService _userService;
+        private IPaymentService _paymentService;
+        private IOrderService _orderService;
+        private ISMSConfirmationService _smsConfirmationService;
 
         public UserController() { }
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IPaymentService paymentService, IOrderService orderService, ISMSConfirmationService smsConfirmationService)
         {
             this._userService = userService;
+            this._paymentService = paymentService;
+            this._orderService = orderService;
+            this._smsConfirmationService = smsConfirmationService;
         }
 
         public ActionResult Index()
         {
             return View();
         }
+
         /// <summary>
         /// 获取用户列表
         /// </summary>
@@ -63,6 +70,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
 
             return Json(jsonResult, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// 获取所有用户列表
         /// </summary>
@@ -87,6 +95,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
 
             return Json(pageRows, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// 添加用户
         /// </summary>
@@ -206,6 +215,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// 解除用户锁定状态
         /// </summary>
@@ -312,5 +322,139 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        public async Task<ActionResult> GetOptionByBarChart(DateTime? createStartDate, DateTime? createEndDate)
+        {
+            var listUser = await this._userService.GetEntitiesAsync(x =>
+                (
+                createStartDate.HasValue ? x.CreateDate >= createStartDate.Value : true)
+                && (createEndDate.HasValue ? x.CreateDate <= createEndDate.Value : true)
+                );
+
+            var listPayment = await this._paymentService.GetEntitiesAsync(x =>
+                (
+                createStartDate.HasValue ? x.CreateDate >= createStartDate.Value : true)
+                && (createEndDate.HasValue ? x.CreateDate <= createEndDate.Value : true)
+                && x.Status == 1
+                );
+
+            var createStartDateInt = createStartDate.HasValue ? CommonHelper.ConvertDateTimeInt(createStartDate.Value) : 0;
+            var createEndDateInt = createEndDate.HasValue ? CommonHelper.ConvertDateTimeInt(createEndDate.Value) : 0;
+
+            var listOrderYesPayment = await this._orderService.GetEntitiesAsync(x =>
+               (
+               createStartDate.HasValue ? x.OrderDate >= createStartDateInt : true)
+               && (createEndDate.HasValue ? x.OrderDate <= createEndDateInt : true)
+               && x.PayStatus == PayStatusType.YesPayment
+               );
+            var listOrderActivation = await this._orderService.GetEntitiesAsync(x =>
+              (
+              x.ActivationDate.HasValue
+              && createStartDate.HasValue ? x.ActivationDate >= createStartDateInt : true)
+              && (createEndDate.HasValue ? x.ActivationDate <= createEndDateInt : true)
+              );
+
+            var listSmsConfirmation = await this._smsConfirmationService.GetEntitiesAsync(x =>
+               (
+               createStartDate.HasValue ? x.CreateDate >= createStartDate.Value : true)
+               && (createEndDate.HasValue ? x.CreateDate <= createEndDate.Value : true)
+               );
+
+            var opUser = GetChartOption(
+                "注册用户量",
+                listUser.GroupBy(x => x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+                new List<ChartSeriesModel>(){
+                    new ChartSeriesModel(){
+                        name = "注册用户量",
+                        type = "bar",
+                        data = listUser.GroupBy(x => x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+                    }
+                });
+
+            var opPayment = GetChartOption(
+                "充值金额",
+                listPayment.GroupBy(x => x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+                new List<ChartSeriesModel>(){
+                    new ChartSeriesModel(){
+                        name = "充值金额",
+                        type = "bar",
+                        data = listPayment.GroupBy(x => x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Sum(c=>c.Amount) + "").ToList()
+                    }
+                });
+
+            var opOrderYesPayment = GetChartOption(
+               "订单付款量",
+               listOrderYesPayment.GroupBy(x => CommonHelper.GetTime(x.OrderDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+               new List<ChartSeriesModel>(){
+                    new ChartSeriesModel(){
+                        name = "订单付款量",
+                        type = "bar",
+                        data = listOrderYesPayment.GroupBy(x => CommonHelper.GetTime(x.OrderDate + "").ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+                    }
+                });
+
+            var opOrderActivation = GetChartOption(
+               "订单激活量",
+               listOrderActivation.GroupBy(x => CommonHelper.GetTime(x.ActivationDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+               new List<ChartSeriesModel>(){
+                    new ChartSeriesModel(){
+                        name = "订单激活量",
+                        type = "bar",
+                        data = listOrderActivation.GroupBy(x => CommonHelper.GetTime(x.ActivationDate + "").ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+                    }
+                });
+
+            var opOrderSmsConfirmation = GetChartOption(
+               "验证短信量",
+               listSmsConfirmation.GroupBy(x => x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+               new List<ChartSeriesModel>(){
+                    new ChartSeriesModel(){
+                        name = "注册",
+                        type = "bar",
+                        data = listSmsConfirmation.Where(x=>x.Type==1).GroupBy(x =>x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+                    }
+                    ,new ChartSeriesModel(){
+                        name = "忘记密码",
+                        type = "bar",
+                        data = listSmsConfirmation.Where(x=>x.Type==2).GroupBy(x =>x.CreateDate.ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+                    }
+                });
+
+            return Json(new
+            {
+                opUser = opUser,
+                opPayment = opPayment,
+                opOrderYesPayment = opOrderYesPayment,
+                opOrderActivation = opOrderActivation,
+                opOrderSmsConfirmation = opOrderSmsConfirmation,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取报表配置项
+        /// </summary>
+        /// <param name="displayText"></param>
+        /// <param name="names"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        private dynamic GetChartOption(string title, List<string> xAxisNames, List<ChartSeriesModel> seriesList)
+        {
+            var option = new
+            {
+                title = new { text = title },
+                tooltip = new { trigger = "axis" },
+                legend = new { data = title },
+                xAxis = new { data = xAxisNames },
+                yAxis = new { },
+                series = seriesList
+            };
+            return option;
+        }
+    }
+    public class ChartSeriesModel
+    {
+        public string name { get; set; }
+        public string type { get; set; }
+        public List<string> data { get; set; }
     }
 }
