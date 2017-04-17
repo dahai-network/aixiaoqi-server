@@ -30,6 +30,8 @@ namespace Unitoys.Core.JiGuang
             JPushClient client = new JPushClient(app_key, master_secret);
             PushPayload payload = PushObject_all_alias_alert(alias, title, dicExtra);
             payload.notification.setAlert(alert);
+            //设置IOS推送环境，生产或开发
+            payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
             client.SendPush(payload);
         }
         public bool Push_ios_alias_alert(string alias, string title, string alert, Dictionary<string, string> dicExtra)
