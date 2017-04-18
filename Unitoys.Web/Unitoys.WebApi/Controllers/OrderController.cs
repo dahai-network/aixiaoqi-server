@@ -196,7 +196,7 @@ namespace Unitoys.WebApi.Controllers
                              PayStatus = (int)i.PayStatus + "",
                              OrderStatus = (int)i.OrderStatus + "",
                              RemainingCallMinutes = i.RemainingCallMinutes + "",
-                             EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
+                             //EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
                              LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetPackageCompleteUrl()
                          };
@@ -221,15 +221,32 @@ namespace Unitoys.WebApi.Controllers
             }
             else if (i.OrderStatus == OrderStatusType.Used || i.OrderStatus == OrderStatusType.UnactivatError)
             {
-                return string.Format("有效期：{0} 到 {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
+                if (!i.EffectiveDateDesc.HasValue)
+                {
+                    return string.Format("有效期：{0} 到 {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
+                }
+                else
+                {
+                    return string.Format("有效期：{0} 到 {1}", i.EffectiveDateDesc.Value.ToString("yyyy-MM-dd"), i.EffectiveDateDesc.Value.AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
+                }
             }
             else if (i.OrderStatus == OrderStatusType.HasExpired)
             {
                 return "订单已过期";
             }
-            return i.OrderStatus == OrderStatusType.UnactivatError
-                                         ? (i.ExpireDays * i.Quantity).ToString()
-                                         : CommonHelper.GetTime(i.EffectiveDate.Value.ToString()) + " " + (i.ExpireDays * i.Quantity).ToString();
+
+            if (!i.EffectiveDateDesc.HasValue)
+            {
+                return i.OrderStatus == OrderStatusType.UnactivatError
+                                             ? (i.ExpireDays * i.Quantity).ToString()
+                                             : CommonHelper.GetTime(i.EffectiveDate.Value.ToString()) + " " + (i.ExpireDays * i.Quantity).ToString();
+            }
+            else
+            {
+                return i.OrderStatus == OrderStatusType.UnactivatError
+                                           ? (i.ExpireDays * i.Quantity).ToString()
+                                           : i.EffectiveDateDesc + " " + (i.ExpireDays * i.Quantity).ToString();
+            }
         }
 
         /// <summary>
@@ -280,12 +297,12 @@ namespace Unitoys.WebApi.Controllers
                 PayStatus = (int)orderResult.PayStatus + "",
                 OrderStatus = (int)orderResult.OrderStatus + "",
                 RemainingCallMinutes = orderResult.RemainingCallMinutes.ToString(),
-                EffectiveDate = orderResult.EffectiveDate.HasValue ? orderResult.EffectiveDate.Value.ToString().ToString() : "",
+                //EffectiveDate = orderResult.EffectiveDate.HasValue ? orderResult.EffectiveDate.Value.ToString().ToString() : "",
                 ActivationDate = orderResult.ActivationDate.HasValue ? orderResult.ActivationDate.Value.ToString() : "",
                 LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
                 PaymentMethod = (int)orderResult.PaymentMethod + "",
                 LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString(),
-                CountryName = orderResult.UT_Package.UT_Country.CountryName
+                CountryName = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.CountryName : ""
             };
             return Ok(new { status = 1, data = new { list = data } });
         }
@@ -358,8 +375,13 @@ namespace Unitoys.WebApi.Controllers
                             //3.保存订单Id
                             order.PackageOrderId = result.data.orderId;
                             //order.PackageOrderData = result.data.data;
+
                             order.EffectiveDate = model.BeginTime;
                             order.EffectiveDateDesc = model.BeginDateTime;
+                            if (model.BeginDateTime.HasValue)
+                            {
+
+                            }
                             order.OrderStatus = OrderStatusType.UnactivatError;//默认是激活失败
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
                             if (!await _orderService.UpdateAsync(order))

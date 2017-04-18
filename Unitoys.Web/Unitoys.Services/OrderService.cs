@@ -74,7 +74,14 @@ namespace Unitoys.Services
                     if (await db.SaveChangesAsync() > 0)
                     {
                         //返回区域名称
-                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>(package.UT_Country.CountryName, new KeyValuePair<int, UT_Order>(1, order));
+                        if (package.UT_Country != null)
+                        {
+                            return new KeyValuePair<string, KeyValuePair<int, UT_Order>>(package.UT_Country.CountryName, new KeyValuePair<int, UT_Order>(1, order));
+                        }
+                        else
+                        {
+                            return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(1, order));
+                        }
                     }
                 }
                 return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
@@ -450,7 +457,10 @@ namespace Unitoys.Services
                 }
                 if (orderStatus.HasValue)
                 {
-                    query = query.Where(x => x.OrderStatus == orderStatus);
+                    if (orderStatus == OrderStatusType.Unactivated)
+                        query = query.Where(x => x.OrderStatus == orderStatus || x.OrderStatus == OrderStatusType.UnactivatError);
+                    else
+                        query = query.Where(x => x.OrderStatus == orderStatus);
                 }
                 query = query.Where(x => x.OrderStatus != OrderStatusType.Cancel);
                 query = query.Where(x => x.UserId == userId);
