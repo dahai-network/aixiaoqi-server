@@ -31,6 +31,7 @@
                     <th data-options="field:'Price',width:60">价格</th>
                     <th data-options="field:'DisplayOrder',width:50">显示顺序</th>
                     <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">创建时间</th>
+                    <th data-options="field:'PushNum',width:50">推送次数</th>
                 </tr>
             </thead>
         </table>
@@ -126,7 +127,7 @@
     var dlg_Edit_form;
 
     var toolbar = [{
-        text: '添加Product',
+        text: '添加产品',
         iconCls: 'icon-add',
         handler: function () {
             dlg_Edit_form.form('clear');
@@ -135,9 +136,13 @@
             dlg_Edit_form.url = '/Manage/Product/Add/';
         }
     }, {
-        text: '删除Product',
+        text: '删除产品',
         iconCls: 'icon-cut',
         handler: del
+    }, {
+        text: '推送至客户端',
+        iconCls: 'icon-edit',
+        handler: push
     }
     ];
     $(function () {
@@ -220,4 +225,36 @@
 
         }
     }
+    //删除数据
+    function push() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.messager.confirm('提示信息', '您确认要推送选中的记录吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        url: '/Manage/Product/Push',
+                        type: 'post',
+                        data: "ID=" + getSelectedID(),
+                        error: function () {
+                            Msgalert('错误', '推送失败!', 'error');
+                            grid.datagrid('clearSelections');
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                Msgfade(arr.length + "条记录" + data.Msg); //提示消息
+                                grid.datagrid('reload');
+                                grid.datagrid('clearSelections'); //清除所有选中的元素
+                            } else {
+                                Msgalert('错误', data.Msg, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Msgshow('请先选择要推送的记录。');
+
+        }
+    }
+
 </script>

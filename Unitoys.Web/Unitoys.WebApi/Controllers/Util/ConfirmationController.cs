@@ -46,7 +46,7 @@ namespace Unitoys.WebApi.Controllers.Util
             }
             else if (model.Type == 1 && _userService.CheckTelExist(model.ToNum))
             {
-                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码已注册2);
+                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码已注册2, "您输入的手机号码已注册");
             }
             else if (model.Type == 2 && !_userService.CheckTelExist(model.ToNum))
             {

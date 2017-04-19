@@ -106,5 +106,10 @@ namespace Unitoys.Core
         {
             return RedisHelper.Instance.Get<string>(key);
         }
+
+        public IDictionary<string, string> GetStrSession(IEnumerable<string> keys)
+        {
+            return RedisHelper.Instance.GetAll<string>(keys);
+        }
     }
 }

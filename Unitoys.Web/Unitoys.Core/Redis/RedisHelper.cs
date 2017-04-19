@@ -49,7 +49,7 @@ namespace Unitoys.Core
         {
             if (OpenPooledRedis)
             {
-                prcm = CreateManager(new string[] { String.Format("{0}@{1}:6379", redisPassWord, UTConfig.SiteConfig.RedisIp) }, new string[] { String.Format("{0}@{1}:6379", redisPassWord,UTConfig.SiteConfig.RedisIp) });
+                prcm = CreateManager(new string[] { String.Format("{0}@{1}:6379", redisPassWord, UTConfig.SiteConfig.RedisIp) }, new string[] { String.Format("{0}@{1}:6379", redisPassWord, UTConfig.SiteConfig.RedisIp) });
 
             }
         }
@@ -125,6 +125,21 @@ namespace Unitoys.Core
                 return Redis.Get<T>(key);
             }
         }
+
+        /// <summary>
+        /// 获取所有keys对应的列表
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="keys"></param>
+        /// <returns></returns>
+        public IDictionary<string, T> GetAll<T>(IEnumerable<string> keys)
+        {
+            using (RedisClient Redis = prcm.GetReadOnlyClient() as RedisClient)
+            {
+                return Redis.GetAll<T>(keys);
+            }
+        }
+
         /// <summary>
         /// 删除
         /// </summary>

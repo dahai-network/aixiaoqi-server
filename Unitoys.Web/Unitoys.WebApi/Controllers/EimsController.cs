@@ -219,12 +219,12 @@ namespace Unitoys.WebApi.Controllers
                             string userToken = WebUtil.GetApiKeyByTel(entity.Fm);
                             if (!string.IsNullOrEmpty(userToken))
                             {
-                                j.Push_all_alias_message("aixiaoqi" + userToken, "短信发送成功", "SMSSendResult", new Dictionary<string, string>()
+                                j.Push_all_alias_message("短信发送成功", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
                                     {"Status",(int)entity.Status + ""},
                                     {"SMSID",entity.ID.ToString()}
-                                });
+                                }, 864000, "aixiaoqi" + userToken);
                             }
                             return Ok(new { status = 1, msg = "" });
                         }
@@ -245,12 +245,12 @@ namespace Unitoys.WebApi.Controllers
                         string userToken = WebUtil.GetApiKeyByTel(entity.Fm);
                         if (!string.IsNullOrEmpty(userToken))
                         {
-                            j.Push_all_alias_message("aixiaoqi" + userToken, "短信发送失败", "SMSSendResult", new Dictionary<string, string>()
+                            j.Push_all_alias_message("短信发送失败", "SMSSendResult", new Dictionary<string, string>()
                                 {
                                     {"Tel",entity.To},
                                     {"Status",(int)entity.Status + ""},
                                     {"SMSID",entity.ID.ToString()}
-                                });
+                                }, 864000, "aixiaoqi" + userToken);
                         }
                         return Ok(new { status = 1, msg = "" });
                     }
@@ -372,10 +372,10 @@ namespace Unitoys.WebApi.Controllers
                         //推送至客户端
                         //todo 由于用户不在线的时候不进行发送，考虑将离线信息保留时间设为1分钟
                         JPushApi j = new JPushApi();
-                        j.Push_all_alias_message("aixiaoqi" + entity.To, "有一条消息", "", new Dictionary<string, string>()
+                        j.Push_all_alias_message("有一条消息", "", new Dictionary<string, string>()
                         {
                             {"Tel",entity.Fm}
-                        });
+                        }, 864000, "aixiaoqi" + entity.To);
                     }
                     //送达报告
                     else
@@ -475,11 +475,11 @@ namespace Unitoys.WebApi.Controllers
 
                             if (loginUser != 0)
                             {
-                                j.Push_all_alias_message("aixiaoqi" + entity.To, entity.Fm, entity.SMSContent.Length > 10 ? entity.SMSContent.Substring(0, 10) : entity.SMSContent,
+                                j.Push_all_alias_message(entity.Fm, entity.SMSContent.Length > 10 ? entity.SMSContent.Substring(0, 10) : entity.SMSContent,
                                         new Dictionary<string, string>()
                                         {
                                             {"Tel",entity.Fm}
-                                        });
+                                        }, 864000, "aixiaoqi" + entity.To);
                             }
                         }
                         //送达报告

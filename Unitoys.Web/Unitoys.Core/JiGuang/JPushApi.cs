@@ -90,12 +90,22 @@ namespace Unitoys.Core.JiGuang
             }
             return false;
         }
-        public bool Push_all_alias_message(string alias, string msgContent, string contentType, Dictionary<string, string> dicExtra)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msgContent"></param>
+        /// <param name="contentType"></param>
+        /// <param name="dicExtra"></param>
+        /// <param name="timeToLive">秒为单位</param>
+        /// <param name="alias"></param>
+        /// <returns></returns>
+        public bool Push_all_alias_message(string msgContent, string contentType, Dictionary<string, string> dicExtra, long timeToLive = 864000, params string[] alias)
         {
             try
             {
                 JPushClient client = new JPushClient(app_key, master_secret);
-                PushPayload payload = PushObject_all_alias_message(alias, msgContent, contentType, dicExtra);
+                PushPayload payload = PushObject_all_alias_message(msgContent, contentType, dicExtra, alias);
+                payload.ResetOptionsTimeToLive(timeToLive);
                 //设置IOS推送环境，生产或开发
                 payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
                 client.SendPush(payload);
@@ -217,7 +227,7 @@ namespace Unitoys.Core.JiGuang
         /// 发送所有平台自定义消息根据别名
         /// </summary>
         /// <returns></returns>
-        private static PushPayload PushObject_all_alias_message(string alias, string msgContent, string contentType, Dictionary<string, string> dicExtra)
+        private static PushPayload PushObject_all_alias_message(string msgContent, string contentType, Dictionary<string, string> dicExtra, params string[] alias)
         {
 
             PushPayload pushPayload_alias = new PushPayload();

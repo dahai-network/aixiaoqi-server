@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Unitoys.Core;
+using Unitoys.Core.JiGuang;
 using Unitoys.Core.Security;
 using Unitoys.IServices;
 using Unitoys.Model;
@@ -17,10 +18,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
     public class ProductController : BaseController
     {
         private IProductService _productService;
-
-        public ProductController(IProductService productService)
+        private IUserService _userService;
+        public ProductController(IProductService productService, IUserService userService)
         {
             this._productService = productService;
+            this._userService = userService;
         }
         public ActionResult Index()
         {
@@ -60,6 +62,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                Image = i.Image,
                                Title = i.Title,
                                Price = i.Price,
+                               PushNum = i.PushNum,
                                DisplayOrder = i.DisplayOrder
                            };
 
@@ -179,5 +182,51 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 推送Product至客户端
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Delete_Product)]
+        public async Task<ActionResult> Push(Guid? ID)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+
+            if (ID.HasValue)
+            {
+                var entity = await _productService.GetEntityByIdAsync(ID.Value);
+                entity.PushNum += 1;
+
+                if (await _productService.UpdateAsync(entity))
+                {
+                    JPushApi j = new JPushApi();
+                    var users = await _userService.GetEntitiesAsync(x => x.Status == 0);
+                    string[] userTokens = WebUtil.GetApiKeyByTels(users.Select(x => x.Tel)).Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => "aixiaoqi" + x.Value).ToArray();
+                    //推送
+                    j.Push_all_alias_message("新产品消息", "ProductNew", new Dictionary<string, string>()
+                                {
+                                    {"Title",entity.Title},
+                                    {"Url",entity.Url},
+                                    {"ID",entity.ID.ToString()},
+                                }, 864000, userTokens);
+
+                    result.Success = true;
+                    result.Msg = "推送成功！";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "推送失败！";
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "参数错误！";
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,15 @@ namespace Unitoys.Model
         /// 显示顺序
         /// </summary>
         public int DisplayOrder { get; set; }
+        /// <summary>
+        /// 推送次数
+        /// </summary>
+        public int PushNum { get; set; }
+        /// <summary>
+        /// 乐观并发
+        /// </summary>
+        [Timestamp]
+        public Byte[] RowVersion { get; set; }
         /// <summary>
         /// 绑定日期
         /// </summary>

@@ -198,7 +198,8 @@ namespace Unitoys.WebApi.Controllers
                              RemainingCallMinutes = i.RemainingCallMinutes + "",
                              //EffectiveDate = i.EffectiveDate.HasValue ? i.EffectiveDate.Value.ToString() : "",
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
-                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetPackageCompleteUrl()
+                             LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetPackageCompleteUrl(),
+                             LastCanActivationDate = GetLastCanActivationDate(i).ToString(),
                          };
 
             return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });
@@ -792,7 +793,7 @@ namespace Unitoys.WebApi.Controllers
 
             var unCount = await _orderService.GetEntitiesCountAsync(x =>
                 x.UserId == currentUser.ID
-                && x.OrderStatus == OrderStatusType.Unactivated
+                && (x.OrderStatus == OrderStatusType.Unactivated || x.OrderStatus == OrderStatusType.UnactivatError)
                 && x.PackageCategory == CategoryType.Flow
                 && x.PayStatus == PayStatusType.YesPayment);
 

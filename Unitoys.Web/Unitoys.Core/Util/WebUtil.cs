@@ -98,6 +98,15 @@ namespace Unitoys.Core
         {
             return apiSession.GetStrSession(tel);
         }
+
+        /// <summary>
+        /// 获取用户Session
+        /// </summary>
+        /// <returns></returns>
+        public static IDictionary<string, string> GetApiKeyByTels(IEnumerable<string> tels)
+        {
+            return apiSession.GetStrSession(tels);
+        }
         /// <summary>
         /// 设置用户Session
         /// </summary>
