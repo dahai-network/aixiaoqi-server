@@ -78,7 +78,9 @@ namespace Unitoys.WebApi.Controllers
                         PackageIsCategoryFlow = order.PackageIsCategoryFlow,
                         PackageIsSupport4G = order.PackageIsSupport4G,
                         ExpireDaysInt = (order.ExpireDays * order.Quantity).ToString(),
-                        CountryName = result.Key
+                        CountryName = result.Key,
+                        PackageIsApn = order.PackageIsApn,
+                        PackageApnName = order.PackageApnName,
                     };
                     return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
                 }
@@ -200,6 +202,8 @@ namespace Unitoys.WebApi.Controllers
                              ActivationDate = i.ActivationDate.HasValue ? i.ActivationDate.Value.ToString() : "",
                              LogoPic = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : i.UT_Package.Pic.GetPackageCompleteUrl(),
                              LastCanActivationDate = GetLastCanActivationDate(i).ToString(),
+                             PackageIsApn = i.PackageIsApn,
+                             PackageApnName = i.PackageApnName,
                          };
 
             return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });

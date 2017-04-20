@@ -77,7 +77,7 @@ namespace Unitoys.WebApi.Controllers
         [NoLogin]
         public async Task<IHttpActionResult> Upgrade([FromUri]PublicUpgradeBindingModel model)
         {
-            if (Convert.ToDouble(model.Version.Replace(".", "")) < Convert.ToDouble(UTConfig.SiteConfig.IosVersion.Replace(".", "")))
+            if (Convert.ToDouble(GetReplaceNotFirst(".", model.Version)) < Convert.ToDouble(GetReplaceNotFirst(".", UTConfig.SiteConfig.IosVersion)))
             {
                 return Ok(new
                 {
@@ -105,6 +105,17 @@ namespace Unitoys.WebApi.Controllers
                 });
 
             }
+        }
+
+        /// <summary>
+        /// 替换字符串，除第一个匹配项
+        /// </summary>
+        /// <param name="replaceStr">需要替换的内容</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        private string GetReplaceNotFirst(string replaceStr, string value)
+        {
+            return value.Substring(0, value.IndexOf(replaceStr) + 1) + (value.Substring(value.IndexOf(replaceStr) + 1).Replace(replaceStr, ""));
         }
     }
 }

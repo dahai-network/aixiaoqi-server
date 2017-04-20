@@ -39,7 +39,8 @@ namespace Unitoys.Core
                     MaxWritePoolSize = 100,
                     MaxReadPoolSize = 100,
                     AutoStart = true
-                });
+                }, UTConfig.SiteConfig.FormalEnvironmentInt != "0" ? (long)0 : (long)2,
+                null, null);
         }
         /// <summary>
         /// 构造函数

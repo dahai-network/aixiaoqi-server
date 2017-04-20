@@ -150,7 +150,8 @@ namespace Unitoys.Core.Config
         public string EIMSServerIp { get; set; }
         /// <summary>
         /// 苹果极光推送生产环境1或开发环境0
+        /// 是否正式环境
         /// </summary>
-        public string IOSApnsProduction { get; set; }
+        public string FormalEnvironmentInt { get; set; }
     }
 }

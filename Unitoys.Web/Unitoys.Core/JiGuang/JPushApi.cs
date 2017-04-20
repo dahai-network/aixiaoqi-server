@@ -31,7 +31,7 @@ namespace Unitoys.Core.JiGuang
             PushPayload payload = PushObject_all_alias_alert(alias, title, dicExtra);
             payload.notification.setAlert(alert);
             //设置IOS推送环境，生产或开发
-            payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
+            payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.FormalEnvironmentInt != "0");
             client.SendPush(payload);
         }
         public bool Push_ios_alias_alert(string alias, string title, string alert, Dictionary<string, string> dicExtra)
@@ -42,7 +42,7 @@ namespace Unitoys.Core.JiGuang
                 PushPayload payload = PushObject_ios_alias_alert(alias, title, dicExtra);
                 payload.notification.setAlert(alert);
                 //设置IOS推送环境，生产或开发
-                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
+                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.FormalEnvironmentInt != "0");
                 client.SendPush(payload);
                 return true;
             }
@@ -70,7 +70,7 @@ namespace Unitoys.Core.JiGuang
                 JPushClient client = new JPushClient(app_key, master_secret);
                 PushPayload payload = PushObject_android_alias_message(alias, msgContent, contentType, dicExtra);
                 //设置IOS推送环境，生产或开发
-                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
+                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.FormalEnvironmentInt != "0");
                 client.SendPush(payload);
                 return true;
             }
@@ -107,7 +107,7 @@ namespace Unitoys.Core.JiGuang
                 PushPayload payload = PushObject_all_alias_message(msgContent, contentType, dicExtra, alias);
                 payload.ResetOptionsTimeToLive(timeToLive);
                 //设置IOS推送环境，生产或开发
-                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.IOSApnsProduction != "0");
+                payload.ResetOptionsApnsProduction(UTConfig.SiteConfig.FormalEnvironmentInt != "0");
                 client.SendPush(payload);
                 return true;
             }
