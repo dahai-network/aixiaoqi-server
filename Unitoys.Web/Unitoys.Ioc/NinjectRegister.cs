@@ -80,6 +80,8 @@ namespace Unitoys.Ioc
             Kernel.Bind<IOperationRecordService>().To<OperationRecordService>();
             Kernel.Bind<IProductService>().To<ProductService>();
             Kernel.Bind<IBlackListService>().To<BlackListService>();
+            Kernel.Bind<INewsService>().To<NewsService>();
+            Kernel.Bind<IGlobalContentService>().To<GlobalContentService>();
         }
 
         private static void AddFilterBindings()

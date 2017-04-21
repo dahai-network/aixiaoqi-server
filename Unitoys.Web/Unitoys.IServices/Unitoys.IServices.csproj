@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IGlobalContentService.cs" />
+    <Compile Include="INewsService.cs" />
     <Compile Include="iBlackListService.cs" />
     <Compile Include="IProductService.cs" />
     <Compile Include="IEjoinDevSlotService.cs" />

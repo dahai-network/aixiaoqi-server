@@ -289,6 +289,24 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_BlackList = "Can_Delete_BlackList";
 
         #endregion
+
+        #region News
+
+        public const string Can_Add_News = "Can_Add_News";
+        public const string Can_View_News = "Can_View_News";
+        public const string Can_Modify_News = "Can_Modify_News";
+        public const string Can_Delete_News = "Can_Delete_News";
+
+        #endregion
+
+        #region GlobalContent
+
+        public const string Can_Add_GlobalContent = "Can_Add_GlobalContent";
+        public const string Can_View_GlobalContent = "Can_View_GlobalContent";
+        public const string Can_Modify_GlobalContent = "Can_Modify_GlobalContent";
+        public const string Can_Delete_GlobalContent = "Can_Delete_GlobalContent";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -453,6 +471,16 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_BlackList = new Tuple<string, string, int>("Can_Modify_BlackList", "修改用户黑名单", 31);
                 Tuple<string, string, int> Can_Delete_BlackList = new Tuple<string, string, int>("Can_Delete_BlackList", "删除用户黑名单", 31);
 
+                Tuple<string, string, int> Can_Add_News = new Tuple<string, string, int>("Can_Add_News", "添加新闻", 31);
+                Tuple<string, string, int> Can_View_News = new Tuple<string, string, int>("Can_View_News", "查看新闻", 31);
+                Tuple<string, string, int> Can_Modify_News = new Tuple<string, string, int>("Can_Modify_News", "修改新闻", 31);
+                Tuple<string, string, int> Can_Delete_News = new Tuple<string, string, int>("Can_Delete_News", "删除新闻", 31);
+
+                Tuple<string, string, int> Can_Add_GlobalContent = new Tuple<string, string, int>("Can_Add_GlobalContent", "添加全局内容管理", 31);
+                Tuple<string, string, int> Can_View_GlobalContent = new Tuple<string, string, int>("Can_View_GlobalContent", "查看全局内容管理", 31);
+                Tuple<string, string, int> Can_Modify_GlobalContent = new Tuple<string, string, int>("Can_Modify_GlobalContent", "修改全局内容管理", 31);
+                Tuple<string, string, int> Can_Delete_GlobalContent = new Tuple<string, string, int>("Can_Delete_GlobalContent", "删除全局内容管理", 31);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -607,6 +635,16 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_BlackList);
                 returnList.Add(Can_Modify_BlackList);
                 returnList.Add(Can_Delete_BlackList);
+
+                returnList.Add(Can_Add_News);
+                returnList.Add(Can_View_News);
+                returnList.Add(Can_Modify_News);
+                returnList.Add(Can_Delete_News);
+
+                returnList.Add(Can_Add_GlobalContent);
+                returnList.Add(Can_View_GlobalContent);
+                returnList.Add(Can_Modify_GlobalContent);
+                returnList.Add(Can_Delete_GlobalContent);
                 #endregion
 
                 return returnList;

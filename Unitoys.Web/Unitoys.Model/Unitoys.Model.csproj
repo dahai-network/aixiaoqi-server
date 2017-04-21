@@ -60,6 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\GlobalContentConfiguration.cs" />
+    <Compile Include="Configuration\NewsConfiguration.cs" />
     <Compile Include="Configuration\BlackListConfiguration.cs" />
     <Compile Include="Configuration\ProductConfiguration.cs" />
     <Compile Include="Configuration\EjoinDevConfiguration.cs" />
@@ -106,6 +108,8 @@
     <Compile Include="Configuration\PackageConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
+    <Compile Include="Entity\UT_News.cs" />
+    <Compile Include="Entity\UT_GlobalContent.cs" />
     <Compile Include="Entity\UT_EjoinDev.cs" />
     <Compile Include="Entity\UT_EjoinDevSlot.cs" />
     <Compile Include="Entity\UT_OperationRecord.cs" />

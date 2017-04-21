@@ -67,7 +67,6 @@ namespace Unitoys.Model
             //黑名单1对多
             this.HasMany(t => t.UT_BlackList).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
             
-
             this.Property(t => t.PassWord).HasMaxLength(32).IsRequired();
 
             this.Property(t => t.NickName).HasMaxLength(20).IsOptional();

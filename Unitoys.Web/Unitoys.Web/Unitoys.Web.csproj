@@ -143,6 +143,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Manage\Controllers\NewsController.cs" />
+    <Compile Include="Areas\Manage\Controllers\GlobalContentController.cs" />
     <Compile Include="Areas\Manage\Controllers\BlackListController.cs" />
     <Compile Include="Areas\Manage\Controllers\ProductController.cs" />
     <Compile Include="Areas\Manage\Controllers\ConfigController.cs" />
@@ -1074,6 +1076,8 @@
     </Content>
     <Content Include="Areas\Manage\Views\Product\Index.cshtml" />
     <Content Include="Areas\Manage\Views\BlackList\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\GlobalContent\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\News\Index.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>

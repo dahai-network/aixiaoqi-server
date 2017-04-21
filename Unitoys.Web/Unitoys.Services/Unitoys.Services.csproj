@@ -57,6 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NewsService.cs" />
+    <Compile Include="GlobalContentService.cs" />
     <Compile Include="DeviceBraceletConnectRecordService.cs" />
     <Compile Include="ProductService.cs" />
     <Compile Include="BlackListService.cs" />
