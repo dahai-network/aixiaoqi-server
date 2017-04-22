@@ -57,7 +57,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                ID = i.ID,
                                CreateDate = i.CreateDate.ToString(),
                                Name = i.Name,
-                               Content = i.Content,
+                               Content = Server.HtmlDecode(i.Content),
                                GlobalContentType = i.GlobalContentType
                            };
 

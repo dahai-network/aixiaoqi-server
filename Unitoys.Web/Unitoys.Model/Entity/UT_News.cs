@@ -32,6 +32,10 @@ namespace Unitoys.Model
         /// </summary>
         public string Content { get; set; }
         public NewsType NewsType { get; set; }
+        /// <summary>
+        /// 置顶
+        /// </summary>
+        public bool IsTop { get; set; }
         public int CreateDate { get; set; }
         /// <summary>
         /// 显示排序
@@ -47,10 +51,10 @@ namespace Unitoys.Model
         /// <summary>
         /// 行业
         /// </summary>
-        Industry,
+        Industry = 0,
         /// <summary>
         /// 公司
         /// </summary>
-        Company
+        Company = 1
     }
 }

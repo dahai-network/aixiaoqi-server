@@ -2,7 +2,7 @@
     ViewBag.Title = "全局内容管理";
     Layout = "../Shared/_Layout.cshtml";
 }
-<script src="~/Content/js/uploadify/jquery.uploadify.min.js" type="text/javascript"></script>
+<script src="~/Content/js/ckeditor/ckeditor.js"></script>
 <link rel="stylesheet" type="text/css" href="~/Content/js/uploadify/uploadify.css">
 <div class="easyui-layout" fit="true">
     <div data-options="region:'north',border:false" style="height:90px">
@@ -10,12 +10,20 @@
             <form id="ff" method="post">
                 <span>名称:</span>
                 <input id="name" type="text" class="easyui-textbox" style="height:25px;" />
-                <span>链接地址:</span>
-                <input id="url" type="text" class="easyui-textbox" style="height:25px;" />
-                @*<span>创建时间:</span>
-                    <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
-                    <span>-</span>
-                    <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />*@
+                <span>类型:</span>
+                <select id="globalContentType" class="easyui-combobox" name="globalContentType" style="width:200px;">
+                    <option value="">-- 请选择 --</option>
+                    <option value="0">招聘</option>
+                    <option value="1">售后政策</option>
+                    <option value="2">售后渠道</option>
+                    <option value="3">常见问题</option>
+                    <option value="3">公司相关</option>
+                    <option value="3">商务合作</option>
+                </select>
+                <span>创建时间:</span>
+                <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
                 <a href="#" class="easyui-linkbutton " data-options="iconCls:'icon-search'" onclick="doSearch()">查询</a>
             </form>
         </div>
@@ -25,17 +33,15 @@
                data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/GlobalContent/GetList',method:'get',toolbar:toolbar,pagination:true,onDblClickRow:onDbOpenDialog">
             <thead>
                 <tr>
-                    <th data-options="field:'Title',width:150">标题</th>
-                    <th data-options="field:'Image',width:120,formatter:formatPic">图片</th>
-                    <th data-options="field:'Url',width:120,formatter:formatUrl">链接地址</th>
-                    <th data-options="field:'DisplayOrder',width:50">显示顺序</th>
+                    <th data-options="field:'Name',width:150">名称</th>
+                    <th data-options="field:'GlobalContentType',width:120,formatter:formatGlobalContentType">类型</th>
                     <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">创建时间</th>
                 </tr>
             </thead>
         </table>
     </div>
 </div>
-<div id="dlg-edit" class="easyui-dialog" title="添加GlobalContent" style="width:500px;height:350px;padding:20px"
+<div id="dlg-edit" class="easyui-dialog" title="添加内容管理" style="width:800px;height:500px;padding:20px"
      data-options="
                     iconCls: 'icon-save',
                     closed:true,
@@ -50,62 +56,33 @@
         <table cellpadding="5" class="tb_form">
             <tr>
                 <td style="text-align:right" width="100">
-                    标题：
+                    名称：
                 </td>
                 <td>
-                    <input type="text" name="Title" id="Title" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength="50" /> &nbsp;
+                    <input type="text" name="Name" id="Name" data-options="required:true" class="easyui-textbox" style="width: 220px;height:33px;" maxlength="50" /> &nbsp;
                 </td>
             </tr>
             <tr>
                 <td style="text-align:right">
-                    链接地址：
+                    类型：
                 </td>
                 <td>
-                    <input type="text" name="Url" id="Url" class="easyui-textbox" style="width: 220px;height:33px;" maxlength=50 /> &nbsp;
+                    <select id="GlobalContentType" name="GlobalContentType" class="easyui-combobox" style="width: 220px; ">
+                        <option value="0" selected="selected">招聘</option>
+                        <option value="1">售后政策</option>
+                        <option value="2">售后渠道</option>
+                        <option value="3">常见问题</option>
+                        <option value="3">公司相关</option>
+                        <option value="3">商务合作</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td style="text-align:right">
-                    显示顺序：
+                    内容：
                 </td>
                 <td>
-                    <input type="text" name="DisplayOrder" id="DisplayOrder" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align:right">
-                    图片：
-                </td>
-                <td>
-                    <input type="hidden" name="Image" id="Image" maxlength=50 />
-                    <input type="file" name="file_upload" id="file_upload" /> <div id="j_UploadResult"></div>
-                    <script type="text/javascript">
-                        $(function () {
-                            $('#file_upload').uploadify({
-                                'height': 25,
-                                'width': 100,
-                                'buttonText': '上传图片',
-                                'swf': '/Content/js/uploadify/uploadify.swf',
-                                'uploader': '/Manage/Home/UploadImgAsync',
-                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
-                                    $("#j_UploadResult").html(errorString).css({ color: "#CC0033" });
-                                },
-                                'onUploadSuccess': function (file, data, response) {
-                                    if (data == -1) {
-                                        $("#j_UploadResult").html("请选择您要上传的文件！").css({ color: "#CC0033" });
-                                    } else if (data == -2) {
-                                        $("#j_UploadResult").html("上传图片格式不正确！").css({ color: "#CC0033" });
-                                    } else if (data == -3) {
-                                        $("#j_UploadResult").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
-                                    } else {
-                                        $("#j_UploadResult").html("图片上传成功！").css({ color: "#006633" });
-                                        $("#Image").val(data);
-                                    }
-
-                                }
-                            });
-                        });
-                    </script>
+                    <textarea name="Content" id="Content" style="width: 320px;"></textarea>
                 </td>
             </tr>
         </table>
@@ -117,16 +94,17 @@
     var dlg_Edit_form;
 
     var toolbar = [{
-        text: '添加GlobalContent',
+        text: '添加',
         iconCls: 'icon-add',
         handler: function () {
+            CKEDITOR.instances["Content"].setData('');
             dlg_Edit_form.form('clear');
             dlg_Edit.dialog('open');
             dlg_Edit.dialog('setTitle', '添加GlobalContent');
             dlg_Edit_form.url = '/Manage/GlobalContent/Add/';
         }
     }, {
-        text: '删除GlobalContent',
+        text: '删除',
         iconCls: 'icon-cut',
         handler: del
     }
@@ -135,6 +113,14 @@
         grid = $("#grid").datagrid();
         dlg_Edit = $("#dlg-edit").dialog();
         dlg_Edit_form = dlg_Edit.find('form');
+
+        CKEDITOR.replace('Content', {
+            htmlEncodeOutput: true,//内容输出时编码
+            allowedContent: true,//关闭标签过滤
+            fullPage: true,//
+            image_previewText: '',//预览区域显示内容
+            filebrowserImageUploadUrl: "/Manage/PageShow/UploadImgAsync"
+        });
     })
     function onDbOpenDialog(index, rowData, value) {
         dlg_Edit.dialog('open');
@@ -143,12 +129,27 @@
         dlg_Edit_form.form('load', rowData); //加载到表单的控件上
 
         dlg_Edit_form.url = '/Manage/GlobalContent/Update';
+
+        CKEDITOR.instances['Content'].setData($('#Content').val());
     }
 
 
-    function formatPic(value, rec, index) {
-        if (value != "") {
-            return "<img height='100' src='" + value + "' />";
+    function formatGlobalContentType(value, rec, index) {
+        switch (value) {
+            case 0:
+                return '招聘';
+            case 1:
+                return '售后政策';
+            case 2:
+                return '售后渠道';
+            case 3:
+                return '常见问题';
+            case 4:
+                return '公司相关';
+            case 5:
+                return '商务合作';
+            default:
+                break;
         }
         return value;
     }
@@ -173,10 +174,10 @@
 
     function doSearch() {
         $("#grid").datagrid('load', {
-            title: $("#title").val() == null ? "" : $("#title").val(),
-            url: $("#url").val() == null ? "" : $("#url").val(),
-            //createStartDate: $("input[name$='createStartDate']").val(),
-            //createEndDate: $("input[name$='createEndDate']").val(),
+            name: $("#name").val() == null ? "" : $("#name").val(),
+            globalContentType: $("#globalContentType").combobox("getValue"),
+            createStartDate: $("input[name$='createStartDate']").val(),
+            createEndDate: $("input[name$='createEndDate']").val(),
         });
     }
 
@@ -208,7 +209,6 @@
             });
         } else {
             Msgshow('请先选择要删除的记录。');
-
         }
     }
 </script>

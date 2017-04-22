@@ -34,7 +34,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string title, string url, DateTime? createStartDate, DateTime? createEndDate)
+        public async Task<ActionResult> GetList(int page, int rows, string title, string publisher, DateTime? createStartDate, DateTime? createEndDate)
         {
             int? beginTimeInt = null;
             int? endTimeInt = null;
@@ -46,7 +46,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             {
                 endTimeInt = CommonHelper.ConvertDateTimeInt(createEndDate.Value);
             }
-            var pageRowsDb = await _newsService.SearchAsync(page, rows, title, url, beginTimeInt, endTimeInt);
+            var pageRowsDb = await _newsService.SearchAsync(page, rows, title, publisher, beginTimeInt, endTimeInt);
 
             int totalNum = pageRowsDb.Key;
 
@@ -58,10 +58,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                CreateDate = i.CreateDate.ToString(),
                                Title = i.Title,
                                Image = i.Image,
-                               NewsDate = i.NewsDate,
+                               NewsDate = i.NewsDate.ToString(),
                                Publisher = i.Publisher,
-                               Content = i.Content,
+                               Content = Server.HtmlDecode(i.Content),
                                NewsType = i.NewsType,
+                               IsTop = i.IsTop
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -90,7 +91,9 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 entity.Publisher = model.Publisher;
                 entity.Content = model.Content;
                 entity.NewsType = model.NewsType;
+                entity.IsTop = model.IsTop;
                 entity.CreateDate = CommonHelper.GetDateTimeInt();
+
 
                 if (await _newsService.InsertAsync(entity))
                 {
@@ -132,6 +135,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 entity.Publisher = model.Publisher;
                 entity.Content = model.Content;
                 entity.NewsType = model.NewsType;
+                entity.IsTop = model.IsTop;
 
                 if (await _newsService.UpdateAsync(entity))
                 {
