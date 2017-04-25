@@ -45,6 +45,10 @@ namespace Unitoys.Model
         /// <summary>
         /// 商务合作
         /// </summary>
-        BusinessCooperation = 5
+        BusinessCooperation = 5,
+        /// <summary>
+        /// 企业文化
+        /// </summary>
+        CompanyCulture = 6
     }
 }

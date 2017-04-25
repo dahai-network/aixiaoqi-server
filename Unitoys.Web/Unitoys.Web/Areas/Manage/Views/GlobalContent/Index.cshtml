@@ -17,8 +17,10 @@
                     <option value="1">售后政策</option>
                     <option value="2">售后渠道</option>
                     <option value="3">常见问题</option>
-                    <option value="3">公司相关</option>
-                    <option value="3">商务合作</option>
+                    <option value="4">企业简介</option>
+                    <option value="6">企业文化</option>
+                    <option value="5">商务合作</option>
+
                 </select>
                 <span>创建时间:</span>
                 <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
@@ -72,8 +74,9 @@
                         <option value="1">售后政策</option>
                         <option value="2">售后渠道</option>
                         <option value="3">常见问题</option>
-                        <option value="3">公司相关</option>
-                        <option value="3">商务合作</option>
+                        <option value="4">企业简介</option>
+                        <option value="6">企业文化</option>
+                        <option value="5">商务合作</option>
                     </select>
                 </td>
             </tr>
@@ -117,7 +120,7 @@
         CKEDITOR.replace('Content', {
             htmlEncodeOutput: true,//内容输出时编码
             allowedContent: true,//关闭标签过滤
-            fullPage: true,//
+            fullPage: false,//
             image_previewText: '',//预览区域显示内容
             filebrowserImageUploadUrl: "/Manage/PageShow/UploadImgAsync"
         });
@@ -145,9 +148,11 @@
             case 3:
                 return '常见问题';
             case 4:
-                return '公司相关';
+                return '企业简介';
             case 5:
                 return '商务合作';
+            case 6:
+                return '企业文化';
             default:
                 break;
         }

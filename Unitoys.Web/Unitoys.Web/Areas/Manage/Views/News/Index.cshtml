@@ -116,7 +116,7 @@
             </tr>
             <tr>
                 <td style="text-align:right">
-                    新闻实际时间：
+                    新闻实际时间<br />(时分-用于区分同一天中的新闻排序)：
                 </td>
                 <td>
                     <input id="NewsDate" type="text" class="easyui-datetimebox" name="NewsDate" data-options="showSeconds:false" style="height:25px;" />
@@ -155,6 +155,7 @@
             dlg_Edit_form.form('clear');
             dlg_Edit.dialog('open');
             dlg_Edit.dialog('setTitle', '添加News');
+            dlg_Edit_form.form('load', { NewsDate: new Date().toLocaleDateString() }); //加载到表单的控件上
             dlg_Edit_form.url = '/Manage/News/Add/';
         }
     }, {
@@ -171,7 +172,7 @@
         CKEDITOR.replace('Content', {
             htmlEncodeOutput: true,//内容输出时编码
             allowedContent: true,//关闭标签过滤
-            fullPage: true,//
+            fullPage: false,//
             image_previewText: '',//预览区域显示内容
             filebrowserImageUploadUrl: "/Manage/PageShow/UploadImgAsync"
         });
@@ -182,9 +183,16 @@
         dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.Title + " 的信息");
         dlg_Edit_form.form('load', rowData); //加载到表单的控件上
 
+        var dateNewsDate = new Date(rowData.NewsDate);
+        var year = dateNewsDate.getFullYear();
+        var month = dateNewsDate.getMonth() + 1;
+        var date = dateNewsDate.getDate();
+        $('#NewsDate').datetimebox('setValue', year + '-' + month + '-' + date + ' ' + dateNewsDate.getHours() + ':' + dateNewsDate.getMinutes() + ':' + dateNewsDate.getSeconds());
+
         dlg_Edit_form.url = '/Manage/News/Update';
 
         CKEDITOR.instances['Content'].setData($('#Content').val());
+
     }
 
 

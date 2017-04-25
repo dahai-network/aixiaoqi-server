@@ -259,7 +259,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
 
             //return Content(resultAsync);
 
-            return Content("<script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"" + resultAsync + "\");</script>");
+            return Content("<script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"" + resultAsync.GetCompleteUrl() + "\");</script>");
 
         }
     }
