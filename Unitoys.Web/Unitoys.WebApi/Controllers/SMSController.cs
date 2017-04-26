@@ -64,7 +64,7 @@ namespace Unitoys.WebApi.Controllers
             }
 
             LoggerHelper.Info("发送短信");
-            if (string.IsNullOrEmpty(model.SMSContent))
+            if (string.IsNullOrEmpty(model.SMSContent) || string.IsNullOrEmpty(model.SMSContent.Trim()))
             {
                 return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "内容不允许为空"));
             }
