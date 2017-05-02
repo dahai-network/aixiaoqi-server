@@ -108,8 +108,8 @@ namespace Unitoys.WebApi.Controllers
                             msg = "登录成功",
                             data = new
                             {
-                                NickName = user.NickName,
-                                Email = user.Email,
+                                NickName = user.NickName == null ? "" : user.NickName,
+                                Email = user.Email == null ? "" : user.Email,
                                 UserHead = user.UserHead.GetUserHeadCompleteUrl(),
                                 Tel = user.Tel,
                                 TrueName = user.TrueName,

@@ -193,6 +193,7 @@ namespace Unitoys.WebApi.Controllers
                              UnitPrice = i.UnitPrice,
                              TotalPrice = i.TotalPrice,
                              ExpireDays = GetExpireDaysDescr(i),
+                             ExpireDaysInt = (i.ExpireDays * i.Quantity).ToString(),
                              OrderDate = i.OrderDate.ToString(),
                              PayDate = i.PayDate.HasValue ? i.PayDate.Value.ToString() : "",
                              PayStatus = (int)i.PayStatus + "",

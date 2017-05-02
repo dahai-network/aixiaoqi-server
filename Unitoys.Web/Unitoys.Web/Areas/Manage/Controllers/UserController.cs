@@ -129,8 +129,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 UT_Users user = new UT_Users();
                 user.PassWord = SecureHelper.MD5(passWord);
                 user.Tel = tel;
-                user.Email = email;
-                user.TrueName = trueName;
+                user.Email = string.IsNullOrEmpty(email) ? "" : email;
+                user.TrueName = string.IsNullOrEmpty(trueName) ? "" : trueName;
                 user.Score = 0;
                 user.Amount = 0;
                 user.GroupId = Guid.Parse("688a3245-2628-4488-bf35-9c029ff80988");
