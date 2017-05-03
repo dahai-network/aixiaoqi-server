@@ -10,6 +10,8 @@
             <form id="ff" method="post">
                 <span>路径:</span>
                 <input id="url" type="text" class="easyui-textbox" style="height:25px;" />
+                <span>参数:</span>
+                <input id="parameter" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>管理名称:</span>
                 <input id="managerLoginName" type="text" class="easyui-textbox" style="height:25px;" />
                 <span>创建时间:</span>
@@ -96,6 +98,7 @@
     function doSearch() {
         $("#grid").datagrid('load', {
             url: $("#url").val() == null ? "" : $("#url").val(),
+            parameter: $("#parameter").val() == null ? "" : $("#parameter").val(),
             managerLoginName: $("#managerLoginName").val() == null ? "" : $("#managerLoginName").val(),
             createStartDate: $("input[name$='createStartDate']").val(),
             createEndDate: $("input[name$='createEndDate']").val(),

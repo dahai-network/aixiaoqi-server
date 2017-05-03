@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,11 @@ namespace Unitoys.Model
         /// 绑定日期
         /// </summary>
         public int CreateDate { get; set; }
+        /// <summary>
+        /// 乐观并发
+        /// </summary>
+        [Timestamp]
+        public Byte[] RowVersion { get; set; }
         public virtual UT_Users UT_Users { get; set; }
     }
 }

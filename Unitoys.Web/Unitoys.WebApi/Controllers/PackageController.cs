@@ -104,7 +104,7 @@ namespace Unitoys.WebApi.Controllers
                            //Flow = i.Flow,
                            Flow = "不限制流量",
                            Desction = i.Desction,
-                           //Pic = i.Pic.GetPackageCompleteUrl(),
+                           Pic = i.Pic.GetPackageCompleteUrl(),
                            ExpireDays = i.ExpireDays.ToString(),
                        };
 

@@ -39,7 +39,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string url, string managerLoginName, DateTime? createStartDate, DateTime? createEndDate)
+        public async Task<ActionResult> GetList(int page, int rows, string url, string parameter, string managerLoginName, DateTime? createStartDate, DateTime? createEndDate)
         {
             int? createStartDateInt = null;
             int? createEndDateInt = null;
@@ -51,7 +51,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             {
                 createEndDateInt = CommonHelper.ConvertDateTimeInt(createEndDate.Value);
             }
-            var pageRowsDb = await _operationRecordService.SearchAsync(page, rows, url, managerLoginName, createStartDateInt, createEndDateInt);
+            var pageRowsDb = await _operationRecordService.SearchAsync(page, rows, url, parameter, managerLoginName, createStartDateInt, createEndDateInt);
 
             int totalNum = pageRowsDb.Key;
 

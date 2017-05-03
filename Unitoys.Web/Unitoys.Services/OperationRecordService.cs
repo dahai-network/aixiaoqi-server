@@ -12,15 +12,20 @@ namespace Unitoys.Services
 {
     public class OperationRecordService : BaseService<UT_OperationRecord>, IOperationRecordService
     {
-        public async Task<KeyValuePair<int, List<UT_OperationRecord>>> SearchAsync(int page, int rows, string url, string managerLoginName, int? createStartDate, int? createEndDate)
+        public async Task<KeyValuePair<int, List<UT_OperationRecord>>> SearchAsync(int page, int rows, string url, string parameter, string managerLoginName, int? createStartDate, int? createEndDate)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
                 var query = db.UT_OperationRecord.Include(x => x.UT_ManageUsers).Where(x => true);
 
-                if (!string.IsNullOrEmpty(managerLoginName))
+                if (!string.IsNullOrEmpty(url))
                 {
-                    query = query.Where(x => x.UT_ManageUsers.LoginName.Contains(managerLoginName));
+                    query = query.Where(x => x.Url.Contains(url));
+                }
+
+                if (!string.IsNullOrEmpty(parameter))
+                {
+                    query = query.Where(x => x.Parameter.Contains(parameter));
                 }
 
                 if (!string.IsNullOrEmpty(managerLoginName))
