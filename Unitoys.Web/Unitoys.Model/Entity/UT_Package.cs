@@ -36,7 +36,7 @@ namespace Unitoys.Model
         /// <summary>
         /// 描述
         /// </summary>
-        public string Desction { get; set; }
+        //public string Desction { get; set; }
         /// <summary>
         /// 特色
         /// </summary>

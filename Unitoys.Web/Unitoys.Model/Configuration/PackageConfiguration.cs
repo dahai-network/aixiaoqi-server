@@ -19,7 +19,7 @@ namespace Unitoys.Model
 
             this.Property(t => t.Price).HasPrecision(12, 2);
 
-            this.Property(t => t.Desction).HasMaxLength(200);
+            //this.Property(t => t.Desction).HasMaxLength(200);
 
             this.Property(t => t.Pic).HasMaxLength(100);
 
