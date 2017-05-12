@@ -20,6 +20,15 @@ namespace Unitoys.WebApi.Models
         /// </summary>
         //public int IsPayUserAmount { get; set; }
         public Unitoys.Model.PaymentMethodType PaymentMethod { get; set; }
+        /// <summary>
+        /// 月套餐费
+        /// </summary>
+        public decimal MonthPackageFee { get; set; }
+
+    }
+    public class AddReceiveBindingModel
+    {
+        public Guid PackageID { get; set; }
     }
 
     public class GetUserOrderListBindingModel

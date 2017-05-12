@@ -27,6 +27,8 @@
                     <option value="1">通话</option>
                     <option value="2">大王卡</option>
                     <option value="3">双卡双待</option>
+                    <option value="4">免费领取</option>
+                    <option value="5">省心服务</option>
                 </select>
                 <span>流量:</span>
                 <select id="isCategoryFlow" class="easyui-combobox" name="isCategoryFlow" style="width:200px;">
@@ -101,6 +103,14 @@
             </tr>
             <tr>
                 <td style="text-align:right">
+                    套餐原价（省心服务）：
+                </td>
+                <td>
+                    <input type="text" name="OriginalPrice" id="OriginalPrice" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 /> $
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
                     套餐价格：
                 </td>
                 <td>
@@ -151,6 +161,114 @@
                                     } else {
                                         $("#j_UploadResult").html("图片上传成功！").css({ color: "#006633" });
                                         $("#Pic").val(data);
+                                    }
+
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    已领图片（免费领取）：
+                </td>
+                <td>
+                    <input type="hidden" name="PicHaveed" id="PicHaveed" maxlength=50 />
+                    <input type="file" name="file_uploadPicHaveed" id="file_uploadPicHaveed" /> <div id="j_UploadResultPicHaveed"></div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#file_uploadPicHaveed').uploadify({
+                                'height': 25,
+                                'width': 100,
+                                'buttonText': '上传图片',
+                                'swf': '/Content/js/uploadify/uploadify.swf',
+                                'uploader': '/Manage/Home/UploadImgAsync',
+                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
+                                    $("#j_UploadResultPicHaveed").html(errorString).css({ color: "#CC0033" });
+                                },
+                                'onUploadSuccess': function (file, data, response) {
+                                    if (data == -1) {
+                                        $("#j_UploadResultPicHaveed").html("请选择您要上传的文件！").css({ color: "#CC0033" });
+                                    } else if (data == -2) {
+                                        $("#j_UploadResultPicHaveed").html("上传图片格式不正确！").css({ color: "#CC0033" });
+                                    } else if (data == -3) {
+                                        $("#j_UploadResultPicHaveed").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
+                                    } else {
+                                        $("#j_UploadResultPicHaveed").html("图片上传成功！").css({ color: "#006633" });
+                                        $("#PicHaveed").val(data);
+                                    }
+
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    描述标题图（省心服务）：
+                </td>
+                <td>
+                    <input type="hidden" name="DescTitlePic" id="DescTitlePic" maxlength=50 />
+                    <input type="file" name="file_uploadDescTitlePic" id="file_uploadDescTitlePic" /> <div id="j_UploadResultDescTitlePic"></div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#file_uploadDescTitlePic').uploadify({
+                                'height': 25,
+                                'width': 100,
+                                'buttonText': '上传图片',
+                                'swf': '/Content/js/uploadify/uploadify.swf',
+                                'uploader': '/Manage/Home/UploadImgAsync',
+                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
+                                    $("#j_UploadResultDescTitlePic").html(errorString).css({ color: "#CC0033" });
+                                },
+                                'onUploadSuccess': function (file, data, response) {
+                                    if (data == -1) {
+                                        $("#j_UploadResultDescTitlePic").html("请选择您要上传的文件！").css({ color: "#CC0033" });
+                                    } else if (data == -2) {
+                                        $("#j_UploadResultDescTitlePic").html("上传图片格式不正确！").css({ color: "#CC0033" });
+                                    } else if (data == -3) {
+                                        $("#j_UploadResultDescTitlePic").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
+                                    } else {
+                                        $("#j_UploadResultDescTitlePic").html("图片上传成功！").css({ color: "#006633" });
+                                        $("#DescTitlePic").val(data);
+                                    }
+
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    描述图（省心服务）：
+                </td>
+                <td>
+                    <input type="hidden" name="DescPic" id="DescPic" maxlength=50 />
+                    <input type="file" name="file_uploadDescPic" id="file_uploadDescPic" /> <div id="j_UploadResultDescPic"></div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#file_uploadDescPic').uploadify({
+                                'height': 25,
+                                'width': 100,
+                                'buttonText': '上传图片',
+                                'swf': '/Content/js/uploadify/uploadify.swf',
+                                'uploader': '/Manage/Home/UploadImgAsync',
+                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
+                                    $("#j_UploadResultDescPic").html(errorString).css({ color: "#CC0033" });
+                                },
+                                'onUploadSuccess': function (file, data, response) {
+                                    if (data == -1) {
+                                        $("#j_UploadResultDescPic").html("请选择您要上传的文件！").css({ color: "#CC0033" });
+                                    } else if (data == -2) {
+                                        $("#j_UploadResultDescPic").html("上传图片格式不正确！").css({ color: "#CC0033" });
+                                    } else if (data == -3) {
+                                        $("#j_UploadResultDescPic").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
+                                    } else {
+                                        $("#j_UploadResultDescPic").html("图片上传成功！").css({ color: "#006633" });
+                                        $("#DescPic").val(data);
                                     }
 
                                 }
@@ -228,6 +346,8 @@
                         <option value="1">通话</option>
                         <option value="2">大王卡</option>
                         <option value="3">双卡双待</option>
+                        <option value="4">免费领取</option>
+                        <option value="5">省心服务</option>
                     </select>
                 </td>
             </tr>

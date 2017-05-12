@@ -108,6 +108,152 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
+        /// 创建免费领取订单
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> AddReceive([FromBody]AddReceiveBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+            //System.Web.Http.ModelBinding.DefaultActionValueBinder
+            if (model.PackageID == Guid.Empty)
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "套餐ID不能为空"));
+            }
+            else
+            {
+                var result = await _orderService.AddReceiveOrder(currentUser.ID, model.PackageID);
+
+                if (result.Value.Key == 1 && result.Value.Value != null)
+                {
+                    var order = result.Value.Value;
+                    var resultModel = new
+                    {
+                        OrderID = order.ID,
+                        OrderNum = order.OrderNum,
+                        OrderDate = order.OrderDate.ToString(),
+                        PackageId = order.PackageId,
+                        PackageName = order.PackageName,
+                        Quantity = order.Quantity.ToString(),
+                        UnitPrice = order.UnitPrice,
+                        TotalPrice = order.TotalPrice,
+                        ExpireDays = GetExpireDaysDescr(order),
+                        Flow = order.Flow + "",
+                        RemainingCallMinutes = order.RemainingCallMinutes + "",
+                        PaymentMethod = (int)order.PaymentMethod + "",
+                        PackageCategory = order.PackageCategory,
+                        PackageIsCategoryFlow = order.PackageIsCategoryFlow,
+                        PackageIsSupport4G = order.PackageIsSupport4G,
+                        ExpireDaysInt = (order.ExpireDays * order.Quantity).ToString(),
+                        CountryName = result.Key,
+                        PackageIsApn = order.PackageIsApn,
+                        PackageApnName = order.PackageApnName,
+                    };
+                    return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
+                }
+                else
+                {
+                    switch (result.Value.Key)
+                    {
+                        case 1:
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+                            break;
+                        case 2:
+                            return Ok(new StatusCodeRes(StatusCodeType.套餐不可用_请选择其他套餐, "套餐不可用，请选择其他套餐"));
+                            break;
+                        case 3:
+                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "该套餐不允许购买多个"));
+                            break;
+                        case 5:
+                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "已领取此套餐"));
+                            break;
+                        case 4:
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+                            break;
+                        default:
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+                            break;
+                    }
+                }
+            }
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+        }
+
+        /// <summary>
+        /// 创建省心服务订单
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> AddDeviceTel([FromBody]AddReceiveBindingModel model)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+            //System.Web.Http.ModelBinding.DefaultActionValueBinder
+            if (model.PackageID == Guid.Empty)
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "套餐ID不能为空"));
+            }
+            else
+            {
+                var result = await _orderService.AddReceiveOrder(currentUser.ID, model.PackageID);
+
+                if (result.Value.Key == 1 && result.Value.Value != null)
+                {
+                    var order = result.Value.Value;
+                    var resultModel = new
+                    {
+                        OrderID = order.ID,
+                        OrderNum = order.OrderNum,
+                        OrderDate = order.OrderDate.ToString(),
+                        PackageId = order.PackageId,
+                        PackageName = order.PackageName,
+                        Quantity = order.Quantity.ToString(),
+                        UnitPrice = order.UnitPrice,
+                        TotalPrice = order.TotalPrice,
+                        ExpireDays = GetExpireDaysDescr(order),
+                        Flow = order.Flow + "",
+                        RemainingCallMinutes = order.RemainingCallMinutes + "",
+                        PaymentMethod = (int)order.PaymentMethod + "",
+                        PackageCategory = order.PackageCategory,
+                        PackageIsCategoryFlow = order.PackageIsCategoryFlow,
+                        PackageIsSupport4G = order.PackageIsSupport4G,
+                        ExpireDaysInt = (order.ExpireDays * order.Quantity).ToString(),
+                        CountryName = result.Key,
+                        PackageIsApn = order.PackageIsApn,
+                        PackageApnName = order.PackageApnName,
+                    };
+                    return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
+                }
+                else
+                {
+                    switch (result.Value.Key)
+                    {
+                        case 1:
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+                            break;
+                        case 2:
+                            return Ok(new StatusCodeRes(StatusCodeType.套餐不可用_请选择其他套餐, "套餐不可用，请选择其他套餐"));
+                            break;
+                        case 3:
+                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "该套餐不允许购买多个"));
+                            break;
+                        case 5:
+                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "已领取此套餐"));
+                            break;
+                        case 4:
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+                            break;
+                        default:
+                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+                            break;
+                    }
+                }
+            }
+            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
+        }
+
+        /// <summary>
         /// 取消订单
         /// </summary>
         /// <param name="orderid"></param>
@@ -796,6 +942,12 @@ namespace Unitoys.WebApi.Controllers
                 && (x.PackageCategory == CategoryType.Call || x.PackageCategory == CategoryType.Flow));
             int TotalNumFlow = searchOrders.Count(x => x.PackageCategory == CategoryType.Flow);
 
+            var searchOrder = (await _orderService.GetEntitiesAsync(x =>
+                x.UserId == currentUser.ID
+                && x.OrderStatus == OrderStatusType.Used
+                && x.PayStatus == PayStatusType.YesPayment
+                && (x.PackageCategory == CategoryType.FreeReceive || x.PackageCategory == CategoryType.Relaxed))).OrderByDescending(x => x.PackageCategory).FirstOrDefault();
+
             var unCount = await _orderService.GetEntitiesCountAsync(x =>
                 x.UserId == currentUser.ID
                 && (x.OrderStatus == OrderStatusType.Unactivated || x.OrderStatus == OrderStatusType.UnactivatError)
@@ -812,6 +964,7 @@ namespace Unitoys.WebApi.Controllers
                     {
                         Used = new
                         {
+                            ServiceName = searchOrder == null ? "" : searchOrder.PackageName,
                             TotalNum = searchOrders.Count().ToString(),//总数量
                             TotalNumFlow = TotalNumFlow.ToString(),//流量套餐总数量
                             FlowPackageName = searchOrders.FirstOrDefault(x => x.PackageCategory == CategoryType.Flow).PackageName,//
@@ -833,6 +986,7 @@ namespace Unitoys.WebApi.Controllers
                     {
                         Used = new
                         {
+                            ServiceName = searchOrder == null ? "" : searchOrder.PackageName,
                             TotalNum = searchOrders.Count().ToString(),
                             TotalNumFlow = TotalNumFlow.ToString(),
                             TotalRemainingCallMinutes = searchOrders.Sum(x => x.RemainingCallMinutes).ToString(),

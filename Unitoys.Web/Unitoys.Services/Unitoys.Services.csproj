@@ -57,6 +57,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BannerConfiguration.cs" />
+    <Compile Include="PushContentService.cs" />
+    <Compile Include="UserReceiveService.cs" />
+    <Compile Include="UserDeviceTelService.cs" />
+    <Compile Include="OrderDeviceTelService.cs" />
     <Compile Include="NewsService.cs" />
     <Compile Include="GlobalContentService.cs" />
     <Compile Include="DeviceBraceletConnectRecordService.cs" />

@@ -23,8 +23,8 @@ namespace Unitoys.Services
         /// <param name="unitPrice">单价</param>
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
-        /// <returns>0失败/1成功/2套餐被锁定</returns>
-        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod)
+        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐</returns>
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel = null, decimal MonthPackageFee = 0)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -39,53 +39,175 @@ namespace Unitoys.Services
                 {
                     return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(3, null));
                 }
-                if (package != null)
+                //免费领取类型的套餐不在此方法处理
+                if (package.Category == CategoryType.FreeReceive)
                 {
-                    //1. 先添加Order实体。
-                    UT_Order order = new UT_Order();
-                    order.UserId = userId;
-                    order.OrderNum = String.Format("8022{0}", DateTime.Now.ToString("yyMMddHHmmssffff"));
-                    order.PackageId = packageId;
-                    order.PackageName = package.PackageName;
-                    order.PackageCategory = package.Category;
-                    order.PackageIsCategoryFlow = package.IsCategoryFlow;
-                    order.PackageIsCategoryCall = package.IsCategoryCall;
-                    order.PackageIsCategoryDualSimStandby = package.IsCategoryDualSimStandby;
-                    order.PackageIsCategoryKingCard = package.IsCategoryKingCard;
-                    order.OrderDate = CommonHelper.GetDateTimeInt();
-                    order.PayStatus = 0; //添加时付款状态默认为0：未付款。
-                    order.Quantity = quantity;
-                    order.UnitPrice = package.Price;
-                    order.TotalPrice = package.Price * quantity;
-                    order.Flow = package.Flow * quantity;
-                    order.OrderStatus = 0; //添加时订单状态默认为0：未激活。
-                    order.ExpireDays = package.ExpireDays;
-                    order.RemainingCallMinutes = package.CallMinutes;
-                    order.PackageFeatures = package.Features;
-                    order.PackageDetails = package.Details;
-                    order.PackageIsSupport4G = package.IsSupport4G;
-                    order.PackageIsApn = package.IsApn;
-                    order.PackageApnName = package.ApnName;
-                    //order.PayUserAmount = PayUserAmount;
-                    //order.IsPayUserAmount = IsPayUserAmount;
-                    order.PaymentMethod = PaymentMethod;
-                    db.UT_Order.Add(order);
-
-                    if (await db.SaveChangesAsync() > 0)
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
+                }
+                //轻松服务类型的套餐不在此方法处理
+                if (package.Category == CategoryType.Relaxed)
+                {
+                    if (string.IsNullOrEmpty(deviceTel))
                     {
-                        //返回区域名称
-                        if (package.UT_Country != null)
-                        {
-                            return new KeyValuePair<string, KeyValuePair<int, UT_Order>>(package.UT_Country.CountryName, new KeyValuePair<int, UT_Order>(1, order));
-                        }
-                        else
-                        {
-                            return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(1, order));
-                        }
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
                     }
                 }
-                return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
+
+                return await Add(db, userId, package, quantity, PaymentMethod, deviceTel, MonthPackageFee);
             }
+        }
+
+        /// <summary>
+        /// 添加免费领取订单
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="orderName">订单名</param>
+        /// <param name="packageId">套餐ID</param>
+        /// <param name="quantity">数量</param>
+        /// <param name="unitPrice">单价</param>
+        /// <param name="orderDate">订单日期</param>
+        /// <param name="PaymentMethod">支付方式</param>
+        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4不是免费套餐/5已 免费领取 此套餐</returns>
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddReceiveOrder(Guid userId, Guid packageId)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                UT_Package package = await db.UT_Package.Include(x => x.UT_Country).SingleOrDefaultAsync(x => x.ID == packageId);
+                //套餐被锁定
+                if (package.Lock4 == 1)
+                {
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(2, null));
+                }
+                //如果不是免费套餐
+                if (package.Category != CategoryType.FreeReceive)
+                {
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(4, null));
+                }
+                //已 免费领取 此套餐
+                if (UserReceiveService.CheckHaveed(db, userId, packageId))
+                {
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(5, null));
+                }
+                return await Add(db, userId, package, 1, PaymentMethodType.Gift, null, 0);
+            }
+        }
+
+        /// <summary>
+        /// 添加订单
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="orderName">订单名</param>
+        /// <param name="packageId">套餐ID</param>
+        /// <param name="quantity">数量</param>
+        /// <param name="unitPrice">单价</param>
+        /// <param name="orderDate">订单日期</param>
+        /// <param name="PaymentMethod">支付方式</param>
+        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐</returns>
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddRelaxed(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                UT_Package package = await db.UT_Package.Include(x => x.UT_Country).SingleOrDefaultAsync(x => x.ID == packageId);
+                //套餐被锁定
+                if (package.Lock4 == 1)
+                {
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(2, null));
+                }
+                //如果不是免费套餐
+                if (package.Category != CategoryType.Relaxed)
+                {
+                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(4, null));
+                }
+
+                return await Add(db, userId, package, quantity, PaymentMethod, deviceTel, MonthPackageFee);
+            }
+        }
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="userId"></param>
+        /// <param name="package"></param>
+        /// <param name="quantity"></param>
+        /// <param name="PaymentMethod"></param>
+        /// <param name="deviceTel"></param>
+        /// <param name="MonthPackageFee"></param>
+        /// <returns></returns>
+        private static async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> Add(UnitoysEntities db, Guid userId, UT_Package package, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee)
+        {
+            if (package != null)
+            {
+                //1. 先添加Order实体。
+                UT_Order order = new UT_Order();
+                order.UserId = userId;
+                order.OrderNum = String.Format("8022{0}", DateTime.Now.ToString("yyMMddHHmmssffff"));
+                order.PackageId = package.ID;
+                order.PackageName = package.PackageName;
+                order.PackageCategory = package.Category;
+                order.PackageIsCategoryFlow = package.IsCategoryFlow;
+                order.PackageIsCategoryCall = package.IsCategoryCall;
+                order.PackageIsCategoryDualSimStandby = package.IsCategoryDualSimStandby;
+                order.PackageIsCategoryKingCard = package.IsCategoryKingCard;
+                order.OrderDate = CommonHelper.GetDateTimeInt();
+                order.PayStatus = 0; //添加时付款状态默认为0：未付款。
+                order.Quantity = quantity;
+                order.UnitPrice = package.Price;
+                order.TotalPrice = package.Price * quantity;
+                order.Flow = package.Flow * quantity;
+                order.OrderStatus = 0; //添加时订单状态默认为0：未激活。
+                order.ExpireDays = package.ExpireDays;
+                order.RemainingCallMinutes = package.CallMinutes;
+                order.PackageFeatures = package.Features;
+                order.PackageDetails = package.Details;
+                order.PackageIsSupport4G = package.IsSupport4G;
+                order.PackageIsApn = package.IsApn;
+                order.PackageApnName = package.ApnName;
+                //order.PayUserAmount = PayUserAmount;
+                //order.IsPayUserAmount = IsPayUserAmount;
+                order.PaymentMethod = PaymentMethod;
+
+                //免费领取
+                if (package.Category == CategoryType.FreeReceive)
+                {
+                    UT_UserReceive userReceice = new UT_UserReceive()
+                    {
+                        UserId = userId,
+                        OrderId = order.ID,
+                        PackageId = package.ID,
+                        CreateDate = CommonHelper.GetDateTimeInt()
+                    };
+                    db.UT_UserReceive.Add(userReceice);
+                    order.ActivationDate = CommonHelper.GetDateTimeInt();
+                    order.OrderStatus = OrderStatusType.Used;
+                    order.PayStatus = PayStatusType.YesPayment;
+                    order.EffectiveDateDesc = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                }
+
+                //轻松服务
+                if (package.Category == CategoryType.Relaxed)
+                {
+                    order.UT_OrderDeviceTel = new UT_OrderDeviceTel()
+                    {
+                        MonthPackageFee = MonthPackageFee,
+                        Tel = deviceTel,
+                    };
+                }
+                db.UT_Order.Add(order);
+
+                if (await db.SaveChangesAsync() > 0)
+                {
+                    //返回区域名称
+                    if (package.UT_Country != null)
+                    {
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>(package.UT_Country.CountryName, new KeyValuePair<int, UT_Order>(1, order));
+                    }
+                    else
+                    {
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(1, order));
+                    }
+                }
+            }
+            return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
         }
 
         /// <summary>

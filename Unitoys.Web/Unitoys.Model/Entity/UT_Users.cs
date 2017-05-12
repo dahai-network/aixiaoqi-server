@@ -36,6 +36,8 @@ namespace Unitoys.Model
             this.UT_OrderByZCConfirmation = new HashSet<UT_OrderByZCConfirmation>();
             this.UT_OrderByZCSelectionNumber = new HashSet<UT_OrderByZCSelectionNumber>();
             this.UT_BlackList = new HashSet<UT_BlackList>();
+            this.UT_UserReceive = new HashSet<UT_UserReceive>();
+            this.UT_UserDeviceTel = new HashSet<UT_UserDeviceTel>();
         }
         /// <summary>
         /// 手机号码（需要短信验证）
@@ -135,6 +137,8 @@ namespace Unitoys.Model
         public virtual ICollection<UT_GiftCard> UT_GiftCard { get; set; }
         public virtual ICollection<UT_EjoinDevSlot> UT_EjoinDevSlot { get; set; }
         public virtual ICollection<UT_BlackList> UT_BlackList { get; set; }
+        public virtual ICollection<UT_UserReceive> UT_UserReceive { get; set; }
+        public virtual ICollection<UT_UserDeviceTel> UT_UserDeviceTel { get; set; }
 
     }
 }

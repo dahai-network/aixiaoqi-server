@@ -74,7 +74,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                IsCanBuyMultiple = i.IsCanBuyMultiple,
                                IsSupport4G = i.IsSupport4G,
                                IsApn = i.IsApn,
-                               ApnName = i.ApnName
+                               ApnName = i.ApnName,
+                               OriginalPrice = i.OriginalPrice,
+                               PicHaveed = i.PicHaveed,
+                               DescTitlePic = i.DescTitlePic,
+                               DescPic = i.DescPic,
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -93,16 +97,16 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "套餐标题不能为空！";
             }
-            else if (model.Price <= 0)
-            {
-                result.Success = false;
-                result.Msg = "价格错误！";
-            }
-            else if (model.Flow < 0)
-            {
-                result.Success = false;
-                result.Msg = "套餐流量错误！";
-            }
+            //else if (model.Price <= 0)
+            //{
+            //    result.Success = false;
+            //    result.Msg = "价格错误！";
+            //}
+            //else if (model.Flow < 0)
+            //{
+            //    result.Success = false;
+            //    result.Msg = "套餐流量错误！";
+            //}
             //else if (string.IsNullOrEmpty(model.Pic))
             //{
             //    result.Success = false;
@@ -145,6 +149,10 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.IsSupport4G = model.IsSupport4G;
                 package.IsApn = model.IsApn;
                 package.ApnName = string.IsNullOrEmpty(model.ApnName) ? "" : model.ApnName;
+                package.OriginalPrice = model.OriginalPrice;
+                package.PicHaveed = model.PicHaveed ?? "";
+                package.DescTitlePic = model.DescTitlePic ?? "";
+                package.DescPic = model.DescPic ?? "";
 
                 if (await _packageService.InsertAsync(package))
                 {
@@ -176,16 +184,16 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "套餐标题不能为空！";
             }
-            else if (model.Price <= 0)
-            {
-                result.Success = false;
-                result.Msg = "价格错误！";
-            }
-            else if (model.Flow < 0)
-            {
-                result.Success = false;
-                result.Msg = "套餐流量错误！";
-            }
+            //else if (model.Price <= 0)
+            //{
+            //    result.Success = false;
+            //    result.Msg = "价格错误！";
+            //}
+            //else if (model.Flow < 0)
+            //{
+            //    result.Success = false;
+            //    result.Msg = "套餐流量错误！";
+            //}
             //else if (string.IsNullOrEmpty(model.Pic))
             //{
             //    result.Success = false;
@@ -229,7 +237,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.IsSupport4G = model.IsSupport4G;
                     package.IsApn = model.IsApn;
                     package.ApnName = string.IsNullOrEmpty(model.ApnName) ? "" : model.ApnName;
-
+                    package.OriginalPrice = model.OriginalPrice;
+                    package.PicHaveed = model.PicHaveed ?? "";
+                    package.DescTitlePic = model.DescTitlePic ?? "";
+                    package.DescPic = model.DescPic ?? "";
+                    
                     if (await _packageService.UpdateAsync(package))
                     {
                         result.Success = true;

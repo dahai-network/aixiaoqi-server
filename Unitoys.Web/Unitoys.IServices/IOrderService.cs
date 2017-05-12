@@ -20,7 +20,8 @@ namespace Unitoys.IServices
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
         /// <returns>0失败/1成功/2套餐被锁定</returns>
-        Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod);
+        Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel = null, decimal MonthPackageFee = 0);
+        Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddReceiveOrder(Guid userId, Guid packageId);
         /// <summary>
         /// 通过用户余额支付套餐订单
         /// </summary>

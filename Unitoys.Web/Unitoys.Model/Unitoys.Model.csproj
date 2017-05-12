@@ -60,6 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\PushContentConfiguration.cs" />
+    <Compile Include="Configuration\OrderDeviceTelConfiguration.cs" />
+    <Compile Include="Configuration\UserReceiveConfiguration.cs" />
+    <Compile Include="Configuration\UserDeviceTelConfiguration.cs" />
     <Compile Include="Configuration\GlobalContentConfiguration.cs" />
     <Compile Include="Configuration\NewsConfiguration.cs" />
     <Compile Include="Configuration\BlackListConfiguration.cs" />
@@ -108,6 +112,10 @@
     <Compile Include="Configuration\PackageConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
+    <Compile Include="Entity\UT_PushContent.cs" />
+    <Compile Include="Entity\UT_OrderDeviceTel.cs" />
+    <Compile Include="Entity\UT_UserReceive.cs" />
+    <Compile Include="Entity\UT_UserDeviceTel.cs" />
     <Compile Include="Entity\UT_News.cs" />
     <Compile Include="Entity\UT_GlobalContent.cs" />
     <Compile Include="Entity\UT_EjoinDev.cs" />

@@ -11,6 +11,10 @@ namespace Unitoys.Model
     /// </summary>
     public class UT_UserBill : UT_Entity
     {
+        public UT_UserBill()
+        {
+            this.UT_UserBillDetail = new HashSet<UT_UserBill>();
+        }
         /// <summary>
         /// 用户ID
         /// </summary>
@@ -32,11 +36,11 @@ namespace Unitoys.Model
         /// </summary>
         public int CreateDate { get; set; }
         /// <summary>
-        /// 账单的类型：0:支出、1:收入
+        /// 账单的类型：0:支出、1:收入、2:服务
         /// </summary>
         public int BillType { get; set; }
         /// <summary>
-        /// 消费的类型：0:充值、1:在线支付、2:余额支付、3:赠送、4:话费、5:取消订单、6:订单余额支付、7:订单退款(订单第三方支付成功,用户余额不足扣除）
+        /// 消费的类型：0:充值、1:在线支付、2:余额支付、3:赠送、4:话费、5:取消订单、6:订单余额支付、7:订单退款(订单第三方支付成功,用户余额不足扣除）、8:服务套餐
         /// </summary>
         public int PayType { get; set; }
         /// <summary>
@@ -44,5 +48,12 @@ namespace Unitoys.Model
         /// </summary>
         public string Descr { get; set; }
         //public string Remark { get; set; }
+        public Guid? ParentID { get; set; }
+        /// <summary>
+        /// 有详细资料
+        /// </summary>
+        public bool IsHadDetail { get; set; }
+        public virtual ICollection<UT_UserBill> UT_UserBillDetail { get; set; }
+        public virtual UT_UserBill UT_UserBillDetailParent { get; set; }
     }
 }

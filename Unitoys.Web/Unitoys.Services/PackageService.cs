@@ -71,5 +71,15 @@ namespace Unitoys.Services
                 return await db.UT_Package.Include(x => x.UT_Country).FirstOrDefaultAsync(x => x.ID == ID);
             }
         }
+
+        //public async Task<KeyValuePair<int, List<UT_Package>>> GetRelaxed(Guid userId)
+        //{
+        //    using (UnitoysEntities db = new UnitoysEntities())
+        //    {
+        //        //return await db.UT_UserReceive.Where(x => x.UserId == userId);
+        //        //return await db.UT_Package.Where(x => x.Category == CategoryType.Relaxed || x.Category == CategoryType.FreeReceive);
+
+        //    }
+        //}
     }
 }

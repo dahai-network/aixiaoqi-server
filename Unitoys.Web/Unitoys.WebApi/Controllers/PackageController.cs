@@ -15,10 +15,12 @@ namespace Unitoys.WebApi.Controllers
     public class PackageController : ApiController
     {
         private IPackageService _packageService;
+        private IUserReceiveService _userReceiveService;
 
-        public PackageController(IPackageService packageService)
+        public PackageController(IPackageService packageService, IUserReceiveService userReceiveService)
         {
             this._packageService = packageService;
+            this._userReceiveService = userReceiveService;
         }
 
         /// <summary>
@@ -141,9 +143,37 @@ namespace Unitoys.WebApi.Controllers
                            IsSupport4G = packageResult.IsSupport4G,
                            IsApn = packageResult.IsApn,
                            ApnName = packageResult.ApnName,
+                           DescTitlePic = packageResult.DescTitlePic,
+                           DescPic = packageResult.DescPic,
+                           OriginalPrice = packageResult.OriginalPrice,
                        };
             return Ok(new { status = 1, data = new { list = data } });
         }
+
+        /// <summary>
+        /// 获取轻松服务
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> GetRelaxed()
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+            Guid userid = currentUser.ID;
+
+            var packageResult = await _packageService.GetEntitiesAsync(x => x.Category == CategoryType.FreeReceive || x.Category == CategoryType.Relaxed);
+
+            var data = from i in packageResult.OrderByDescending(x => x.DisplayOrder)
+                       select new
+                       {
+                           PackageId = i.ID,
+                           PackageName = i.PackageName,
+                           PicHaveed = i.PicHaveed.GetPackageCompleteUrl(),//已领图片
+                           Pic = i.Pic.GetPackageCompleteUrl(),
+                           Haveed = _userReceiveService.Haveed(userid, i.ID),//是否已领取
+                           Category=((int)i.Category).ToString()
+                       };
+            return Ok(new { status = 1, data = new { totalRows = packageResult.Count(), list = data } });
+        }
+
 
         #region 获取查询的Expression表达式
         /// <summary>

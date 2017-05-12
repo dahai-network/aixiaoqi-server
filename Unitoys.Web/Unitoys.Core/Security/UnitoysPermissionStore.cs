@@ -307,6 +307,15 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_GlobalContent = "Can_Delete_GlobalContent";
 
         #endregion
+
+        #region PushContent
+
+        public const string Can_Add_PushContent = "Can_Add_PushContent";
+        public const string Can_View_PushContent = "Can_View_PushContent";
+        public const string Can_Modify_PushContent = "Can_Modify_PushContent";
+        public const string Can_Delete_PushContent = "Can_Delete_PushContent";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -471,15 +480,20 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_BlackList = new Tuple<string, string, int>("Can_Modify_BlackList", "修改用户黑名单", 31);
                 Tuple<string, string, int> Can_Delete_BlackList = new Tuple<string, string, int>("Can_Delete_BlackList", "删除用户黑名单", 31);
 
-                Tuple<string, string, int> Can_Add_News = new Tuple<string, string, int>("Can_Add_News", "添加新闻", 31);
-                Tuple<string, string, int> Can_View_News = new Tuple<string, string, int>("Can_View_News", "查看新闻", 31);
-                Tuple<string, string, int> Can_Modify_News = new Tuple<string, string, int>("Can_Modify_News", "修改新闻", 31);
-                Tuple<string, string, int> Can_Delete_News = new Tuple<string, string, int>("Can_Delete_News", "删除新闻", 31);
+                Tuple<string, string, int> Can_Add_News = new Tuple<string, string, int>("Can_Add_News", "添加新闻", 32);
+                Tuple<string, string, int> Can_View_News = new Tuple<string, string, int>("Can_View_News", "查看新闻", 32);
+                Tuple<string, string, int> Can_Modify_News = new Tuple<string, string, int>("Can_Modify_News", "修改新闻", 32);
+                Tuple<string, string, int> Can_Delete_News = new Tuple<string, string, int>("Can_Delete_News", "删除新闻", 32);
 
-                Tuple<string, string, int> Can_Add_GlobalContent = new Tuple<string, string, int>("Can_Add_GlobalContent", "添加全局内容管理", 31);
-                Tuple<string, string, int> Can_View_GlobalContent = new Tuple<string, string, int>("Can_View_GlobalContent", "查看全局内容管理", 31);
-                Tuple<string, string, int> Can_Modify_GlobalContent = new Tuple<string, string, int>("Can_Modify_GlobalContent", "修改全局内容管理", 31);
-                Tuple<string, string, int> Can_Delete_GlobalContent = new Tuple<string, string, int>("Can_Delete_GlobalContent", "删除全局内容管理", 31);
+                Tuple<string, string, int> Can_Add_GlobalContent = new Tuple<string, string, int>("Can_Add_GlobalContent", "添加全局内容管理", 33);
+                Tuple<string, string, int> Can_View_GlobalContent = new Tuple<string, string, int>("Can_View_GlobalContent", "查看全局内容管理", 33);
+                Tuple<string, string, int> Can_Modify_GlobalContent = new Tuple<string, string, int>("Can_Modify_GlobalContent", "修改全局内容管理", 33);
+                Tuple<string, string, int> Can_Delete_GlobalContent = new Tuple<string, string, int>("Can_Delete_GlobalContent", "删除全局内容管理", 33);
+
+                Tuple<string, string, int> Can_Add_PushContent = new Tuple<string, string, int>("Can_Add_PushContent", "添加推送内容管理", 34);
+                Tuple<string, string, int> Can_View_PushContent = new Tuple<string, string, int>("Can_View_PushContent", "查看推送内容管理", 34);
+                Tuple<string, string, int> Can_Modify_PushContent = new Tuple<string, string, int>("Can_Modify_PushContent", "修改推送内容管理", 34);
+                Tuple<string, string, int> Can_Delete_PushContent = new Tuple<string, string, int>("Can_Delete_PushContent", "删除推送内容管理", 34);
 
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
@@ -645,6 +659,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_GlobalContent);
                 returnList.Add(Can_Modify_GlobalContent);
                 returnList.Add(Can_Delete_GlobalContent);
+
+                returnList.Add(Can_Add_PushContent);
+                returnList.Add(Can_View_PushContent);
+                returnList.Add(Can_Modify_PushContent);
+                returnList.Add(Can_Delete_PushContent);
                 #endregion
 
                 return returnList;

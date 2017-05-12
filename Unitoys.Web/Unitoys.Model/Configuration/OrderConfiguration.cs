@@ -16,6 +16,10 @@ namespace Unitoys.Model
         {
             //订单项1对多
             this.HasMany(t => t.UT_OrderUsage).WithRequired(t => t.UT_Order).HasForeignKey(t => t.OrderId);
+            //用户领取1对1
+            //this.HasOptional(b => b.UT_UserReceive).WithMany().HasForeignKey(b => b.UserReceiveId);
+            //1对1
+            this.HasOptional(b => b.UT_OrderDeviceTel).WithMany().HasForeignKey(b => b.OrderDeviceTelId);
 
             this.Property(t => t.PackageName).HasMaxLength(100).IsRequired();
 

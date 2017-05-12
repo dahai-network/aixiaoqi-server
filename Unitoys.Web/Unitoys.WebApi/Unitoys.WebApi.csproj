@@ -76,6 +76,8 @@
   <ItemGroup>
     <Compile Include="Controllers\ClientApi\PhoneServerByMySqlServices.cs" />
     <Compile Include="Controllers\BlackListController.cs" />
+    <Compile Include="Controllers\UserDeviceTelController.cs" />
+    <Compile Include="Controllers\PushContentController.cs" />
     <Compile Include="Controllers\GiftCardController.cs" />
     <Compile Include="Controllers\ZCSelectionNumberController.cs" />
     <Compile Include="Controllers\OrderByZCController.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Controllers\Util\TranslateController.cs" />
     <Compile Include="Controllers\Util\ESIMController.cs" />
     <Compile Include="Controllers\Util\WeatherController.cs" />
+    <Compile Include="Models\AddUserDeviceTelBindingModel.cs" />
     <Compile Include="Models\ConfigBindingModels.cs" />
     <Compile Include="Models\BlackListBindingModels.cs" />
     <Compile Include="Models\PublicBindingModels.cs" />

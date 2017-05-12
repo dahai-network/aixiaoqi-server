@@ -15,8 +15,10 @@ namespace Unitoys.Model
     {
         public UserBillConfiguration()
         {
+            //订单项1对多
+            this.HasMany(t => t.UT_UserBillDetail).WithOptional(t => t.UT_UserBillDetailParent).HasForeignKey(t => t.ParentID);
 
-            this.Property(t => t.Amount).HasPrecision(13,2).IsRequired();
+            this.Property(t => t.Amount).HasPrecision(13, 2).IsRequired();
 
             this.Property(t => t.UserAmount).HasPrecision(13, 2).IsRequired();
 

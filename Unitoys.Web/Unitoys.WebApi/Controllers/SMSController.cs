@@ -208,7 +208,6 @@ namespace Unitoys.WebApi.Controllers
 
             if (entity.Status != SMSStatusType.Error)
             {
-
                 if (entity.Status == SMSStatusType.Success)
                 {
                     return Ok(new StatusCodeRes(StatusCodeType.短信已发送成功));

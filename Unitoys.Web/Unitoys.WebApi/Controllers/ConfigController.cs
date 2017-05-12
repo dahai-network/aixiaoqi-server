@@ -169,7 +169,7 @@ namespace Unitoys.WebApi.Controllers
                        select new
                        {
                            Title = x.Title,
-                           Url = x.Url,
+                           Url = x.Url ?? "",
                            Image = x.Image.GetCompleteUrl(),
                            Price = x.Price,
                        };

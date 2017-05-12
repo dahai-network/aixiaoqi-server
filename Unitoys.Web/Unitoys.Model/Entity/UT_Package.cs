@@ -15,6 +15,7 @@ namespace Unitoys.Model
         public UT_Package()
         {
             this.UT_Order = new HashSet<UT_Order>();
+            this.UT_UserReceive = new HashSet<UT_UserReceive>();
         }
         /// <summary>
         /// 套餐名称
@@ -117,8 +118,26 @@ namespace Unitoys.Model
         /// 是否大王卡类型
         /// </summary>
         public bool IsCategoryKingCard { get; set; }
+        /// <summary>
+        /// 已领图片
+        /// </summary>
+        public string PicHaveed { get; set; }
+        /// <summary>
+        /// 描述标题图
+        /// </summary>
+        public string DescTitlePic { get; set; }
+        /// <summary>
+        /// 描述图
+        /// </summary>
+        public string DescPic { get; set; }
+        /// <summary>
+        /// 原价
+        /// </summary>
+        public decimal OriginalPrice { get; set; }
+
         public virtual ICollection<UT_Order> UT_Order { get; set; }
         public virtual UT_Country UT_Country { get; set; }
+        public virtual ICollection<UT_UserReceive> UT_UserReceive { get; set; }
     }
     public enum CategoryType
     {
@@ -129,6 +148,10 @@ namespace Unitoys.Model
         [Description("大王卡")]
         KingCard = 2,
         [Description("双卡双待")]
-        DualSimStandby = 3
+        DualSimStandby = 3,
+        [Description("免费领取")]
+        FreeReceive = 4,
+        [Description("省心服务")]
+        Relaxed = 5,
     }
 }

@@ -366,12 +366,12 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> GetUserBill(int pageNumber = 1, int pageSize = 10, int billType = -1)
+        public async Task<IHttpActionResult> GetUserBill(int pageNumber = 1, int pageSize = 10, int billType = -1, Guid? ParentID = null)
         {
             var currentUser = WebUtil.GetApiUserSession();
 
             //查询Expression
-            Expression<Func<UT_UserBill, bool>> exp = GetUserBillSearchExpression<UT_UserBill>(currentUser.ID, billType);
+            Expression<Func<UT_UserBill, bool>> exp = GetUserBillSearchExpression<UT_UserBill>(currentUser.ID, billType, ParentID);
 
             var result = _userBillService.GetEntitiesForPagingAsync(pageNumber, pageSize, x => new { x.CreateDate }, "desc", exp);
 
@@ -388,7 +388,8 @@ namespace Unitoys.WebApi.Controllers
                            Descr = i.Descr,
                            PayType = (int)i.PayType + "",
                            PayTips = CommonHelper.PayStatusTips(i.PayType),
-                           CreateDate = i.CreateDate
+                           CreateDate = i.CreateDate,
+                           IsHadDetail = i.IsHadDetail,
                        };
 
             return Ok(new { status = 1, msg = "获取成功！", data = new { totalRows = await totalRows, list = data } });
@@ -453,7 +454,7 @@ namespace Unitoys.WebApi.Controllers
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="queryModel"></param>
         /// <returns></returns>
-        private Expression<Func<TEntity, bool>> GetUserBillSearchExpression<TEntity>(Guid UserId, int billType)
+        private Expression<Func<TEntity, bool>> GetUserBillSearchExpression<TEntity>(Guid UserId, int billType, Guid? ParentID)
         {
             Expression expression = null;
             ParameterExpression parameter = Expression.Parameter(typeof(TEntity), "entity");
@@ -479,6 +480,21 @@ namespace Unitoys.WebApi.Controllers
                     inExpression = Expression.Equal(left, right);
                     searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
                 }
+                if (ParentID.HasValue && ParentID != Guid.Empty)
+                {
+                    left = Expression.Property(parameter, "ParentID");
+                    right = Expression.Constant(ParentID, typeof(Guid?));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+                else
+                {
+                    left = Expression.Property(parameter, "ParentID");
+                    right = Expression.Constant(null, typeof(Guid?));
+                    inExpression = Expression.Equal(left, right);
+                    searchExpression = searchExpression == null ? inExpression : Expression.And(inExpression, searchExpression);
+                }
+
                 expression = expression == null ? searchExpression : Expression.And(expression, searchExpression);
             }
             catch (Exception)

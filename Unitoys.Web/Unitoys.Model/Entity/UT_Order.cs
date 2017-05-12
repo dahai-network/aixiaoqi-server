@@ -143,6 +143,8 @@ namespace Unitoys.Model
         /// 激活时间
         /// </summary>
         public int? ActivationDate { get; set; }
+        public Guid? OrderDeviceTelId { get; set; }
+        //public Guid? UserReceiveId { get; set; }
         /// <summary>
         /// 支付方式
         /// </summary>
@@ -150,10 +152,16 @@ namespace Unitoys.Model
         public virtual UT_Package UT_Package { get; set; }
         public virtual UT_Users UT_Users { get; set; }
         public virtual ICollection<UT_OrderUsage> UT_OrderUsage { get; set; }
+        //public virtual UT_UserReceive UT_UserReceive { get; set; }
+        public virtual UT_OrderDeviceTel UT_OrderDeviceTel { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+        /// <summary>
+        /// 原价
+        /// </summary>
+        public string OriginalPrice { get; set; }
         /// <summary>
         /// 乐观并发
         /// </summary>
