@@ -13,6 +13,11 @@ namespace Unitoys.Services
 {
     public class OrderService : BaseService<UT_Order>, IOrderService
     {
+        private IUserDeviceTelService _userDeviceTelService;
+        public OrderService(IUserDeviceTelService userDeviceTelService)
+        {
+            this._userDeviceTelService = userDeviceTelService;
+        }
         /// <summary>
         /// 添加订单
         /// </summary>
@@ -23,8 +28,8 @@ namespace Unitoys.Services
         /// <param name="unitPrice">单价</param>
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
-        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐</returns>
-        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel = null, decimal MonthPackageFee = 0)
+        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐/6 无有效已验证号码</returns>
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel = null, decimal? MonthPackageFee = 0)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -47,13 +52,19 @@ namespace Unitoys.Services
                 //轻松服务类型的套餐不在此方法处理
                 if (package.Category == CategoryType.Relaxed)
                 {
+                    UT_UserDeviceTel userDeviceTel = await _userDeviceTelService.GetFirst(userId);
+                    if (userDeviceTel == null)
+                    {
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(5, null));
+                    }
+                    deviceTel = userDeviceTel.Tel;
                     if (string.IsNullOrEmpty(deviceTel))
                     {
                         return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
                     }
                 }
 
-                return await Add(db, userId, package, quantity, PaymentMethod, deviceTel, MonthPackageFee);
+                return await Add(db, userId, package, quantity, PaymentMethod, deviceTel, MonthPackageFee ?? 0);
             }
         }
 
@@ -92,36 +103,6 @@ namespace Unitoys.Services
             }
         }
 
-        /// <summary>
-        /// 添加订单
-        /// </summary>
-        /// <param name="userId">用户ID</param>
-        /// <param name="orderName">订单名</param>
-        /// <param name="packageId">套餐ID</param>
-        /// <param name="quantity">数量</param>
-        /// <param name="unitPrice">单价</param>
-        /// <param name="orderDate">订单日期</param>
-        /// <param name="PaymentMethod">支付方式</param>
-        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐</returns>
-        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddRelaxed(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee)
-        {
-            using (UnitoysEntities db = new UnitoysEntities())
-            {
-                UT_Package package = await db.UT_Package.Include(x => x.UT_Country).SingleOrDefaultAsync(x => x.ID == packageId);
-                //套餐被锁定
-                if (package.Lock4 == 1)
-                {
-                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(2, null));
-                }
-                //如果不是免费套餐
-                if (package.Category != CategoryType.Relaxed)
-                {
-                    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(4, null));
-                }
-
-                return await Add(db, userId, package, quantity, PaymentMethod, deviceTel, MonthPackageFee);
-            }
-        }
         /// <summary>
         /// 新增
         /// </summary>
@@ -186,11 +167,13 @@ namespace Unitoys.Services
                 //轻松服务
                 if (package.Category == CategoryType.Relaxed)
                 {
-                    order.UT_OrderDeviceTel = new UT_OrderDeviceTel()
+                    UT_OrderDeviceTel orderDeviceTel = new UT_OrderDeviceTel()
                     {
                         MonthPackageFee = MonthPackageFee,
                         Tel = deviceTel,
+                        OrderId = order.ID,
                     };
+                    db.UT_OrderDeviceTel.Add(orderDeviceTel);
                 }
                 db.UT_Order.Add(order);
 

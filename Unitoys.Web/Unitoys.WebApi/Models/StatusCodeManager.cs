@@ -17,10 +17,15 @@ namespace Unitoys.WebApi
     /// <summary>
     /// 状态吗管理
     /// </summary>
-    public struct StatusCodeRes
+    public class StatusCodeRes
     {
         public StatusCodeType status;
         public string msg;
+        public StatusCodeRes()
+        {
+            status = StatusCodeType.失败;
+            msg = "";
+        }
         public StatusCodeRes(StatusCodeType _status)
         {
             status = _status;
@@ -30,6 +35,16 @@ namespace Unitoys.WebApi
         {
             status = _status;
             msg = _msg;
+        }
+    }
+
+    public class StatusCodeAndDataRes : StatusCodeRes
+    {
+        public dynamic data { get; set; }
+        public StatusCodeAndDataRes(StatusCodeType _status, string _msg, dynamic _data)
+            : base(_status, _msg)
+        {
+            this.data = _data;
         }
     }
 
@@ -129,6 +144,7 @@ namespace Unitoys.WebApi
         数量请在BeginQty至EndQty之间选择 = 1101,
         套餐不可用_请选择其他套餐 = 1103,
         该套餐不允许购买多个 = 1115,
+        无验证通过手机号 = 1116,//省心服务
 
         //套餐激活,激活大王卡套餐
         激活失败_超过最晚激活日期 = 1104,

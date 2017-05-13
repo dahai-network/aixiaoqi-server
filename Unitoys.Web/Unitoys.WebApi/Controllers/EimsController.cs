@@ -27,13 +27,15 @@ namespace Unitoys.WebApi.Controllers
         private IDeviceGoipService _deviceGoipService;
         private IEjoinDevService _ejoinDevService;
         private IEjoinDevSlotService _ejoinDevSlotService;
-        public EimsController(ISMSService smsService, IUserService userService, IDeviceGoipService deviceGoipService, IEjoinDevService ejoinDevService, IEjoinDevSlotService ejoinDevSlotService)
+        private IUserDeviceTelService _userDeviceTelService;
+        public EimsController(ISMSService smsService, IUserService userService, IDeviceGoipService deviceGoipService, IEjoinDevService ejoinDevService, IEjoinDevSlotService ejoinDevSlotService, IUserDeviceTelService userDeviceTelService)
         {
             this._smsService = smsService;
             this._userService = userService;
             this._deviceGoipService = deviceGoipService;
             this._ejoinDevService = ejoinDevService;
             this._ejoinDevSlotService = ejoinDevSlotService;
+            this._userDeviceTelService = userDeviceTelService;
         }
 
         #region 1.SMS
@@ -542,15 +544,6 @@ namespace Unitoys.WebApi.Controllers
             JPushApi j = new JPushApi();
             UT_EjoinDevSlot ejoinDevSlot = null;
 
-#if DEBUG
-            //j.Push_alias_message("aixiaoqi18719053898", "收到10086短信", "SMSReceiveNew", new Dictionary<string, string>()
-            //                    {
-            //                        {"Tel","10086"},
-            //                        {"SMSContent","您当前帐户总余额15.10元,本月可用余额19.45元.中国移动"},
-            //                        {"SMSID","0000"}
-            //                    });
-#endif
-
             ejoinDevSlot = await _ejoinDevSlotService.GetUsedEntityAndUserAsync(model.DevName, Convert.ToInt32(model.Port));
 
             if (ejoinDevSlot == null)
@@ -593,6 +586,43 @@ namespace Unitoys.WebApi.Controllers
             {
                 entity.SMSContent = "此信息格式错误";
                 entity.Status = SMSStatusType.Error;
+            }
+
+            //设备内号码验证:
+            if (fm.IndexOf("10690") == 0 && entity.SMSContent.IndexOf("【爱小器】设备号码验证:") == 0)
+            {
+                string code = entity.SMSContent.Substring(12);
+                var result = await _userDeviceTelService.Confirmed(entity.UserId, entity.IccId, code);
+                switch (result.Key)
+                {
+                    //0失败/1成功/2无此验证码/3验证码过期/4无此验证手机号
+                    case 0:
+                        return Ok(new { status = 0, msg = "失败" });
+                    case 1:
+                        switch (PhoneServerByMySqlServices.SetSip_Buddies_Callerid(ejoinDevSlot.UT_Users.Tel, result.Value))
+                        {
+                            case 0:
+                                LoggerHelper.Error("设备号码验证成功，更新Callerid失败", new Exception("SMSNewReport上出现系统错误"));
+                                return Ok(new { status = 1, msg = "设备号码验证成功，更新Callerid失败" });
+                                break;
+                            case 2:
+                                LoggerHelper.Error("设备号码验证成功，更新Callerid失败异常", new Exception("SMSNewReport上出现系统错误"));
+                                return Ok(new { status = 1, msg = "设备号码验证成功，更新Callerid异常" });
+                                break;
+                            default:
+                                break;
+                        }
+                        return Ok(new { status = 1, msg = "设备号码验证成功" });
+                    case 2:
+                        return Ok(new { status = 0, msg = "无此验证码" });
+                    case 3:
+                        return Ok(new { status = 0, msg = "验证码过期" });
+                    case 4:
+                        return Ok(new { status = 0, msg = "无此验证手机号" });
+                    default:
+                        break;
+                }
+
             }
 
             if (await _smsService.InsertAsync(entity))

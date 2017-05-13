@@ -21,13 +21,15 @@ namespace Unitoys.WebApi.Controllers
         private IPaymentService _paymentService;
         private IUserService _userService;
         private IPackageService _packageService;
+        private IUserDeviceTelService _userDeviceTelService;
 
-        public OrderController(IOrderService orderService, IPaymentService paymentService, IUserService userService, IPackageService packageService)
+        public OrderController(IOrderService orderService, IPaymentService paymentService, IUserService userService, IPackageService packageService, IUserDeviceTelService userDeviceTelService)
         {
             this._orderService = orderService;
             this._paymentService = paymentService;
             this._userService = userService;
             this._packageService = packageService;
+            this._userDeviceTelService = userDeviceTelService;
         }
 
         /// <summary>
@@ -55,7 +57,8 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod);
+
+                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, null, model.MonthPackageFee);
 
                 if (result.Value.Key == 1 && result.Value.Value != null)
                 {
@@ -96,6 +99,9 @@ namespace Unitoys.WebApi.Controllers
                             break;
                         case 3:
                             return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "该套餐不允许购买多个"));
+                            break;
+                        case 6:
+                            return Ok(new StatusCodeRes(StatusCodeType.无验证通过手机号, "无验证通过手机号"));
                             break;
                         default:
                             return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
@@ -114,79 +120,6 @@ namespace Unitoys.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         public async Task<IHttpActionResult> AddReceive([FromBody]AddReceiveBindingModel model)
-        {
-            var currentUser = WebUtil.GetApiUserSession();
-            //System.Web.Http.ModelBinding.DefaultActionValueBinder
-            if (model.PackageID == Guid.Empty)
-            {
-                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "套餐ID不能为空"));
-            }
-            else
-            {
-                var result = await _orderService.AddReceiveOrder(currentUser.ID, model.PackageID);
-
-                if (result.Value.Key == 1 && result.Value.Value != null)
-                {
-                    var order = result.Value.Value;
-                    var resultModel = new
-                    {
-                        OrderID = order.ID,
-                        OrderNum = order.OrderNum,
-                        OrderDate = order.OrderDate.ToString(),
-                        PackageId = order.PackageId,
-                        PackageName = order.PackageName,
-                        Quantity = order.Quantity.ToString(),
-                        UnitPrice = order.UnitPrice,
-                        TotalPrice = order.TotalPrice,
-                        ExpireDays = GetExpireDaysDescr(order),
-                        Flow = order.Flow + "",
-                        RemainingCallMinutes = order.RemainingCallMinutes + "",
-                        PaymentMethod = (int)order.PaymentMethod + "",
-                        PackageCategory = order.PackageCategory,
-                        PackageIsCategoryFlow = order.PackageIsCategoryFlow,
-                        PackageIsSupport4G = order.PackageIsSupport4G,
-                        ExpireDaysInt = (order.ExpireDays * order.Quantity).ToString(),
-                        CountryName = result.Key,
-                        PackageIsApn = order.PackageIsApn,
-                        PackageApnName = order.PackageApnName,
-                    };
-                    return Ok(new { status = 1, msg = "订单创建成功！", data = new { order = resultModel } });
-                }
-                else
-                {
-                    switch (result.Value.Key)
-                    {
-                        case 1:
-                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
-                            break;
-                        case 2:
-                            return Ok(new StatusCodeRes(StatusCodeType.套餐不可用_请选择其他套餐, "套餐不可用，请选择其他套餐"));
-                            break;
-                        case 3:
-                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "该套餐不允许购买多个"));
-                            break;
-                        case 5:
-                            return Ok(new StatusCodeRes(StatusCodeType.该套餐不允许购买多个, "已领取此套餐"));
-                            break;
-                        case 4:
-                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
-                            break;
-                        default:
-                            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
-                            break;
-                    }
-                }
-            }
-            return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
-        }
-
-        /// <summary>
-        /// 创建省心服务订单
-        /// </summary>
-        /// <param name="queryModel"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IHttpActionResult> AddDeviceTel([FromBody]AddReceiveBindingModel model)
         {
             var currentUser = WebUtil.GetApiUserSession();
             //System.Web.Http.ModelBinding.DefaultActionValueBinder
@@ -365,7 +298,7 @@ namespace Unitoys.WebApi.Controllers
         {
             if (i.OrderStatus == OrderStatusType.Unactivated)
             {
-                return "有效天数：" + (i.ExpireDays * i.Quantity).ToString() + "天";
+                return "有效天数：" + (i.ExpireDays * i.Quantity).ToString() + (i.PackageCategory == CategoryType.Relaxed ? "月" : "天");
             }
             else if (i.OrderStatus == OrderStatusType.Cancel)
             {
@@ -375,10 +308,18 @@ namespace Unitoys.WebApi.Controllers
             {
                 if (!i.EffectiveDateDesc.HasValue)
                 {
+                    if (i.PackageCategory == CategoryType.Relaxed)
+                    {
+                        return string.Format("有效期：{0} 到 {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddMonths(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
+                    }
                     return string.Format("有效期：{0} 到 {1}", CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).ToString("yyyy-MM-dd"), CommonHelper.GetTime(i.EffectiveDate.Value.ToString()).AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
                 }
                 else
                 {
+                    if (i.PackageCategory == CategoryType.Relaxed)
+                    {
+                        return string.Format("有效期：{0} 到 {1}", i.EffectiveDateDesc.Value.ToString("yyyy-MM-dd"), i.EffectiveDateDesc.Value.AddMonths(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
+                    }
                     return string.Format("有效期：{0} 到 {1}", i.EffectiveDateDesc.Value.ToString("yyyy-MM-dd"), i.EffectiveDateDesc.Value.AddDays(i.ExpireDays * i.Quantity).ToString("yyyy-MM-dd"));
                 }
             }

@@ -237,16 +237,6 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> OTA([FromUri]DeviceBraceletOTABindingModels model)
         {
-            //switch (await UpdateVersion(Version + ""))
-            //{
-            //    case 0:
-            //        return Ok(new StatusCodeRes(StatusCodeType.失败, "更新失败"));
-            //        break;
-            //    //case 2:
-            //    //    return Ok(new StatusCodeRes(StatusCodeType.用户未绑定设备, "未绑定设备"));
-            //    //    break;
-            //}
-
             if (!model.DeviceType.HasValue || model.DeviceType.Value == Unitoys.Model.DeviceType.Bracelet)
             {
                 if (model.Version < Convert.ToDouble(UTConfig.DeviceBraceletOTAConfigInfo.Version))

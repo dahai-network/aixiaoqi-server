@@ -52,10 +52,51 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var model = await db.UT_UserDeviceTel.FirstOrDefaultAsync(x => x.UserId == userId && x.ICCID == ICCID && x.IsConfirmed == true);
-                if (model == null)
+                var entity = await db.UT_UserDeviceTel.FirstOrDefaultAsync(x => x.UserId == userId && x.ICCID == ICCID && x.IsConfirmed == true);
+                if (entity == null)
                     return new KeyValuePair<bool, string>(false, "");
-                return new KeyValuePair<bool, string>(true, model.Tel);
+
+                entity.UpdateDate = Core.CommonHelper.GetDateTimeInt();
+                db.UT_UserDeviceTel.Attach(entity);
+                db.Entry<UT_UserDeviceTel>(entity).State = EntityState.Modified;
+
+                return new KeyValuePair<bool, string>(true, entity.Tel);
+            }
+        }
+
+        /// <summary>
+        /// 验证设备内号码
+        /// </summary>
+        /// <param name="userId">用户</param>
+        /// <param name="tel">设备内号码</param>
+        /// <param name="ICCID">ICCID</param>
+        /// <param name="code">验证码</param>
+        /// <returns>
+        /// key：0失败/1成功/2无此验证码/3验证码过期/4无此验证手机号
+        /// value：设备内号码
+        /// </returns>
+        public async Task<KeyValuePair<int, string>> Confirmed(Guid userId, string ICCID, string code)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                UT_SMSConfirmation smsConfirmation = await db.UT_SMSConfirmation.OrderByDescending(x => x.CreateDate).FirstOrDefaultAsync(x => x.Code == code && x.Type == 4 && !x.IsConfirmed);
+                if (smsConfirmation == null)
+                    return new KeyValuePair<int, string>(2, "");
+                if (DateTime.Now > smsConfirmation.ExpireDate)
+                {
+                    //验证码过期
+                    return new KeyValuePair<int, string>(3, "");
+                }
+
+                var entity = await db.UT_UserDeviceTel.FirstOrDefaultAsync(x => x.Tel == smsConfirmation.Tel && x.ICCID == ICCID && x.UserId == userId);
+                if (entity == null)
+                    return new KeyValuePair<int, string>(4, "");
+                entity.IsConfirmed = true;
+
+                db.UT_UserDeviceTel.Attach(entity);
+                db.Entry<UT_UserDeviceTel>(entity).State = EntityState.Modified;
+
+                return await db.SaveChangesAsync() > 0 ? new KeyValuePair<int, string>(1, entity.Tel) : new KeyValuePair<int, string>(0, ""); ;
             }
         }
     }

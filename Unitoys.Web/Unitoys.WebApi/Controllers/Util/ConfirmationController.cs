@@ -34,31 +34,45 @@ namespace Unitoys.WebApi.Controllers.Util
         [NoLogin]
         public async Task<IHttpActionResult> SendSMS([FromBody]SendSMSBindingModel model)
         {
-            StatusCodeRes errorMsg = new StatusCodeRes();
-            DateTime dtNow = DateTime.Now;
             if (!ValidateHelper.IsMobile(model.ToNum))
             {
-                errorMsg = new StatusCodeRes(StatusCodeType.手机号码格式不正确);
+                return Ok(new StatusCodeRes(StatusCodeType.手机号码格式不正确));
             }
             else if (model.Type != 1 && model.Type != 2 && model.Type != 3)
             {
-                errorMsg = new StatusCodeRes(StatusCodeType.验证类型错误);
+                return Ok(new StatusCodeRes(StatusCodeType.验证类型错误));
             }
             else if (model.Type == 1 && _userService.CheckTelExist(model.ToNum))
             {
-                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码已注册2, "您输入的手机号码已注册");
+                return Ok(new StatusCodeRes(StatusCodeType.您输入的手机号码已注册2, "您输入的手机号码已注册"));
             }
             else if (model.Type == 2 && !_userService.CheckTelExist(model.ToNum))
             {
-                errorMsg = new StatusCodeRes(StatusCodeType.您输入的手机号码未注册);
+                return Ok(new StatusCodeRes(StatusCodeType.您输入的手机号码未注册));
             }
-            else if (dicSendSMSTime.ContainsKey(model.ToNum) &&
-                (dtNow - dicSendSMSTime[model.ToNum]).TotalSeconds <= 60)
+
+            var result = await SendSMSConfirmation(model.ToNum, model.Type);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 发送验证短信
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<StatusCodeRes> SendSMSConfirmation(string toNum, int type)
+        {
+            DateTime dtNow = DateTime.Now;
+            StatusCodeRes errorMsg = new StatusCodeRes();
+
+            if (dicSendSMSTime.ContainsKey(toNum) &&
+                (dtNow - dicSendSMSTime[toNum]).TotalSeconds <= 60)
             {
-                int tLeft = Convert.ToInt32(60 - (dtNow - dicSendSMSTime[model.ToNum]).TotalSeconds);
+                int tLeft = Convert.ToInt32(60 - (dtNow - dicSendSMSTime[toNum]).TotalSeconds);
                 string msg = string.Format("一分钟内不能再次发送,{0}秒以后可以再次发送", tLeft);
-                //errorMsg = new StatusCodeRes(StatusCodeType.一分钟内不能再次发送_x秒以后可以再次发送);
-                return Ok(new { status = StatusCodeType.一分钟内不能再次发送_RemainingSeconds秒以后可以再次发送, msg = msg, data = new { RemainingSeconds = tLeft + "" } });
+
+                errorMsg = new StatusCodeAndDataRes(StatusCodeType.一分钟内不能再次发送_RemainingSeconds秒以后可以再次发送, msg, new { RemainingSeconds = tLeft + "" });
+                //return Ok(new { status = StatusCodeType.一分钟内不能再次发送_RemainingSeconds秒以后可以再次发送, msg = msg, data = new { RemainingSeconds = tLeft + "" } });
             }
             else
             {
@@ -68,34 +82,34 @@ namespace Unitoys.WebApi.Controllers.Util
                 string code = random.Next(1000, 10000).ToString();
 
                 //2. 判断是否发送短信成功。
-                var rsp = await WebUtil.SendSMSAsync(model.ToNum, code, model.Type);
+                var rsp = await WebUtil.SendSMSAsync(toNum, code, type);
                 if (rsp.code == "0")
                 {
                     //3. 插入验证码记录。
                     UT_SMSConfirmation smsConfirmation = new UT_SMSConfirmation()
-                     {
-                         Tel = model.ToNum,
-                         Code = code,
-                         CreateDate = DateTime.Now,
-                         ExpireDate = DateTime.Now.AddMinutes(10), //过期时间默认为10分钟.
-                         Type = model.Type,
-                         IsConfirmed = false //是否已经验证默认为否.
-                     };
+                    {
+                        Tel = toNum,
+                        Code = code,
+                        CreateDate = DateTime.Now,
+                        ExpireDate = DateTime.Now.AddMinutes(10), //过期时间默认为10分钟.
+                        Type = type,
+                        IsConfirmed = false //是否已经验证默认为否.
+                    };
 
-                    //4.写入此次短信发送时间
+                    //3.写入此次短信发送时间
                     //建议一段时间后清理一次此集合，可使用缓存依赖24小时过期回调来处理
-                    dicSendSMSTime[model.ToNum] = DateTime.Now;
+                    dicSendSMSTime[toNum] = DateTime.Now;
 
                     if (await _smsConfirmationService.InsertAsync(smsConfirmation))
                     {
-                        return Ok(new { status = 1, msg = "发送成功" });
+                        //return Ok(new { status = 1, msg = "发送成功" });
+                        errorMsg = new StatusCodeRes(StatusCodeType.成功, "发送成功");
                     }
                     else
                     {
                         LoggerHelper.Error("发送短信接口错误（短信已发送，保存短信记录到数据库时出错！）");
                         errorMsg = new StatusCodeRes(StatusCodeType.短信服务器异常_请联系客服人员);
                     }
-
                 }
                 else if (rsp.code == "15")
                 {
@@ -105,9 +119,8 @@ namespace Unitoys.WebApi.Controllers.Util
                 {
                     errorMsg = new StatusCodeRes(StatusCodeType.阿里云短信调用失败) { msg = rsp.msg };
                 }
-
             }
-            return Ok(errorMsg);
+            return errorMsg;
         }
     }
 }

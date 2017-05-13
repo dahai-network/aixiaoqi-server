@@ -33,7 +33,33 @@ namespace Unitoys.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                LoggerHelper.Error(string.Format("SetSip_Buddies失败，参数，userTel:{0}", userTel), ex);
+                LoggerHelper.Error(string.Format("SetSip_Buddies失败异常，参数，userTel:{0}", userTel), ex);
+                return 2;
+            }
+        }
+
+        /// <summary>
+        /// 更新 Sip Buddies 的 Callerid
+        /// </summary>
+        /// <param name="userTel">用户手机号</param>
+        /// <param name="callerid">Callerid</param>
+        /// <returns>0失败1成功2系统异常</returns>
+        public static int SetSip_Buddies_Callerid(string userTel, string callerid)
+        {
+            try
+            {
+                var result = MySqlDBHelper.ExecuteNonQuery(string.Format(@"update sip_buddies set callerid='{1}' where NAME='{0}'", userTel, callerid));
+
+                if (result <= 0)
+                {
+                    LoggerHelper.Error(string.Format("SetSip_Buddies失败，参数，userTel:{0}", userTel));
+                }
+                //result > 1//代表删除后新增
+                return result > 0 ? 1 : 0;
+            }
+            catch (Exception ex)
+            {
+                LoggerHelper.Error(string.Format("SetSip_Buddies失败异常，参数，userTel:{0}", userTel), ex);
                 return 2;
             }
         }

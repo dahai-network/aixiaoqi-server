@@ -23,7 +23,7 @@ namespace Unitoys.WebApi.Models
         /// <summary>
         /// 月套餐费
         /// </summary>
-        public decimal MonthPackageFee { get; set; }
+        public decimal? MonthPackageFee { get; set; }
 
     }
     public class AddReceiveBindingModel

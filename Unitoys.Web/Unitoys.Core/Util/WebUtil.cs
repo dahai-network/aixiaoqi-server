@@ -305,7 +305,6 @@ namespace Unitoys.Core
                 SmsFreeSignName = "爱小器";
                 SmsTemplateCode = "SMS_13215895";
                 SmsParam = "{\"code\":\"" + code + "\",\"product\":\"" + "爱小器" + "\"}";
-
             }
             else if (type == 2)
             {
@@ -316,9 +315,16 @@ namespace Unitoys.Core
             }
             else if (type == 3)
             {
-                //找回密码
+                //众筹订单号码验证
                 SmsFreeSignName = "爱小器";
                 SmsTemplateCode = "SMS_31695052";
+                SmsParam = "{\"code\":\"" + code + "\"}";
+            }
+            else if (type == 4)
+            {
+                //设备号码验证
+                SmsFreeSignName = "爱小器";
+                SmsTemplateCode = "SMS_67115138";
                 SmsParam = "{\"code\":\"" + code + "\"}";
             }
             ITopClient client = new DefaultTopClient(requestUri, appkey, secret);
