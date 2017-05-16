@@ -60,6 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\PackageAttributeConfiguration.cs" />
+    <Compile Include="Configuration\AttributeValueConfiguration.cs" />
+    <Compile Include="Configuration\ProductAttributeConfiguration.cs" />
+    <Compile Include="Configuration\AttributeConfiguration.cs" />
     <Compile Include="Configuration\PushContentConfiguration.cs" />
     <Compile Include="Configuration\OrderDeviceTelConfiguration.cs" />
     <Compile Include="Configuration\UserReceiveConfiguration.cs" />
@@ -112,6 +116,10 @@
     <Compile Include="Configuration\PackageConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
+    <Compile Include="Entity\UT_PackageAttribute.cs" />
+    <Compile Include="Entity\UT_ProductAttribute.cs" />
+    <Compile Include="Entity\UT_AttributeValue.cs" />
+    <Compile Include="Entity\UT_Attribute.cs" />
     <Compile Include="Entity\UT_PushContent.cs" />
     <Compile Include="Entity\UT_OrderDeviceTel.cs" />
     <Compile Include="Entity\UT_UserReceive.cs" />

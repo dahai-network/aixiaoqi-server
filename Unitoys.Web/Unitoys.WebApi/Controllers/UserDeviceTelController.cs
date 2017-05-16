@@ -116,7 +116,7 @@ namespace Unitoys.WebApi.Controllers
         /// 最新已验证信息
         /// </summary>
         /// <returns></returns>
-        public async Task<IHttpActionResult> GetFirst()
+        public async Task<IHttpActionResult> GetCurrent()
         {
             var currentUser = WebUtil.GetApiUserSession();
 

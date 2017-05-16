@@ -28,8 +28,8 @@ namespace Unitoys.Services
         /// <param name="unitPrice">单价</param>
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
-        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐/6 无有效已验证号码</returns>
-        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, string deviceTel = null, decimal? MonthPackageFee = 0)
+        /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐/5 设备号码验证/6无有效已验证号码/8组合ID与套餐不匹配</returns>
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, decimal MonthPackageFee, Guid? packageAttributeId)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -49,13 +49,15 @@ namespace Unitoys.Services
                 {
                     return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
                 }
+
+                string deviceTel = null;
                 //轻松服务类型的套餐不在此方法处理
                 if (package.Category == CategoryType.Relaxed)
                 {
                     UT_UserDeviceTel userDeviceTel = await _userDeviceTelService.GetFirst(userId);
                     if (userDeviceTel == null)
                     {
-                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(5, null));
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(6, null));
                     }
                     deviceTel = userDeviceTel.Tel;
                     if (string.IsNullOrEmpty(deviceTel))
@@ -64,7 +66,17 @@ namespace Unitoys.Services
                     }
                 }
 
-                return await Add(db, userId, package, quantity, PaymentMethod, deviceTel, MonthPackageFee ?? 0);
+                UT_PackageAttribute packageAttribute = null;
+                if (packageAttributeId.HasValue)
+                {
+                    packageAttribute = await db.UT_PackageAttribute.FindAsync(packageAttributeId);
+                    if (packageAttribute.PackageId != packageId)
+                    {
+                        return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(8, null));
+                    }
+                }
+
+                return await Add(db, userId, package, packageAttribute, quantity, PaymentMethod, deviceTel, MonthPackageFee);
             }
         }
 
@@ -99,7 +111,7 @@ namespace Unitoys.Services
                 {
                     return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(5, null));
                 }
-                return await Add(db, userId, package, 1, PaymentMethodType.Gift, null, 0);
+                return await Add(db, userId, package, null, 1, PaymentMethodType.Gift, null, 0);
             }
         }
 
@@ -114,7 +126,7 @@ namespace Unitoys.Services
         /// <param name="deviceTel"></param>
         /// <param name="MonthPackageFee"></param>
         /// <returns></returns>
-        private static async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> Add(UnitoysEntities db, Guid userId, UT_Package package, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee)
+        private static async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> Add(UnitoysEntities db, Guid userId, UT_Package package, UT_PackageAttribute packageAttribute, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee)
         {
             if (package != null)
             {
@@ -147,6 +159,16 @@ namespace Unitoys.Services
                 //order.IsPayUserAmount = IsPayUserAmount;
                 order.PaymentMethod = PaymentMethod;
 
+                if (packageAttribute != null)
+                {
+                    order.PackageAttributeId = packageAttribute.ID;
+                    order.RemainingCallMinutes = packageAttribute.CallMinutes ?? -1;
+                    order.ExpireDays = packageAttribute.ExpireDays ?? -1;
+                    order.UnitPrice = packageAttribute.Price;
+                    order.TotalPrice = packageAttribute.Price * quantity;
+                    order.Flow = packageAttribute.Flow.HasValue ? packageAttribute.Flow.Value * quantity : -1;
+                }
+
                 //免费领取
                 if (package.Category == CategoryType.FreeReceive)
                 {
@@ -161,7 +183,8 @@ namespace Unitoys.Services
                     order.ActivationDate = CommonHelper.GetDateTimeInt();
                     order.OrderStatus = OrderStatusType.Used;
                     order.PayStatus = PayStatusType.YesPayment;
-                    order.EffectiveDateDesc = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    order.EffectiveDate = CommonHelper.ConvertDateTimeInt(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day));
+                    //order.EffectiveDateDesc = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                 }
 
                 //轻松服务
@@ -173,6 +196,7 @@ namespace Unitoys.Services
                         Tel = deviceTel,
                         OrderId = order.ID,
                     };
+                    order.TotalPrice += MonthPackageFee * order.ExpireDays;
                     db.UT_OrderDeviceTel.Add(orderDeviceTel);
                 }
                 db.UT_Order.Add(order);
@@ -256,7 +280,7 @@ namespace Unitoys.Services
                         //}
 
                         //如果属于通话套餐或双卡双待套餐则默认激活
-                        if (payOrder.PackageCategory == CategoryType.DualSimStandby || payOrder.PackageCategory == CategoryType.Call)
+                        if (payOrder.PackageCategory == CategoryType.DualSimStandby || payOrder.PackageCategory == CategoryType.Call || payOrder.PackageCategory == CategoryType.Relaxed)
                         {
                             payOrder.OrderStatus = OrderStatusType.Used;
                             payOrder.EffectiveDate = CommonHelper.GetDateTimeInt();
@@ -347,7 +371,7 @@ namespace Unitoys.Services
                     //}
 
                     //如果属于通话套餐或双卡双待套餐则默认激活
-                    if (order.PackageCategory == CategoryType.DualSimStandby || order.PackageCategory == CategoryType.Call)
+                    if (order.PackageCategory == CategoryType.DualSimStandby || order.PackageCategory == CategoryType.Call || order.PackageCategory == CategoryType.Relaxed)
                     {
                         order.OrderStatus = OrderStatusType.Used;
                         order.EffectiveDate = CommonHelper.GetDateTimeInt();

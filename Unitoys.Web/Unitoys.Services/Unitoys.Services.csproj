@@ -57,6 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PackageAttributeService.cs" />
+    <Compile Include="AttributeService.cs" />
+    <Compile Include="AttributeValueService.cs" />
+    <Compile Include="ProductAttributeService.cs" />
     <Compile Include="BannerConfiguration.cs" />
     <Compile Include="PushContentService.cs" />
     <Compile Include="UserReceiveService.cs" />

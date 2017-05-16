@@ -24,6 +24,10 @@ namespace Unitoys.WebApi.Models
         /// 月套餐费
         /// </summary>
         public decimal? MonthPackageFee { get; set; }
+        /// <summary>
+        /// 组合ID
+        /// </summary>
+        public Guid? PackageAttributeId { get; set; }
 
     }
     public class AddReceiveBindingModel

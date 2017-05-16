@@ -83,6 +83,10 @@ namespace Unitoys.Model
         public DbSet<UT_UserReceive> UT_UserReceive { get; set; }
         public DbSet<UT_UserDeviceTel> UT_UserDeviceTel { get; set; }
         public DbSet<UT_PushContent> UT_PushContent { get; set; }
+        public DbSet<UT_Attribute> UT_Attribute { get; set; }
+        public DbSet<UT_AttributeValue> UT_AttributeValue { get; set; }
+        public DbSet<UT_ProductAttribute> UT_ProductAttribute { get; set; }
+        public DbSet<UT_PackageAttribute> UT_PackageAttribute { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -137,6 +141,10 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new UserReceiveConfiguration());
             modelBuilder.Configurations.Add(new UserDeviceTelConfiguration());
             modelBuilder.Configurations.Add(new PushContentConfiguration());
+            modelBuilder.Configurations.Add(new AttributeConfiguration());
+            modelBuilder.Configurations.Add(new AttributeValueConfiguration());
+            modelBuilder.Configurations.Add(new ProductAttributeConfiguration());
+            modelBuilder.Configurations.Add(new PackageAttributeConfiguration());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();  //表中都统一设置禁用一对多级联删除
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>(); //表中都统一设置禁用多对多级联删除

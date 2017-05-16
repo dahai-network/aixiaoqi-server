@@ -144,6 +144,10 @@ namespace Unitoys.Model
         /// </summary>
         public int? ActivationDate { get; set; }
         public Guid? OrderDeviceTelId { get; set; }
+        /// <summary>
+        /// 组合ID
+        /// </summary>
+        public Guid? PackageAttributeId { get; set; }
         //public Guid? UserReceiveId { get; set; }
         /// <summary>
         /// 支付方式

@@ -86,6 +86,10 @@ namespace Unitoys.Ioc
             Kernel.Bind<IUserReceiveService>().To<UserReceiveService>();
             Kernel.Bind<IUserDeviceTelService>().To<UserDeviceTelService>();
             Kernel.Bind<IPushContentService>().To<PushContentService>();
+            Kernel.Bind<IAttributeService>().To<AttributeService>();
+            Kernel.Bind<IAttributeValueService>().To<AttributeValueService>();
+            Kernel.Bind<IProductAttributeService>().To<ProductAttributeService>();
+            Kernel.Bind<IPackageAttributeService>().To<PackageAttributeService>();
         }
 
         private static void AddFilterBindings()

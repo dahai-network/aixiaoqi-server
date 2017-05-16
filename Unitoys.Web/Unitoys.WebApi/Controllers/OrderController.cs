@@ -57,8 +57,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-
-                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, null, model.MonthPackageFee);
+                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, model.MonthPackageFee ?? 0, model.PackageAttributeId);
 
                 if (result.Value.Key == 1 && result.Value.Value != null)
                 {
@@ -91,7 +90,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     switch (result.Value.Key)
                     {
-                        case 1:
+                        case 0:
                             return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
                             break;
                         case 2:
@@ -102,6 +101,9 @@ namespace Unitoys.WebApi.Controllers
                             break;
                         case 6:
                             return Ok(new StatusCodeRes(StatusCodeType.无验证通过手机号, "无验证通过手机号"));
+                            break;
+                        case 8:
+                            return Ok(new StatusCodeRes(StatusCodeType.参数错误, "组合ID和套餐不匹配"));
                             break;
                         default:
                             return Ok(new StatusCodeRes(StatusCodeType.失败, "订单创建失败"));
@@ -469,7 +471,7 @@ namespace Unitoys.WebApi.Controllers
                             order.PackageOrderId = result.data.orderId;
                             //order.PackageOrderData = result.data.data;
 
-                            order.EffectiveDate = model.BeginTime;
+                            order.EffectiveDate = model.BeginDateTime.HasValue ? CommonHelper.ConvertDateTimeInt(model.BeginDateTime.Value) : model.BeginTime;
                             order.EffectiveDateDesc = model.BeginDateTime;
                             if (model.BeginDateTime.HasValue)
                             {

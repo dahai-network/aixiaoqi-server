@@ -16,11 +16,13 @@ namespace Unitoys.WebApi.Controllers
     {
         private IPackageService _packageService;
         private IUserReceiveService _userReceiveService;
+        private IPackageAttributeService _packageAttributeService;
 
-        public PackageController(IPackageService packageService, IUserReceiveService userReceiveService)
+        public PackageController(IPackageService packageService, IUserReceiveService userReceiveService, IPackageAttributeService packageAttributeService)
         {
             this._packageService = packageService;
             this._userReceiveService = userReceiveService;
+            this._packageAttributeService = packageAttributeService;
         }
 
         /// <summary>
@@ -143,8 +145,8 @@ namespace Unitoys.WebApi.Controllers
                            IsSupport4G = packageResult.IsSupport4G,
                            IsApn = packageResult.IsApn,
                            ApnName = packageResult.ApnName,
-                           DescTitlePic = packageResult.DescTitlePic,
-                           DescPic = packageResult.DescPic,
+                           DescTitlePic = packageResult.DescTitlePic.GetPackageCompleteUrl(),
+                           DescPic = packageResult.DescPic.GetPackageCompleteUrl(),
                            OriginalPrice = packageResult.OriginalPrice,
                        };
             return Ok(new { status = 1, data = new { list = data } });
@@ -169,11 +171,38 @@ namespace Unitoys.WebApi.Controllers
                            PicHaveed = i.PicHaveed.GetPackageCompleteUrl(),//已领图片
                            Pic = i.Pic.GetPackageCompleteUrl(),
                            Haveed = _userReceiveService.Haveed(userid, i.ID),//是否已领取
-                           Category=((int)i.Category).ToString()
+                           Category = ((int)i.Category).ToString()
                        };
             return Ok(new { status = 1, data = new { totalRows = packageResult.Count(), list = data } });
         }
 
+        /// <summary>
+        /// 根据订单ID查属性
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> GetAttrsByID(Guid id)
+        {
+
+            var packageResult = await _packageAttributeService.GetByPackageId(id);
+
+            var data = from i in packageResult.Value
+                       select new
+                       {
+                           ID = i.ID,
+                           //PackageId = i.PackageId,
+                           CallMinutes = i.CallMinutes.HasValue ? i.CallMinutes.ToString() : "",
+                           ExpireDays = i.ExpireDays.HasValue ? i.ExpireDays.ToString() : "",
+                           Flow = i.Flow.HasValue ? i.Flow.ToString() : "",
+                           CallMinutesDescr = i.CallMinutesDescr ?? "",
+                           ExpireDaysDescr = i.ExpireDaysDescr ?? "",
+                           FlowDescr = i.FlowDescr ?? "",
+                           Price = i.Price.ToString(),
+                           OriginalPrice = i.OriginalPrice.ToString(),
+                       };
+
+            return Ok(new { status = 1, data = new { list = data } });
+        }
 
         #region 获取查询的Expression表达式
         /// <summary>
