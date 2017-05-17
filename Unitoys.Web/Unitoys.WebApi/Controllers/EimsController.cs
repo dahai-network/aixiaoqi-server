@@ -589,7 +589,7 @@ namespace Unitoys.WebApi.Controllers
             }
 
             //设备内号码验证:
-            if (fm.IndexOf("10690") == 0 && entity.SMSContent.IndexOf("【爱小器】设备号码验证:") == 0)
+            if (fm.IndexOf("106") == 0 && entity.SMSContent.IndexOf("【爱小器】设备号码验证:") == 0)
             {
                 string code = entity.SMSContent.Substring(12);
                 var result = await _userDeviceTelService.Confirmed(entity.UserId, entity.IccId, code);

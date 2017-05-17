@@ -250,7 +250,7 @@ namespace Unitoys.Services
                     }
 
                     //2. 首先计算出订单的金额是否大于用户的余额
-                    decimal orderTotalAmount = payOrder.UnitPrice * payOrder.Quantity;
+                    decimal orderTotalAmount = payOrder.TotalPrice;
 
                     if (payUser.Amount < orderTotalAmount)
                     {
@@ -331,7 +331,7 @@ namespace Unitoys.Services
                     //根据order的UserId获取User。
                     UT_Users user = await db.UT_Users.FindAsync(order.UserId);
                     //订单应在线支付金额
-                    decimal orderOnlineAmount = order.Quantity * order.UnitPrice;
+                    decimal orderOnlineAmount = order.TotalPrice;
 
                     //如果支付的金额小于订单应付金额
                     if (payAmount < orderOnlineAmount)
