@@ -589,9 +589,9 @@ namespace Unitoys.WebApi.Controllers
             }
 
             //设备内号码验证:
-            if (fm.IndexOf("106") == 0 && entity.SMSContent.IndexOf("【爱小器】设备号码验证:") == 0)
+            if (fm.IndexOf("106") == 0 && entity.SMSContent.IndexOf("【爱小器】") == 0 && entity.SMSContent.IndexOf("您正在验证爱小器设备内手机号码。") > 0)
             {
-                string code = entity.SMSContent.Substring(12);
+                string code = entity.SMSContent.Substring(10, (entity.SMSContent.IndexOf("，") - 1) - 9);
                 var result = await _userDeviceTelService.Confirmed(entity.UserId, entity.IccId, code);
                 switch (result.Key)
                 {
@@ -622,7 +622,7 @@ namespace Unitoys.WebApi.Controllers
                     default:
                         break;
                 }
-
+                return Ok(new { status = 0, msg = "未成功使用验证" });
             }
 
             if (await _smsService.InsertAsync(entity))

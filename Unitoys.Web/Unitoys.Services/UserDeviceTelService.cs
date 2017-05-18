@@ -92,6 +92,13 @@ namespace Unitoys.Services
                 if (entity == null)
                     return new KeyValuePair<int, string>(4, "");
                 entity.IsConfirmed = true;
+                entity.ConfirmDate = DateTime.Now;
+
+                smsConfirmation.IsConfirmed = true;
+                smsConfirmation.ConfirmDate = DateTime.Now;
+
+                db.UT_SMSConfirmation.Attach(smsConfirmation);
+                db.Entry<UT_SMSConfirmation>(smsConfirmation).State = EntityState.Modified;
 
                 db.UT_UserDeviceTel.Attach(entity);
                 db.Entry<UT_UserDeviceTel>(entity).State = EntityState.Modified;

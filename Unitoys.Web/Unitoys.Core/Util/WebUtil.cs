@@ -324,7 +324,7 @@ namespace Unitoys.Core
             {
                 //设备号码验证
                 SmsFreeSignName = "爱小器";
-                SmsTemplateCode = "SMS_67115138";
+                SmsTemplateCode = "SMS_67226169";
                 SmsParam = "{\"code\":\"" + code + "\"}";
             }
             ITopClient client = new DefaultTopClient(requestUri, appkey, secret);

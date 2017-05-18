@@ -31,6 +31,7 @@ namespace Unitoys.Model
         /// 是否已经验证过
         /// </summary>
         public bool IsConfirmed { get; set; }
+        public DateTime? ConfirmDate { get; set; }
         /// <summary>
         /// 乐观并发
         /// </summary>

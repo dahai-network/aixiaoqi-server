@@ -908,6 +908,9 @@ namespace Unitoys.WebApi.Controllers
                         Used = new
                         {
                             ServiceName = searchOrder == null ? "" : searchOrder.PackageName,
+                            ServiceOrderId = searchOrder == null ? "" : searchOrder.ID.ToString(),
+                            ServicePackageCategory = searchOrder == null ? "" : ((int)searchOrder.PackageCategory).ToString(),
+
                             TotalNum = searchOrders.Count().ToString(),//总数量
                             TotalNumFlow = TotalNumFlow.ToString(),//流量套餐总数量
                             FlowPackageName = searchOrders.FirstOrDefault(x => x.PackageCategory == CategoryType.Flow).PackageName,//
@@ -930,6 +933,9 @@ namespace Unitoys.WebApi.Controllers
                         Used = new
                         {
                             ServiceName = searchOrder == null ? "" : searchOrder.PackageName,
+                            OrderId = searchOrder == null ? "" : searchOrder.ID.ToString(),
+                            PackageCategory = searchOrder == null ? "" : ((int)searchOrder.PackageCategory).ToString(),
+
                             TotalNum = searchOrders.Count().ToString(),
                             TotalNumFlow = TotalNumFlow.ToString(),
                             TotalRemainingCallMinutes = searchOrders.Sum(x => x.RemainingCallMinutes).ToString(),

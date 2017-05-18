@@ -72,9 +72,9 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "ICCID不能为空"));
             }
 
-            if (await _userDeviceTelService.GetEntitiesCountAsync(x => x.Tel == model.Tel && x.ICCID == model.ICCID) > 0)
+            if (await _userDeviceTelService.GetEntitiesCountAsync(x => x.UserId == currentUser.ID && x.Tel == model.Tel && x.ICCID == model.ICCID) > 0)
             {
-                var entity = await _userDeviceTelService.GetEntityAsync(x => x.Tel == model.Tel && x.ICCID == model.ICCID);
+                var entity = await _userDeviceTelService.GetEntityAsync(x => x.UserId == currentUser.ID && x.Tel == model.Tel && x.ICCID == model.ICCID);
 
                 if (entity.IsConfirmed)
                 {
