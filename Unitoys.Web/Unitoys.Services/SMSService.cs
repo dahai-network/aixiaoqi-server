@@ -88,35 +88,51 @@ namespace Unitoys.Services
         /// <summary>
         /// 获取用户联系手机号的最后一条往来信息
         /// </summary>
-        /// <param name="page">页码</param>
-        /// <param name="row">页数</param>
+        /// <param name="page">页码(0为全部)</param>
+        /// <param name="row">页数(0为全部)</param>
         /// <param name="UserId">用户ID</param>
         /// <param name="Tel">用户手机号</param>
         /// <returns>多个联系手机号的最后一条往来信息</returns>
-        public async Task<IEnumerable<UT_SMS>> GetLastSMSByUserContactTelAsync(int page, int row, Guid UserId, string Tel)
+        public async Task<IEnumerable<UT_SMS>> GetLastSMSByUserContactTelAsync(int page, int row, Guid UserId, string Tel, int? beginSMSTime)
         {
-            return await db.UT_SMS.Where(x => x.UserId == UserId && (x.Fm == Tel || x.To == Tel))
+            var query = db.UT_SMS.Where(x => x.UserId == UserId && (x.Fm == Tel || x.To == Tel));
+            if (beginSMSTime.HasValue)
+            {
+                query = query.Where(x => x.SMSTime > beginSMSTime);
+            }
+            if (page != 0 && row != 0)
+            {
+                query = query.Skip((page - 1) * row).Take(row);
+            }
+            return await query
                 .GroupBy(x => x.Fm == Tel ? x.To : x.Fm).Select(x => x)
                 .Select(x => x.OrderByDescending(e => e.SMSTime).FirstOrDefault())
                 .OrderByDescending(x => x.SMSTime)
-                .Skip((page - 1) * row).Take(row)
+
                 .ToListAsync();
         }
 
         /// <summary>
         /// 根据用户和来往手机号获取信息
         /// </summary>
-        /// <param name="page">页码</param>
-        /// <param name="row">页数</param>
+        /// <param name="page">页码(0为全部)</param>
+        /// <param name="row">页数(0为全部)</param>
         /// <param name="UserId">用户ID</param>
         /// <param name="Tel">用户手机号</param>
         /// <param name="ContactTel">联系手机号</param>
         /// <returns>用户和来往手机号短信</returns>
-        public async Task<IEnumerable<UT_SMS>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel)
+        public async Task<IEnumerable<UT_SMS>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel, int? beginSMSTime)
         {
-            var list = await GetUserAndContactTel(UserId, Tel, ContactTel)
-                .Skip((page - 1) * row).Take(row)
-                .ToListAsync();
+            var query = GetUserAndContactTel(UserId, Tel, ContactTel, beginSMSTime);
+
+            List<UT_SMS> list;
+
+            if (page != 0 && row != 0)
+            {
+                query = query.Skip((page - 1) * row).Take(row);
+                //query = query.Skip((page - 1) * row).Take(row);
+            }
+            list = await query.ToListAsync();
 
             //批量更新为已读
             var updateList = list.Where(x => x.IsRead == false).ToList();
@@ -142,12 +158,17 @@ namespace Unitoys.Services
         /// <param name="Tel"></param>
         /// <param name="ContactTel"></param>
         /// <returns></returns>
-        private IOrderedQueryable<UT_SMS> GetUserAndContactTel(Guid UserId, string Tel, string ContactTel)
+        private IQueryable<UT_SMS> GetUserAndContactTel(Guid UserId, string Tel, string ContactTel, int? beginSMSTime)
         {
             //判断TEL避免用户查看自己手机号的信息
-            return db.UT_SMS.Where(x => x.UserId == UserId &&
-                            ((x.Fm == ContactTel && x.To == Tel) || (x.To == ContactTel && x.Fm == Tel)))
-                            .OrderByDescending(x => x.SMSTime);
+            var query = db.UT_SMS.Where(x => x.UserId == UserId &&
+                            ((x.Fm == ContactTel && x.To == Tel) || (x.To == ContactTel && x.Fm == Tel)));
+            if (beginSMSTime.HasValue)
+            {
+                query = query.Where(x => x.SMSTime > beginSMSTime);
+            }
+
+            return query.OrderByDescending(x => x.SMSTime);
         }
 
         /// <summary>
@@ -201,7 +222,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var listEntity = await GetUserAndContactTel(UserId, Tel, ContactTel).ToListAsync();
+                var listEntity = await GetUserAndContactTel(UserId, Tel, ContactTel, null).ToListAsync();
 
                 //if (listEntity.Count == ids.Length)
                 //{
@@ -233,7 +254,7 @@ namespace Unitoys.Services
 
                 foreach (var ContactTel in ContactTels)
                 {
-                    listEntity.AddRange(await GetUserAndContactTel(UserId, Tel, ContactTel).ToListAsync());
+                    listEntity.AddRange(await GetUserAndContactTel(UserId, Tel, ContactTel, null).ToListAsync());
                 }
                 //if (listEntity.Count == ids.Length)
                 //{

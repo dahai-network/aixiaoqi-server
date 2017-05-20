@@ -400,11 +400,11 @@ namespace Unitoys.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> GetUserContactTelLastSMS(int pageNumber = 1, int pageSize = 10)
+        public async Task<IHttpActionResult> GetUserContactTelLastSMS(int? beginSMSTime=0, int pageNumber = 1, int pageSize = 10)
         {
             var currentUser = WebUtil.GetApiUserSession();
 
-            var smsResult = await _smsService.GetLastSMSByUserContactTelAsync(pageNumber, pageSize, currentUser.ID, currentUser.Tel);
+            var smsResult = await _smsService.GetLastSMSByUserContactTelAsync(pageNumber, pageSize, currentUser.ID, currentUser.Tel, beginSMSTime);
             var data = smsResult.Select(i => new
             {
                 Fm = i.Fm,
@@ -415,7 +415,7 @@ namespace Unitoys.WebApi.Controllers
                 IsSend = i.IsSend,
                 IsRead = i.IsRead == true ? 1 + "" : 0 + "",
                 Status = (int)i.Status + "",
-                //SMSID = i.ID
+                SMSID = i.ID
 
             });
 
@@ -455,7 +455,7 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> GetByTel(string Tel, int pageNumber = 1, int pageSize = 10)
+        public async Task<IHttpActionResult> GetByTel(string Tel, int? beginSMSTime = 0, int pageNumber = 1, int pageSize = 10)
         {
             var currentUser = WebUtil.GetApiUserSession();
 
@@ -464,7 +464,7 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "Tel不允许为空"));
             }
 
-            var smsResult = await _smsService.GetByUserAndTelAsync(pageNumber, pageSize, currentUser.ID, currentUser.Tel, Tel);
+            var smsResult = await _smsService.GetByUserAndTelAsync(pageNumber, pageSize, currentUser.ID, currentUser.Tel, Tel, beginSMSTime);
 
             var data = from i in smsResult
                        select new
