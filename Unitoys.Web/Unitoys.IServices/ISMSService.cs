@@ -56,7 +56,7 @@ namespace Unitoys.IServices
         /// <param name="Tel">用户手机号</param>
         /// <param name="ContactTel">联系手机号</param>
         /// <returns>用户和来往手机号短信</returns>
-        Task<IEnumerable<UT_SMS>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel, int? beginSMSTime);
+        Task<KeyValuePair<int, IEnumerable<UT_SMS>>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel, int? beginSMSTime);
 
         /// <summary>
         /// 根据用户获取最大的收件时间

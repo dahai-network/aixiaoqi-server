@@ -167,7 +167,7 @@ namespace Unitoys.Services
                         CallServerIp = callServerIp,
                         Acctterminatedirection = acctterminatedirection,
                         CallType = callType,
-                        Status = SpeakRecordStatus.Missing
+                        Status = SpeakRecordStatus.Normal
                     };
                     db.UT_SpeakRecord.Add(speakRecord);
 

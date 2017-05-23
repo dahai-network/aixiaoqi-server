@@ -184,6 +184,7 @@ namespace Unitoys.Services
                     order.OrderStatus = OrderStatusType.Used;
                     order.PayStatus = PayStatusType.YesPayment;
                     order.EffectiveDate = CommonHelper.ConvertDateTimeInt(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day));
+                    SetExpireDate(order);
                     //order.EffectiveDateDesc = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                 }
 
@@ -215,6 +216,11 @@ namespace Unitoys.Services
                 }
             }
             return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
+        }
+
+        private static void SetExpireDate(UT_Order order)
+        {
+            order.ExpireDate = order.PackageCategory != CategoryType.Relaxed ? order.EffectiveDate + (order.ExpireDays * 86400 * order.Quantity) : CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.EffectiveDate.Value.ToString()).AddMonths(order.ExpireDays * order.Quantity));
         }
 
         /// <summary>

@@ -129,6 +129,7 @@ namespace Unitoys.Model
         //public string PackageOrderData { get; set; }
         /// <summary>
         /// 剩余通话分钟数
+        /// 0为无限；-1代表无通话分钟数
         /// </summary>
         public int RemainingCallMinutes { get; set; }
         /// <summary>
@@ -143,6 +144,10 @@ namespace Unitoys.Model
         /// 激活时间
         /// </summary>
         public int? ActivationDate { get; set; }
+        /// <summary>
+        /// 到期日期
+        /// </summary>
+        public int? ExpireDate { get; set; }
         public Guid? OrderDeviceTelId { get; set; }
         /// <summary>
         /// 组合ID

@@ -163,6 +163,7 @@ namespace Unitoys.WebApi.Controllers
             var contentStr = await Request.Content.ReadAsStringAsync();
             LoggerHelper.Info("短信状态报告");
             LoggerHelper.Info("短信：" + contentStr);
+            string errorMsg = "";
 
             //从body中获取内容
             TranslateEimsSMSReportQueryModel model = null;
@@ -174,15 +175,30 @@ namespace Unitoys.WebApi.Controllers
             {
 
             }
+            //catch (Newtonsoft.Json.JsonReaderException ex)
+            //{
+
+            //}
             catch (Exception ex)
             {
+                errorMsg = "解析异常" + contentStr + "：" + ex.Message;
                 LoggerHelper.Info("短信状态报告异常" + ex.Message);
+                if (ex.Message.Contains("fdr"))
+                {
+                    //去除错误的冒号格式
+                    contentStr = contentStr.Replace(contentStr.Substring(contentStr.IndexOf("\"fdr\":[")), contentStr.Substring(contentStr.IndexOf("\"fdr\":[")).Replace("\":\"", ""));
+                }
             }
 
             LoggerHelper.Info("短信状态报告ReadAsAsync model=null：" + (model == null));
 
             if (model == null)
             {
+                //此格式不可变化
+                //                contentStr.Replace(@"
+                //", "");
+                //这段不能动  有看不见的特殊字符要替换
+                contentStr = contentStr.Replace("", "");
                 //处理错误的json格式
                 if (contentStr.Substring(contentStr.IndexOf("\"fdr\":["), 8) != "\"fdr\":[[")
                 {
@@ -242,6 +258,9 @@ namespace Unitoys.WebApi.Controllers
                     if (entity != null)
                     {
                         entity.Status = SMSStatusType.Error;
+                        entity.ErrorMsg = entity.ErrorMsg ?? "";
+                        entity.ErrorMsg += " 短信平台：程序原因：" + item[5] + "，运营商原因：" + item[6] + " " + errorMsg; ;
+
                         result = await _smsService.UpdateAsync(entity);
 
                         string userToken = WebUtil.GetApiKeyByTel(entity.Fm);

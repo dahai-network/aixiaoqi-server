@@ -78,7 +78,7 @@ namespace Unitoys.WebApi.Controllers
                            Flow = "不限制流量",
                            //Desction = i.Desction,
                            CallMinutes = i.CallMinutes,
-                           Pic = i.Pic.GetPackageCompleteUrl(),
+                           Pic = i.LogoPic.GetPackageCompleteUrl(),
                            ExpireDays = i.ExpireDays.ToString(),
                        };
             return Ok(new { status = 1, data = new { totalRows = await totalRows, list = data } });
@@ -108,7 +108,7 @@ namespace Unitoys.WebApi.Controllers
                            //Flow = i.Flow,
                            Flow = "不限制流量",
                            //Desction = i.Desction,
-                           Pic = i.Pic.GetPackageCompleteUrl(),
+                           Pic = i.LogoPic.GetPackageCompleteUrl(),
                            ExpireDays = i.ExpireDays.ToString(),
                        };
 

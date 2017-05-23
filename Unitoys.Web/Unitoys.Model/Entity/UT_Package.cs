@@ -51,6 +51,10 @@ namespace Unitoys.Model
         /// </summary>
         public string UseDescr { get; set; }
         /// <summary>
+        /// Logo图片
+        /// </summary>
+        public string LogoPic { get; set; }
+        /// <summary>
         /// 图片
         /// </summary>
         public string Pic { get; set; }
@@ -76,6 +80,7 @@ namespace Unitoys.Model
         public bool IsDeleted { get; set; }
         /// <summary>
         /// 通话分钟数
+        /// 0为无限；-1代表无通话分钟数
         /// </summary>
         public int CallMinutes { get; set; }
         /// <summary>

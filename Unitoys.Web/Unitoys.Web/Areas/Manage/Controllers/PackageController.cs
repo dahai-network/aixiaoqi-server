@@ -55,6 +55,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                Price = i.Price,
                                Flow = i.Flow,
                                CallMinutes = i.CallMinutes,
+                               LogoPic = i.LogoPic.GetCompleteUrl(),
                                Pic = i.Pic.GetCompleteUrl(),
                                ExpireDays = i.ExpireDays,
                                CountryId = i.CountryId,
@@ -131,6 +132,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.Flow = model.Flow;
                 package.CallMinutes = model.CallMinutes;
                 package.Pic = model.Pic;
+                package.LogoPic = model.LogoPic;
                 package.Lock4 = 0;
                 package.ExpireDays = model.ExpireDays;
                 package.CountryId = model.CountryId;
@@ -219,6 +221,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.Price = model.Price;
                     package.Flow = model.Flow;
                     package.Pic = StringHelper.TrimStart(model.Pic, UTConfig.SiteConfig.ImageHandleHost);
+                    package.LogoPic = StringHelper.TrimStart(model.LogoPic, UTConfig.SiteConfig.ImageHandleHost);
                     package.ExpireDays = model.ExpireDays;
                     package.CountryId = model.CountryId;
                     package.PackageNum = model.PackageNum;
@@ -241,7 +244,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.PicHaveed = model.PicHaveed ?? "";
                     package.DescTitlePic = model.DescTitlePic ?? "";
                     package.DescPic = model.DescPic ?? "";
-                    
+
                     if (await _packageService.UpdateAsync(package))
                     {
                         result.Success = true;

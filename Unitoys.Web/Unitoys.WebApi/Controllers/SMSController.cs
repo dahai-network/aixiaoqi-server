@@ -340,8 +340,9 @@ namespace Unitoys.WebApi.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> Get(Guid SMSID)
         {
+            var currentUser = WebUtil.GetApiUserSession();
             UT_SMS modal = await _smsService.GetEntityByIdAsync(SMSID);
-            if (modal != null)
+            if (modal != null && modal.ID == currentUser.ID)
             {
                 return Ok(new
                 {
@@ -400,7 +401,7 @@ namespace Unitoys.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IHttpActionResult> GetUserContactTelLastSMS(int? beginSMSTime=0, int pageNumber = 1, int pageSize = 10)
+        public async Task<IHttpActionResult> GetUserContactTelLastSMS(int? beginSMSTime = 0, int pageNumber = 1, int pageSize = 10)
         {
             var currentUser = WebUtil.GetApiUserSession();
 
@@ -466,7 +467,7 @@ namespace Unitoys.WebApi.Controllers
 
             var smsResult = await _smsService.GetByUserAndTelAsync(pageNumber, pageSize, currentUser.ID, currentUser.Tel, Tel, beginSMSTime);
 
-            var data = from i in smsResult
+            var data = from i in smsResult.Value
                        select new
                        {
                            Fm = i.Fm,
@@ -478,7 +479,39 @@ namespace Unitoys.WebApi.Controllers
                            Status = (int)i.Status + "",
                            SMSID = i.ID
                        };
-            return Ok(new { status = 1, data = data });
+            return Ok(new { status = 1, totalRows = smsResult.Key, data = data });
+        }
+
+        /// <summary>
+        /// 获取多条数据
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> Gets([FromUri]Guid[] Ids)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            if (Ids == null || Ids.Length == 0)
+            {
+                return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "参数不允许为空"));
+            }
+
+            var smsResult = await _smsService.GetEntitiesAsync(x => Ids.Contains(x.ID) && x.UserId == currentUser.ID);
+
+            var result = from i in smsResult
+                         select new
+                         {
+                             //Fm = i.Fm,
+                             //To = i.To,
+                             //SMSTime = i.SMSTime.ToString(),
+                             //SMSContent = i.SMSContent,
+                             //IsSend = i.IsSend,
+                             //IsRead = i.IsRead == true ? 1 : 0,
+                             Status = (int)i.Status + "",
+                             SMSID = i.ID
+                         };
+            return Ok(new { status = 1, data = new { list = result } });
         }
 
         /// <summary>

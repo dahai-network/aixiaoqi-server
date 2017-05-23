@@ -95,20 +95,18 @@ namespace Unitoys.Services
         /// <returns>多个联系手机号的最后一条往来信息</returns>
         public async Task<IEnumerable<UT_SMS>> GetLastSMSByUserContactTelAsync(int page, int row, Guid UserId, string Tel, int? beginSMSTime)
         {
-            var query = db.UT_SMS.Where(x => x.UserId == UserId && (x.Fm == Tel || x.To == Tel));
+            var query = db.UT_SMS.Where(x => x.UserId == UserId && (x.Fm == Tel || x.To == Tel)).OrderByDescending(x => x.SMSTime);
             if (beginSMSTime.HasValue)
             {
-                query = query.Where(x => x.SMSTime > beginSMSTime);
+                query = query.Where(x => x.SMSTime > beginSMSTime).OrderByDescending(x => x.SMSTime);
             }
             if (page != 0 && row != 0)
             {
-                query = query.Skip((page - 1) * row).Take(row);
+                query = query.Skip((page - 1) * row).Take(row).OrderByDescending(x => x.SMSTime);
             }
             return await query
                 .GroupBy(x => x.Fm == Tel ? x.To : x.Fm).Select(x => x)
                 .Select(x => x.OrderByDescending(e => e.SMSTime).FirstOrDefault())
-                .OrderByDescending(x => x.SMSTime)
-
                 .ToListAsync();
         }
 
@@ -121,11 +119,13 @@ namespace Unitoys.Services
         /// <param name="Tel">用户手机号</param>
         /// <param name="ContactTel">联系手机号</param>
         /// <returns>用户和来往手机号短信</returns>
-        public async Task<IEnumerable<UT_SMS>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel, int? beginSMSTime)
+        public async Task<KeyValuePair<int, IEnumerable<UT_SMS>>> GetByUserAndTelAsync(int page, int row, Guid UserId, string Tel, string ContactTel, int? beginSMSTime)
         {
             var query = GetUserAndContactTel(UserId, Tel, ContactTel, beginSMSTime);
 
             List<UT_SMS> list;
+
+            var count = await query.CountAsync();
 
             if (page != 0 && row != 0)
             {
@@ -148,7 +148,7 @@ namespace Unitoys.Services
             }
 
 
-            return list;
+            return new KeyValuePair<int, IEnumerable<UT_SMS>>(count, list);
         }
 
         /// <summary>

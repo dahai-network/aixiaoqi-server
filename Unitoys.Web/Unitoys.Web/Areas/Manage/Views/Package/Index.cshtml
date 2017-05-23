@@ -68,6 +68,7 @@
                     <th data-options="field:'Flow',width:65">套餐包含的流量</th>
                     <th data-options="field:'CallMinutes',width:60">套餐通话分钟</th>
                     <th data-options="field:'Pic',width:120,formatter:formatPic">图片</th>
+                    <th data-options="field:'LogoPic',width:120,formatter:formatPic">图片</th>
                     <th data-options="field:'Discount',width:40">折扣</th>
                     <th data-options="field:'ExpireDays',width:50">有效天数</th>
                     <th data-options="field:'Operators',width:45">运营商</th>
@@ -161,6 +162,42 @@
                                     } else {
                                         $("#j_UploadResult").html("图片上传成功！").css({ color: "#006633" });
                                         $("#Pic").val(data);
+                                    }
+
+                                }
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right">
+                    Logo：
+                </td>
+                <td>
+                    <input type="hidden" name="LogoPic" id="LogoPic" maxlength=50 />
+                    <input type="file" name="file_uploadLogo" id="file_uploadLogo" /> <div id="j_UploadResultLogoPic"></div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#file_uploadLogo').uploadify({
+                                'height': 25,
+                                'width': 100,
+                                'buttonText': '上传图片',
+                                'swf': '/Content/js/uploadify/uploadify.swf',
+                                'uploader': '/Manage/Home/UploadImgAsync',
+                                'onUploadError': function (file, errorCode, errorMsg, errorString) {
+                                    $("#j_UploadResultLogoPic").html(errorString).css({ color: "#CC0033" });
+                                },
+                                'onUploadSuccess': function (file, data, response) {
+                                    if (data == -1) {
+                                        $("#j_UploadResultLogoPic").html("请选择您要上传的文件！").css({ color: "#CC0033" });
+                                    } else if (data == -2) {
+                                        $("#j_UploadResultLogoPic").html("上传图片格式不正确！").css({ color: "#CC0033" });
+                                    } else if (data == -3) {
+                                        $("#j_UploadResultLogoPic").html("上传的图片超过5MB了!").css({ color: "#CC0033" });
+                                    } else {
+                                        $("#j_UploadResultLogoPic").html("图片上传成功！").css({ color: "#006633" });
+                                        $("#LogoPic").val(data);
                                     }
 
                                 }
