@@ -433,6 +433,22 @@ namespace Unitoys.WebApi.Controllers
 
             return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
         }
+
+        /// <summary>
+        /// 获取本次订单可通话分钟数和有效期
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMaximumPhoneCallTimeAndExpiredTime()
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            var result = await _userService.GetMaximumPhoneCallTimeAndExpiredDate(currentUser.ID);
+
+            return Ok(new { status = 1, data = new { maximumPhoneCallTime = (result.Key * 60).ToString(), expiredDate = result.Value.ToString() } });
+
+            //return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
+        }
         /// <summary>
         /// 获取指定用户手机号是否在线
         /// </summary>

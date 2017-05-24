@@ -218,9 +218,20 @@ namespace Unitoys.Services
             return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
         }
 
+        /// <summary>
+        /// 设置到期日期
+        /// </summary>
+        /// <param name="order"></param>
         private static void SetExpireDate(UT_Order order)
         {
-            order.ExpireDate = order.PackageCategory != CategoryType.Relaxed ? order.EffectiveDate + (order.ExpireDays * 86400 * order.Quantity) : CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.EffectiveDate.Value.ToString()).AddMonths(order.ExpireDays * order.Quantity));
+            if (order.PackageCategory != CategoryType.Relaxed)
+            {
+                order.ExpireDate = order.EffectiveDate + (order.ExpireDays * 86400 * order.Quantity);
+            }
+            else
+            {
+                order.ExpireDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.EffectiveDate.Value.ToString()).AddMonths(order.ExpireDays * order.Quantity));
+            }
         }
 
         /// <summary>
@@ -291,6 +302,7 @@ namespace Unitoys.Services
                             payOrder.OrderStatus = OrderStatusType.Used;
                             payOrder.EffectiveDate = CommonHelper.GetDateTimeInt();
                             payOrder.ActivationDate = CommonHelper.GetDateTimeInt();
+                            SetExpireDate(payOrder);
                             payOrder.Remark = string.IsNullOrEmpty(payOrder.Remark) ? payOrder.PackageCategory.ToString() : payOrder.Remark + payOrder.PackageCategory.ToString();
                         }
 
@@ -382,6 +394,7 @@ namespace Unitoys.Services
                         order.OrderStatus = OrderStatusType.Used;
                         order.EffectiveDate = CommonHelper.GetDateTimeInt();
                         order.ActivationDate = CommonHelper.GetDateTimeInt();
+                        SetExpireDate(order);
                         order.Remark = string.IsNullOrEmpty(order.Remark) ? order.PackageCategory.ToString() : order.Remark + order.PackageCategory.ToString();
                     }
 

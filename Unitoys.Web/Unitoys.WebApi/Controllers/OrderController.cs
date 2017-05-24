@@ -473,6 +473,7 @@ namespace Unitoys.WebApi.Controllers
 
                             order.EffectiveDate = model.BeginDateTime.HasValue ? CommonHelper.ConvertDateTimeInt(model.BeginDateTime.Value) : model.BeginTime;
                             order.EffectiveDateDesc = model.BeginDateTime;
+                            SetExpireDate(order);
                             if (model.BeginDateTime.HasValue)
                             {
 
@@ -571,6 +572,7 @@ namespace Unitoys.WebApi.Controllers
                             order.EffectiveDate = CommonHelper.GetDateTimeInt();
                             order.OrderStatus = OrderStatusType.Used;//充值后为已使用
                             order.ActivationDate = CommonHelper.GetDateTimeInt();
+                            SetExpireDate(order);
                             order.Remark = string.IsNullOrEmpty(order.Remark) ? "充值号码：" + model.Tel : order.Remark + " " + "充值号码：" + model.Tel;
                             if (!await _orderService.UpdateAsync(order))
                             {
@@ -1035,6 +1037,20 @@ namespace Unitoys.WebApi.Controllers
             return expression == null ? x => true : Expression.Lambda<Func<TEntity, bool>>(expression, parameter);
         }
         #endregion
-
+        /// <summary>
+        /// 设置到期日期
+        /// </summary>
+        /// <param name="order"></param>
+        private static void SetExpireDate(UT_Order order)
+        {
+            if (order.PackageCategory != CategoryType.Relaxed)
+            {
+                order.ExpireDate = order.EffectiveDate + (order.ExpireDays * 86400 * order.Quantity);
+            }
+            else
+            {
+                order.ExpireDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.EffectiveDate.Value.ToString()).AddMonths(order.ExpireDays * order.Quantity));
+            }
+        }
     }
 }

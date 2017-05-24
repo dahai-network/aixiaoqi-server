@@ -16,3 +16,12 @@
     @RenderBody()
 </body>
 </html>
+<script type="text/javascript">
+    $(function () {
+        $("#p input").keydown(function (event) {
+            if (event.keyCode == 13) {
+                doSearch();
+            }
+        });
+    })
+</script>

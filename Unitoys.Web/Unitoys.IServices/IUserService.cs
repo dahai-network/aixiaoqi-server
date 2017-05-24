@@ -80,6 +80,12 @@ namespace Unitoys.IServices
         /// <returns>-1/失败->0通话秒数</returns>
         Task<int> GetAmountAndOrderMaximumPhoneCallTime(Guid id);
         /// <summary>
+        /// 获取订单可通话最长分钟数和有效期
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>通话分钟数/最短有效期</returns>
+        Task<KeyValuePair<int, int>> GetMaximumPhoneCallTimeAndExpiredDate(Guid id);
+        /// <summary>
         /// 直接充值
         /// </summary>
         /// <param name="userId"></param>

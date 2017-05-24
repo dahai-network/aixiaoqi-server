@@ -95,7 +95,7 @@ namespace Unitoys.Services
         /// <returns>多个联系手机号的最后一条往来信息</returns>
         public async Task<IEnumerable<UT_SMS>> GetLastSMSByUserContactTelAsync(int page, int row, Guid UserId, string Tel, int? beginSMSTime)
         {
-            var query = db.UT_SMS.Where(x => x.UserId == UserId && (x.Fm == Tel || x.To == Tel)).OrderByDescending(x => x.SMSTime);
+            var query = db.UT_SMS.Where(x => x.UserId == UserId && (x.Fm == Tel || x.To == Tel)).GroupBy(x => x.Fm == Tel ? x.To : x.Fm).Select(x => x.OrderByDescending(e => e.SMSTime).FirstOrDefault()).OrderByDescending(x => x.SMSTime);
             if (beginSMSTime.HasValue)
             {
                 query = query.Where(x => x.SMSTime > beginSMSTime).OrderByDescending(x => x.SMSTime);
@@ -105,8 +105,6 @@ namespace Unitoys.Services
                 query = query.Skip((page - 1) * row).Take(row).OrderByDescending(x => x.SMSTime);
             }
             return await query
-                .GroupBy(x => x.Fm == Tel ? x.To : x.Fm).Select(x => x)
-                .Select(x => x.OrderByDescending(e => e.SMSTime).FirstOrDefault())
                 .ToListAsync();
         }
 

@@ -207,6 +207,30 @@ namespace Unitoys.Services
             return -1;
         }
 
+        public async Task<KeyValuePair<int, int>> GetMaximumPhoneCallTimeAndExpiredDate(Guid id)
+        {
+            int dtInt = CommonHelper.GetDateTimeInt();
+            var orderList = await db.UT_Order.Where(x => x.UserId == id
+                            && x.OrderStatus == OrderStatusType.Used
+                            && x.PayStatus == PayStatusType.YesPayment
+                            && x.EffectiveDate.HasValue
+                            && x.RemainingCallMinutes > -1).ToListAsync();
+            orderList = orderList
+                .Where(x => (x.PackageCategory != CategoryType.Relaxed ? x.EffectiveDate.Value + (x.ExpireDays * 86400 * x.Quantity) > dtInt : CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(x.EffectiveDate.Value.ToString()).AddMonths(x.ExpireDays * x.Quantity)) > dtInt))
+                .ToList();
+
+            int maximumPhoneCallTime = -1;
+            int? ExpiredDate = 0;
+            if (orderList != null && orderList.Count() > 0)
+            {
+                //maximumPhoneCallTime = orderList.Any(x => x.RemainingCallMinutes == 0) ? 0 : orderList.Sum(x => x.RemainingCallMinutes);
+                maximumPhoneCallTime = orderList.Any(x => x.RemainingCallMinutes == 0) ? 0 : orderList.OrderBy(x => x.ExpireDate).FirstOrDefault().RemainingCallMinutes;
+                ExpiredDate = orderList.OrderBy(x => x.ExpireDate).FirstOrDefault().ExpireDate;
+            }
+            return new KeyValuePair<int, int>(maximumPhoneCallTime, ExpiredDate ?? 0);
+
+        }
+
         /// <summary>
         /// 直接充值
         /// </summary>

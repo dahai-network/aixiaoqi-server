@@ -56,6 +56,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                            {
                                ID = i.ID,
                                Tel = i.UT_Users.Tel,
+                               TId = i.TId,
                                Fm = i.Fm,
                                To = i.To,
                                SMSTime = i.SMSTime.ToString(),
