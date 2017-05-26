@@ -36,7 +36,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page,int rows)
+        public async Task<ActionResult> GetList(int page, int rows)
         {
             var pageRowsDb = await _manageUserService.GetEntitiesForPagingAsync("UT_ManageUsers", page, rows, "CreateDate", "desc", "1=1");
 
@@ -44,18 +44,18 @@ namespace Unitoys.Web.Areas.Manage.Controllers
 
             //过滤掉不必要的字段
             var pageRows = from i in pageRowsDb.Value as List<UT_ManageUsers>
-                       select new
-                       {
-                           ID=i.ID,
-                           LoginName = i.LoginName,
-                           TrueName = i.TrueName,
-                           Lock4 = i.Lock4,
-                           CreateDate = i.CreateDate.ToString()
-                       };
+                           select new
+                           {
+                               ID = i.ID,
+                               LoginName = i.LoginName,
+                               TrueName = i.TrueName,
+                               Lock4 = i.Lock4,
+                               CreateDate = i.CreateDate.ToString()
+                           };
 
-             var jsonResult = new { total = totalNum, rows = pageRows };
+            var jsonResult = new { total = totalNum, rows = pageRows };
 
-            return Json(jsonResult,JsonRequestBehavior.AllowGet);
+            return Json(jsonResult, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Add_ManageUser)]
-        public async Task<ActionResult> Add(string loginName,string passWord,string trueName)
+        public async Task<ActionResult> Add(string loginName, string passWord, string trueName)
         {
             JsonAjaxResult result = new JsonAjaxResult();
             if (loginName.Trim() == "")
@@ -85,6 +85,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Success = false;
                 result.Msg = "真实姓名不能为空！";
             }
+            else if (await _manageUserService.GetEntitiesCountAsync(x => x.LoginName == loginName) > 0)
+            {
+                result.Success = false;
+                result.Msg = "用户名已存在！";
+            }
             else
             {
 
@@ -94,6 +99,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 manageUser.TrueName = trueName;
                 manageUser.Lock4 = 0;
                 manageUser.CreateDate = DateTime.Now;
+
 
                 if (await _manageUserService.InsertAsync(manageUser))
                 {
@@ -117,7 +123,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="TrueName"></param>
         /// <returns></returns>
         [HttpPost]
-        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_ManageUser)]        
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_ManageUser)]
         public async Task<ActionResult> Update(Guid ID, string passWord, string trueName)
         {
             JsonAjaxResult result = new JsonAjaxResult();

@@ -192,6 +192,9 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     user.Status = 1;
                     if (await _userService.UpdateAsync(user))
                     {
+                        string userToken = WebUtil.GetApiKeyByTel(user.Tel);
+                        if (!string.IsNullOrEmpty(userToken))
+                            WebUtil.RemoveApiUserSession(userToken);
                         result.Success = true;
                         result.Msg = "锁定操作成功！";
                     }
