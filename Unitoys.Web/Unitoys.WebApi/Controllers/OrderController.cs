@@ -394,7 +394,7 @@ namespace Unitoys.WebApi.Controllers
                 RemainingCallMinutes = orderResult.RemainingCallMinutes.ToString(),
                 //EffectiveDate = orderResult.EffectiveDate.HasValue ? orderResult.EffectiveDate.Value.ToString().ToString() : "",
                 ActivationDate = orderResult.ActivationDate.HasValue ? orderResult.ActivationDate.Value.ToString() : "",
-                LogoPic = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
+                LogoPic = orderResult.UT_Package.LogoPic.GetPackageCompleteUrl(), //orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.LogoPic.GetPackageCompleteUrl() : orderResult.UT_Package.Pic.GetPackageCompleteUrl(),
                 PaymentMethod = (int)orderResult.PaymentMethod + "",
                 LastCanActivationDate = GetLastCanActivationDate(orderResult).ToString(),
                 CountryName = orderResult.UT_Package.UT_Country != null ? orderResult.UT_Package.UT_Country.CountryName : ""
