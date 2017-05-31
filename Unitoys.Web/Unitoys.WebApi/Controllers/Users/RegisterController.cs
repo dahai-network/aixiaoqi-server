@@ -62,6 +62,24 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
+                if (UTConfig.SiteConfig.FormalEnvironmentInt == "0" && queryModel.smsVerCode == "403210")
+                {
+                    //3. 插入验证码记录。
+                    UT_SMSConfirmation tsmsConfirmationTEST = new UT_SMSConfirmation()
+                    {
+                        Tel = queryModel.tel,
+                        Code = queryModel.smsVerCode,
+                        CreateDate = DateTime.Now,
+                        ExpireDate = DateTime.Now.AddMinutes(10), //过期时间默认为10分钟.
+                        Type = 1,
+                        IsConfirmed = false //是否已经验证默认为否.
+                    };
+                    if (await _smsConfirmationService.InsertAsync(tsmsConfirmationTEST))
+                    {
+
+                    }
+
+                }
                 //判断手机验证码是否正确。
                 UT_SMSConfirmation smsConfirmation = await _smsConfirmationService.GetEntityAsync(x => x.Tel == queryModel.tel && x.Code == queryModel.smsVerCode && x.Type == 1 && !x.IsConfirmed);
 
