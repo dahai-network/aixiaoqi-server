@@ -75,7 +75,7 @@ namespace Unitoys.Services
                             && x.OrderStatus == OrderStatusType.Used
                             && x.PayStatus == PayStatusType.YesPayment
                             && (x.PackageIsCategoryCall || x.PackageIsCategoryDualSimStandby)
-                            && x.RemainingCallMinutes > 0).OrderByDescending(x => x.ActivationDate).FirstOrDefaultAsync();
+                            && x.RemainingCallMinutes > -1).OrderByDescending(x => x.ActivationDate).FirstOrDefaultAsync();
 
                     int callMinutes = 0;
                     //用户需支付的通话分钟费用
@@ -84,34 +84,37 @@ namespace Unitoys.Services
                     int orderUsedCallMinutes = 0;
                     if (order != null)
                     {
-                        callMinutes = Convert.ToInt32(Math.Ceiling(callSessionTime / 60m));
-
-                        // 判断订单剩余通话时间是否够扣除此次通话时间,不够的话则计算用户账户所需支付金额
-                        if (order.RemainingCallMinutes >= callMinutes)
+                        //如果不是无限制
+                        if (order.RemainingCallMinutes != 0)
                         {
-                            orderUsedCallMinutes = callMinutes;
+                            callMinutes = Convert.ToInt32(Math.Ceiling(callSessionTime / 60m));
 
-                            order.RemainingCallMinutes = order.RemainingCallMinutes - callMinutes;
+                            // 判断订单剩余通话时间是否够扣除此次通话时间,不够的话则计算用户账户所需支付金额
+                            if (order.RemainingCallMinutes >= callMinutes)
+                            {
+                                orderUsedCallMinutes = callMinutes;
 
-                            userAmountCallSessionTimeMinutes = 0;
+                                order.RemainingCallMinutes = order.RemainingCallMinutes - callMinutes;
+                                if (order.RemainingCallMinutes == 0)
+                                {
+                                    order.RemainingCallMinutes = -1;
+                                }
 
+                                userAmountCallSessionTimeMinutes = 0;
+                            }   
+                            else
+                            {
+                                orderUsedCallMinutes = order.RemainingCallMinutes;
 
+                                order.RemainingCallMinutes = 0;
+                                order.OrderStatus = OrderStatusType.HasExpired;
+
+                                userAmountCallSessionTimeMinutes = callMinutes - order.RemainingCallMinutes;
+                            }
+
+                            db.UT_Order.Attach(order);
+                            db.Entry<UT_Order>(order).State = EntityState.Modified;
                         }
-                        else
-                        {
-                            orderUsedCallMinutes = order.RemainingCallMinutes;
-
-                            order.RemainingCallMinutes = 0;
-                            order.OrderStatus = OrderStatusType.HasExpired;
-
-                            userAmountCallSessionTimeMinutes = callMinutes - order.RemainingCallMinutes;
-
-
-                        }
-
-                        db.UT_Order.Attach(order);
-                        db.Entry<UT_Order>(order).State = EntityState.Modified;
-
                         //添加话费使用明细记录
                         UT_OrderUsage orderItemUsage = new UT_OrderUsage()
                         {
@@ -295,6 +298,24 @@ namespace Unitoys.Services
                     };
                     db.UT_SpeakRecord.Add(speakRecord);
 
+                    UT_SMS entity = new UT_SMS()
+                    {
+                        UserId = user.ID,
+                        DevName = "system",
+                        Fm = deviceName,
+                        To = calledTelNum,
+                        SMSTime = CommonHelper.GetDateTimeInt(),
+                        SMSContent = string.Format("您在遇忙/网络不稳定/无应答期间，{0}呼入时间{1}。", deviceName, DateTime.Now.ToString("MM月dd日 HH时mm分")),//06月01日12时12分
+                        Status = SMSStatusType.Success,
+                        IsSend = true,
+                        Port = "system",
+                        IccId = "system",
+                        TId = CommonHelper.GetDateTimeInt(),
+                        IsRead = true,
+
+                        UpdateDate = 0// CommonHelper.GetDateTimeInt()
+                    };
+                    db.UT_SMS.Add(entity);
                     return await db.SaveChangesAsync() > 0;
                 }
 

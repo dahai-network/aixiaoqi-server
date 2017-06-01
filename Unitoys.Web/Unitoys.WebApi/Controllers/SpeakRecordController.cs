@@ -71,9 +71,10 @@ namespace Unitoys.WebApi.Controllers
 
             string errorMsg = "";
 
-            if (string.IsNullOrEmpty(model.DeviceName) || !ValidateHelper.IsMobile(model.DeviceName.Substring(2)))
+            //|| !ValidateHelper.IsMobile(model.DeviceName.Substring(2))
+            if (string.IsNullOrEmpty(model.DeviceName))
             {
-                errorMsg = "Caller ID is incorrect|主叫号码不正确";
+                errorMsg = "Caller ID is incorrect|主叫号码不能为空";
             }
             else if (string.IsNullOrEmpty(model.CalledTelNum))
             {
@@ -85,7 +86,7 @@ namespace Unitoys.WebApi.Controllers
             //}
             else
             {
-                model.DeviceName = model.DeviceName.Substring(2);
+                //model.DeviceName = model.DeviceName.Substring(2);
 
                 bool result = false;
 
@@ -95,11 +96,13 @@ namespace Unitoys.WebApi.Controllers
                 //发送极光通知漏接
                 JPushApi j = new JPushApi();
                 string userToken = WebUtil.GetApiKeyByTel(model.CalledTelNum);
-                j.Push_all_alias_alert("aixiaoqi" + userToken, "漏接" + model.DeviceName + "电话", "漏接" + model.DeviceName + "电话", new Dictionary<string, string>()
+                string title = "您有一个漏接电话（" + model.DeviceName + "），请打开APP短信界面查看。";
+                j.Push_all_alias_alert("aixiaoqi" + userToken, title, title, new Dictionary<string, string>()
                         {
                             {"alertType","SpeakMissing"},
                             {"Tel",model.DeviceName},
                         });
+                //您在遇忙/网络不稳定/无应答期间，18850161016呼入时间06月01日12时12分。
 
                 if (result)
                 {
