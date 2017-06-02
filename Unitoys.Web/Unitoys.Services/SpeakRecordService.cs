@@ -84,7 +84,7 @@ namespace Unitoys.Services
                     int orderUsedCallMinutes = 0;
                     if (order != null)
                     {
-                        //如果不是无限制
+                        //如果不是无限通话
                         if (order.RemainingCallMinutes != 0)
                         {
                             callMinutes = Convert.ToInt32(Math.Ceiling(callSessionTime / 60m));
@@ -101,7 +101,7 @@ namespace Unitoys.Services
                                 }
 
                                 userAmountCallSessionTimeMinutes = 0;
-                            }   
+                            }
                             else
                             {
                                 orderUsedCallMinutes = order.RemainingCallMinutes;
@@ -114,6 +114,10 @@ namespace Unitoys.Services
 
                             db.UT_Order.Attach(order);
                             db.Entry<UT_Order>(order).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            userAmountCallSessionTimeMinutes = 0;
                         }
                         //添加话费使用明细记录
                         UT_OrderUsage orderItemUsage = new UT_OrderUsage()
@@ -307,11 +311,11 @@ namespace Unitoys.Services
                         SMSTime = CommonHelper.GetDateTimeInt(),
                         SMSContent = string.Format("您在遇忙/网络不稳定/无应答期间，{0}呼入时间{1}。", deviceName, DateTime.Now.ToString("MM月dd日 HH时mm分")),//06月01日12时12分
                         Status = SMSStatusType.Success,
-                        IsSend = true,
+                        IsSend = false,
                         Port = "system",
                         IccId = "system",
                         TId = CommonHelper.GetDateTimeInt(),
-                        IsRead = true,
+                        IsRead = false,
 
                         UpdateDate = 0// CommonHelper.GetDateTimeInt()
                     };
