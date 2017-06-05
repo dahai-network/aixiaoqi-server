@@ -82,6 +82,26 @@ namespace Unitoys.WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        /// <summary>
+        /// 获取已被绑定的IMEI地址
+        /// </summary>
+        /// <param name="IMEI">设备号</param>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> GetBindsIMEI([FromUri]string[] IMEIs)
+        {
+            var currentUser = WebUtil.GetApiUserSession();
+
+            var result = await _deviceBraceletService.GetBindsIMEI(IMEIs);
+
+            return Ok(new
+            {
+                status = 1,
+                msg = "success",
+                data = new { list = result }
+            });
+        }
+
         /// <summary>
         /// 绑定
         /// </summary>

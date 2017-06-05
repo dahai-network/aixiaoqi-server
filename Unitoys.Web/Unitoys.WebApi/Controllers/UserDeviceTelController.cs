@@ -147,7 +147,7 @@ namespace Unitoys.WebApi.Controllers
 
         [HttpGet]
         /// <summary>
-        /// 检查是否需要验证
+        /// 检查是否已验证
         /// </summary>
         /// <param name="ICCID">ICCID</param>
         /// <returns></returns>
@@ -157,6 +157,23 @@ namespace Unitoys.WebApi.Controllers
 
             var dataResult = await _userDeviceTelService.CheckConfirmed(currentUser.ID, ICCID);
 
+            if (dataResult.Key)
+            {
+                switch (PhoneServerByMySqlServices.SetSip_Buddies_Callerid(currentUser.Tel, dataResult.Value))
+                {
+                    case 0:
+                        LoggerHelper.Error("设备号码验证成功，更新Callerid失败", new Exception("CheckConfirmed上出现系统错误"));
+                        return Ok(new { status = 1, msg = "设备号码验证成功，更新Callerid失败" });
+                        break;
+                    case 2:
+                        LoggerHelper.Error("设备号码验证成功，更新Callerid失败异常", new Exception("CheckConfirmed上出现系统错误"));
+                        return Ok(new { status = 1, msg = "设备号码验证成功，更新Callerid异常" });
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             return Ok(new
             {
                 status = 1,
@@ -165,7 +182,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     IsConfirmed = dataResult.Key,
                     Tel = dataResult.Value,
-                }   
+                }
             });
         }
     }

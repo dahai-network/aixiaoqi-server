@@ -286,6 +286,7 @@ namespace Unitoys.WebApi.Controllers
                              LastCanActivationDate = GetLastCanActivationDate(i).ToString(),
                              PackageIsApn = i.PackageIsApn,
                              PackageApnName = i.PackageApnName,
+                             CountryName = i.UT_Package.UT_Country != null ? i.UT_Package.UT_Country.CountryName : ""
                          };
 
             return Ok(new { status = 1, data = new { totalRows = totalRows, list = result } });

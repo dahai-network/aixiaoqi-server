@@ -35,5 +35,11 @@ namespace Unitoys.IServices
         /// <param name="IMEI">设备名</param>
         /// <returns></returns>
         Task<bool> CheckIMEIByNotUserExist(Guid UserId, string IMEI);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IMEIs"></param>
+        /// <returns></returns>
+        Task<List<string>> GetBindsIMEI(string[] IMEIs);
     }
 }

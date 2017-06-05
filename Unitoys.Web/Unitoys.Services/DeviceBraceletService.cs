@@ -57,5 +57,12 @@ namespace Unitoys.Services
                 return await db.UT_DeviceBracelet.AnyAsync(a => a.IMEI == IMEI && a.UserId != UserId);
             }
         }
+        public async Task<List<string>> GetBindsIMEI(string[] IMEIs)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                return await db.UT_DeviceBracelet.Where(x => IMEIs.Contains(x.IMEI)).Select(x => x.IMEI).ToListAsync();
+            }
+        }
     }
 }
