@@ -11,7 +11,6 @@ namespace Unitoys.Model
     /// </summary>
     public class UT_AlarmClock : UT_Entity
     {
-
         /// <summary>
         /// 用户ID
         /// </summary>

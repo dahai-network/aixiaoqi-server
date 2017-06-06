@@ -116,6 +116,8 @@
     <Compile Include="Configuration\PackageConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
+    <Compile Include="Entity\UT_Agent.cs" />
+    <Compile Include="Entity\UT_ContactUS.cs" />
     <Compile Include="Entity\UT_PackageAttribute.cs" />
     <Compile Include="Entity\UT_ProductAttribute.cs" />
     <Compile Include="Entity\UT_AttributeValue.cs" />
