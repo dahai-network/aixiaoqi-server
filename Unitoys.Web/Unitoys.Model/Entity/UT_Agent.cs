@@ -127,10 +127,10 @@ namespace Unitoys.Model
     public enum AgentCorporationNature
     {
         未知 = 0,
-        国有,
-        三资,
-        私营,
-        联营,
-        个体,
+        国有 = 1,
+        三资 = 2,
+        私营 = 3,
+        联营 = 4,
+        个体 = 5,
     }
 }

@@ -54,8 +54,10 @@ namespace Unitoys.Model
     /// </summary>
     public enum DeviceType
     {
+        //手环
         [Description("手环设备")]
         Bracelet = 0,
+        //双待王
         [Description("钥匙扣设备")]
         KeyChain = 1
     }

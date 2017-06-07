@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,9 +29,20 @@ namespace Unitoys.Model
         /// </summary>
         public string Content { get; set; }
         public int CreateDate { get; set; }
+        public ContactUSStatus Status { get; set; }
+        public string Remark { get; set; }
         /// <summary>
         /// 显示排序
         /// </summary>
         //public int DisplayOrder { get; set; }
+    }
+    public enum ContactUSStatus
+    {
+        [Description("待处理")]
+        Pending = 0,
+        [Description("处理中")]
+        Processing = 1,
+        [Description("处理完成")]
+        Done = 2,
     }
 }

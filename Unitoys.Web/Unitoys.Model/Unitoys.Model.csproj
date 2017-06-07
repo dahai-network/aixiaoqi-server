@@ -60,6 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AfterSalesConfiguration.cs" />
+    <Compile Include="Configuration\AgentConfiguration.cs" />
+    <Compile Include="Configuration\ContactUSConfiguration.cs" />
     <Compile Include="Configuration\PackageAttributeConfiguration.cs" />
     <Compile Include="Configuration\AttributeValueConfiguration.cs" />
     <Compile Include="Configuration\ProductAttributeConfiguration.cs" />
@@ -117,6 +120,7 @@
     <Compile Include="Configuration\ManageUsersConfiguration.cs" />
     <Compile Include="Configuration\ManageUsersRoleConfiguration.cs" />
     <Compile Include="Entity\UT_Agent.cs" />
+    <Compile Include="Entity\UT_AfterSales.cs" />
     <Compile Include="Entity\UT_ContactUS.cs" />
     <Compile Include="Entity\UT_PackageAttribute.cs" />
     <Compile Include="Entity\UT_ProductAttribute.cs" />

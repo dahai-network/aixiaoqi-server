@@ -143,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Manage\Controllers\AgentController.cs" />
+    <Compile Include="Areas\Manage\Controllers\ContactUSController.cs" />
+    <Compile Include="Areas\Manage\Controllers\AfterSalesController.cs" />
     <Compile Include="Areas\Manage\Controllers\PushContentController.cs" />
     <Compile Include="Areas\Manage\Controllers\NewsController.cs" />
     <Compile Include="Areas\Manage\Controllers\GlobalContentController.cs" />
@@ -1080,6 +1083,9 @@
     <Content Include="Areas\Manage\Views\GlobalContent\Index.cshtml" />
     <Content Include="Areas\Manage\Views\News\Index.cshtml" />
     <Content Include="Areas\Manage\Views\PushContent\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\AfterSales\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Agent\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\ContactUS\Index.cshtml" />
     <None Include="Properties\PublishProfiles\webUnitoys.pubxml" />
     <Content Include="Areas\wx\Views\OAuth2\BindUserLogin.cshtml" />
   </ItemGroup>

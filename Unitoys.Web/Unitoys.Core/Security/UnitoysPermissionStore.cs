@@ -316,6 +316,33 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_PushContent = "Can_Delete_PushContent";
 
         #endregion
+
+        #region AfterSales
+
+        public const string Can_Add_AfterSales = "Can_Add_AfterSales";
+        public const string Can_View_AfterSales = "Can_View_AfterSales";
+        public const string Can_Modify_AfterSales = "Can_Modify_AfterSales";
+        public const string Can_Delete_AfterSales = "Can_Delete_AfterSales";
+
+        #endregion
+
+        #region ContactUS
+
+        public const string Can_Add_ContactUS = "Can_Add_ContactUS";
+        public const string Can_View_ContactUS = "Can_View_ContactUS";
+        public const string Can_Modify_ContactUS = "Can_Modify_ContactUS";
+        public const string Can_Delete_ContactUS = "Can_Delete_ContactUS";
+
+        #endregion
+
+        #region Agent
+
+        public const string Can_Add_Agent = "Can_Add_Agent";
+        public const string Can_View_Agent = "Can_View_Agent";
+        public const string Can_Modify_Agent = "Can_Modify_Agent";
+        public const string Can_Delete_Agent = "Can_Delete_Agent";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -495,6 +522,21 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_PushContent = new Tuple<string, string, int>("Can_Modify_PushContent", "修改推送内容管理", 34);
                 Tuple<string, string, int> Can_Delete_PushContent = new Tuple<string, string, int>("Can_Delete_PushContent", "删除推送内容管理", 34);
 
+                Tuple<string, string, int> Can_Add_AfterSales = new Tuple<string, string, int>("Can_Add_AfterSales", "添加售后管理", 35);
+                Tuple<string, string, int> Can_View_AfterSales = new Tuple<string, string, int>("Can_View_AfterSales", "查看售后管理", 35);
+                Tuple<string, string, int> Can_Modify_AfterSales = new Tuple<string, string, int>("Can_Modify_AfterSales", "修改售后管理", 35);
+                Tuple<string, string, int> Can_Delete_AfterSales = new Tuple<string, string, int>("Can_Delete_AfterSales", "删除售后管理", 35);
+
+                Tuple<string, string, int> Can_Add_ContactUS = new Tuple<string, string, int>("Can_Add_ContactUS", "添加联系我们", 36);
+                Tuple<string, string, int> Can_View_ContactUS = new Tuple<string, string, int>("Can_View_ContactUS", "查看联系我们", 36);
+                Tuple<string, string, int> Can_Modify_ContactUS = new Tuple<string, string, int>("Can_Modify_ContactUS", "修改联系我们", 36);
+                Tuple<string, string, int> Can_Delete_ContactUS = new Tuple<string, string, int>("Can_Delete_ContactUS", "删除联系我们", 36);
+
+                Tuple<string, string, int> Can_Add_Agent = new Tuple<string, string, int>("Can_Add_Agent", "添加推送代理商", 38);
+                Tuple<string, string, int> Can_View_Agent = new Tuple<string, string, int>("Can_View_Agent", "查看推送代理商", 38);
+                Tuple<string, string, int> Can_Modify_Agent = new Tuple<string, string, int>("Can_Modify_Agent", "修改推送代理商", 38);
+                Tuple<string, string, int> Can_Delete_Agent = new Tuple<string, string, int>("Can_Delete_Agent", "删除推送代理商", 38);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -664,6 +706,21 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_PushContent);
                 returnList.Add(Can_Modify_PushContent);
                 returnList.Add(Can_Delete_PushContent);
+
+                returnList.Add(Can_Add_AfterSales);
+                returnList.Add(Can_View_AfterSales);
+                returnList.Add(Can_Modify_AfterSales);
+                returnList.Add(Can_Delete_AfterSales);
+
+                returnList.Add(Can_Add_ContactUS);
+                returnList.Add(Can_View_ContactUS);
+                returnList.Add(Can_Modify_ContactUS);
+                returnList.Add(Can_Delete_ContactUS);
+
+                returnList.Add(Can_Add_Agent);
+                returnList.Add(Can_View_Agent);
+                returnList.Add(Can_Modify_Agent);
+                returnList.Add(Can_Delete_Agent);
                 #endregion
 
                 return returnList;

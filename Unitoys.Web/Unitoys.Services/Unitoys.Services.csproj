@@ -57,6 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgentService.cs" />
+    <Compile Include="ContactUSService.cs" />
+    <Compile Include="AfterSalesService.cs" />
     <Compile Include="PackageAttributeService.cs" />
     <Compile Include="AttributeService.cs" />
     <Compile Include="AttributeValueService.cs" />

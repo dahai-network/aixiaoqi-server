@@ -90,6 +90,9 @@ namespace Unitoys.Ioc
             Kernel.Bind<IAttributeValueService>().To<AttributeValueService>();
             Kernel.Bind<IProductAttributeService>().To<ProductAttributeService>();
             Kernel.Bind<IPackageAttributeService>().To<PackageAttributeService>();
+            Kernel.Bind<IAfterSalesService>().To<AfterSalesService>();
+            Kernel.Bind<IAgentService>().To<AgentService>();
+            Kernel.Bind<IContactUSService>().To<ContactUSService>();
         }
 
         private static void AddFilterBindings()

@@ -87,6 +87,9 @@ namespace Unitoys.Model
         public DbSet<UT_AttributeValue> UT_AttributeValue { get; set; }
         public DbSet<UT_ProductAttribute> UT_ProductAttribute { get; set; }
         public DbSet<UT_PackageAttribute> UT_PackageAttribute { get; set; }
+        public DbSet<UT_AfterSales> UT_AfterSales { get; set; }
+        public DbSet<UT_Agent> UT_Agent { get; set; }
+        public DbSet<UT_ContactUS> UT_ContactUS { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -145,6 +148,9 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new AttributeValueConfiguration());
             modelBuilder.Configurations.Add(new ProductAttributeConfiguration());
             modelBuilder.Configurations.Add(new PackageAttributeConfiguration());
+            modelBuilder.Configurations.Add(new AfterSalesConfiguration());
+            modelBuilder.Configurations.Add(new AgentConfiguration());
+            modelBuilder.Configurations.Add(new ContactUSConfiguration());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();  //表中都统一设置禁用一对多级联删除
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>(); //表中都统一设置禁用多对多级联删除
