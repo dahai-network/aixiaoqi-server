@@ -64,6 +64,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                CreateDate = i.CreateDate,
                                ConnectDate = i.ConnectDate,
                                DisconnectDate = i.DisconnectDate,
+                               DisconnectStatus = i.DisconnectStatus.ToString(),
                                ConnectDuration = i.DisconnectDate.HasValue ? GetHumanTime(i.DisconnectDate.Value - i.ConnectDate) : GetHumanTime(CommonHelper.GetDateTimeInt() - i.ConnectDate),
                                EjoinDevNameAndPort = i.EjoinDevNameAndPort,
                                Tel = i.UT_Users == null ? "" : i.UT_Users.Tel,

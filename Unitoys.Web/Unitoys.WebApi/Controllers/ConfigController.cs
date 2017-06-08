@@ -198,7 +198,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     IosVersion = UTConfig.SiteConfig.IosVersion,
                     userAgreementUrl = UTConfig.SiteConfig.UserAgreementUrl,
-                    aixiaoqiDescrUrl = UTConfig.SiteConfig.UserAgreementUrl,
+                    aixiaoqiDescrUrl = UTConfig.SiteConfig.AixiaoqiDescrUrl,
                     dualSimStandbyTutorialUrl = UTConfig.SiteConfig.DualSimStandbyTutorialUrl,
                     beforeGoingAbroadTutorialUrl = UTConfig.SiteConfig.BeforeGoingAbroadTutorialUrl,
                     paymentOfTerms = "1）购买后再使用，不存在乱收费或欠费情况。\n2）套餐购买后，需激活才能使用。\n3）如果激活不成功，可向爱小器官方申请退款。\n4）如果套餐激活成功了，爱小器官方不接受退款申请。",

@@ -39,6 +39,44 @@ namespace Unitoys.Model
         /// 分配的设备名和端口号
         /// </summary>
         public string EjoinDevNameAndPort { get; set; }
+        /// <summary>
+        /// IOS-PushKitToken
+        /// </summary>
+        public string PushKitToken { get; set; }
+        /// <summary>
+        /// 断开描述
+        /// </summary>
+        public EnumDisconnectStatus DisconnectStatus { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        //public string Remark { get; set; }
         public virtual UT_Users UT_Users { get; set; }
+    }
+
+    public enum EnumDisconnectStatus
+    {
+        不明 = 0,
+
+        //设备相关
+        设备登录移除 = 11,
+        设备05超时 = 12,
+        设备TCP断开 = 13,
+
+        //用户相关
+        用户收到断开连接 = 21,
+        用户05超时 = 22,
+        端口05超时 = 23,
+        用户登录移除 = 24,
+        /// <summary>
+        /// 同一IOS手机切换用户登录
+        /// </summary>
+        用户切换移除 = 25,
+        用户秒连接移除 = 26,
+        用户主动断开 = 28,
+
+        //端口相关
+        端口登录移除 = 31,
+        秒连接移除端口 = 32,
     }
 }
