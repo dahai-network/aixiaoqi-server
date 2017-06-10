@@ -19,7 +19,7 @@ namespace Unitoys.IServices
         /// <param name="createStartDate">创建开始时间</param>
         /// <param name="createEndDate">创建结束时间</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_DeviceBracelet>>> SearchAsync(int page, int rows, string iMEI, string tel, int? createStartDate, int? createEndDate);
+        Task<KeyValuePair<int, List<UT_DeviceBracelet>>> SearchAsync(int page, int rows, string sort, string order, string iMEI, string tel, int? createStartDate, int? createEndDate);
 
         /// <summary>
         /// 检查设备号是否已经存在

@@ -12,7 +12,7 @@ namespace Unitoys.Services
 {
     public class DeviceBraceletConnectRecordService : BaseService<UT_DeviceBraceletConnectRecord>, IDeviceBraceletConnectRecordService
     {
-        public async Task<KeyValuePair<int, List<UT_DeviceBraceletConnectRecord>>> SearchAsync(int page, int rows, string iMEI, string tel, int? createStartDate, int? createEndDate, bool? isOnLine)
+        public async Task<KeyValuePair<int, List<UT_DeviceBraceletConnectRecord>>> SearchAsync(int page, int rows, string sort, string order, string iMEI, string tel, int? createStartDate, int? createEndDate, bool? isOnLine)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -39,7 +39,48 @@ namespace Unitoys.Services
                     query = query.Where(x => x.DisconnectDate.HasValue == !isOnLine);
                 }
 
-                var result = await query.OrderByDescending(x => x.CreateDate).Skip((page - 1) * rows).Take(rows).ToListAsync();
+                if (!string.IsNullOrEmpty(sort))
+                {
+                    var sortArray = sort.Split(',');
+                    var orderArray = order.Split(',');
+
+                    for (int i = 0; i < sortArray.Length; i++)
+                    {
+                        string sortVal = sortArray[i];
+                        if (orderArray[i] == "desc")
+                        {
+                            switch (sortVal)
+                            {
+                                case "ConnectDuration":
+                                    query = query.OrderByDescending(x => x.DisconnectDate.HasValue ? x.ConnectDate - x.DisconnectDate : null);
+                                    break;
+                                default:
+                                    throw new Exception("意外的排序字段");
+                                    break;
+                            }
+
+                        }
+                        else if (orderArray[i] == "asc")
+                        {
+                            switch (sortVal)
+                            {
+                                case "ConnectDuration":
+                                    query = query.OrderBy(x => x.DisconnectDate.HasValue ? x.ConnectDate - x.DisconnectDate : null);
+                                    break;
+                                default:
+                                    throw new Exception("意外的排序字段");
+                                    break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.CreateDate);
+                    //query = query.OrderByDescending(x => new { x.ConnectDate });
+                }
+
+                var result = await query.Skip((page - 1) * rows).Take(rows).ToListAsync();
 
                 var count = await query.CountAsync();
 

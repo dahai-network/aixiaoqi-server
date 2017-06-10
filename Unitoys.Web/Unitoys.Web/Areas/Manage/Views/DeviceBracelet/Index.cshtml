@@ -23,13 +23,13 @@
     </div>
     <div data-options="region:'center',border:false">
         <table id="grid" class="easyui-datagrid" title="手环设备列表管理" style="width:100%;height:100%"
-               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/DeviceBracelet/GetList',method:'get',toolbar:toolbar,pagination:true">
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/DeviceBracelet/GetList',method:'get',toolbar:toolbar,pagination:true,remoteSort:true,multiSort:true">
             <thead>
                 <tr>
                     <th data-options="field:'IMEI',width:150">设备号</th>
-                    <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">绑定时间</th>
+                    <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt,sortable:true">绑定时间</th>
                     <th data-options="field:'UpdateDate',width:100,formatter:formatDateTimeInt">更新时间</th>
-                    <th data-options="field:'ConnectDate',width:100,formatter:formatDateTimeInt">连接时间</th>
+                    <th data-options="field:'ConnectDate',width:100,formatter:formatDateTimeInt,sortable:true">连接时间</th>
                     <th data-options="field:'Version',width:100">固件版本号</th>
                     <th data-options="field:'Power',width:100">电量</th>
                     <th data-options="field:'DeviceType',width:100,formatter:formatDeviceType">设备类型</th>

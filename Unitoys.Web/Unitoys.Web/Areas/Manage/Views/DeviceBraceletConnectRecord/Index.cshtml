@@ -26,7 +26,7 @@
     </div>
     <div data-options="region:'center',border:false">
         <table id="grid" class="easyui-datagrid" title="手环连接记录管理" style="width:100%;height:100%"
-               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/DeviceBraceletConnectRecord/GetList',method:'get',pagination:true">
+               data-options="rownumbers:true,fitColumns:true,singleSelect:true,url:'/Manage/DeviceBraceletConnectRecord/GetList',method:'get',pagination:true,remoteSort:true,multiSort:true">
             <thead>
                 <tr>
                     <th data-options="field:'Tel',width:120">用户名</th>
@@ -36,7 +36,7 @@
                     @*<th data-options="field:'ConnectDate',width:100,formatter:formatDateTimeInt">连接时间</th>*@
                     <th data-options="field:'DisconnectDate',width:100,formatter:formatDateTimeInt">断开时间</th>
                     <th data-options="field:'DisconnectStatus',width:100">断开状态</th>
-                    <th data-options="field:'ConnectDuration',width:100">连接时长</th>
+                    <th data-options="field:'ConnectDuration',width:100,sortable:true">连接时长</th>
                     <th data-options="field:'EjoinDevNameAndPort',width:100">分配设备</th>
                 </tr>
             </thead>
