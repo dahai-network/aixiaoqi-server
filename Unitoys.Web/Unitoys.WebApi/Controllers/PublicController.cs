@@ -85,8 +85,8 @@ namespace Unitoys.WebApi.Controllers
                     data = new
                     {
                         Version = UTConfig.SiteConfig.IosVersion,// "版本号",
-                        Mandatory = "0",// "是否强制",
-                        Descr = "1.更新时间更新\n2.优化传输速度",//"升级内容",
+                        Mandatory = "1",// "是否强制",
+                        Descr = "1、更新蓝牙绑定流程\n2、更新蓝牙连接稳定性\n3、优化短信功能\n4、新增爱小器国际卡手机激活功能",//"升级内容",
                         Url = "",//"升级地址url（地址可为空）",
                         TerminalCode = model.TerminalCode + ""//终端标识
                     }

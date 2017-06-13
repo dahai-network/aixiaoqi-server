@@ -77,7 +77,7 @@ namespace Unitoys.Services
                 else
                 {
                     query = query.OrderByDescending(x => x.CreateDate);
-                    //query = query.OrderByDescending(x => new { x.ConnectDate });
+                    //query = query.OrderByDescending(x => new  { x.ConnectDate });
                 }
 
                 var result = await query.Skip((page - 1) * rows).Take(rows).ToListAsync();

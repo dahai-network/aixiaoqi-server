@@ -55,6 +55,8 @@ namespace Unitoys.Core
                     requestStr.AppendLine("expires：" + System.Web.HttpContext.Current.Request.Headers["expires"]);
                     requestStr.AppendLine("sign：" + System.Web.HttpContext.Current.Request.Headers["sign"]);
                 }
+                requestStr.AppendLine("Version：" + System.Web.HttpContext.Current.Request.Headers["Version"]);
+                requestStr.AppendLine("Terminal：" + System.Web.HttpContext.Current.Request.Headers["Terminal"]);
             }
 
             MonLog.RequestStr = requestStr.ToString();

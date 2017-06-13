@@ -382,7 +382,7 @@ namespace Unitoys.WebApi.Controllers
                 PackageDetails = orderResult.PackageDetails,
                 PackageIsSupport4G = orderResult.PackageIsSupport4G,
                 PackageIsApn = orderResult.PackageIsApn,
-                PackageApnName = orderResult.PackageApnName,
+                PackageApnName = orderResult.PackageApnName ?? "",
                 Flow = orderResult.Flow,
                 Quantity = orderResult.Quantity.ToString(),
                 UnitPrice = orderResult.UnitPrice,
