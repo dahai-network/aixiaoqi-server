@@ -93,6 +93,7 @@ namespace Unitoys.Ioc
             Kernel.Bind<IAfterSalesService>().To<AfterSalesService>();
             Kernel.Bind<IAgentService>().To<AgentService>();
             Kernel.Bind<IContactUSService>().To<ContactUSService>();
+            Kernel.Bind<IUserLogService>().To<UserLogService>();
         }
 
         private static void AddFilterBindings()

@@ -280,6 +280,61 @@ namespace Unitoys.Core
                 return "-1";
             }
         }
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
+        /// <returns>成功返回图片路径，失败:-1, 没有图片、格式不对:-2, 超过限制大小:-3 </returns>
+        public static async Task<string> UploadLogFileAsync(HttpPostedFile file, string filePath, string fileName)
+        {
+            var beginTime = CommonHelper.GetDateTimeMS();
+            if (file != null && file.ContentLength > 0)
+            {
+                string extension = Path.GetExtension(file.FileName);
+                if (!CommonHelper.IsInArray(extension, ".log,.text"))
+                    return "-2";
+
+                int fileSize = file.ContentLength;
+                if (fileSize > UTConfig.SiteConfig.MaxFilePicSize)
+                    return "-3";
+
+                //新的文件名
+                string newFileName = string.Format("{0}{1}", fileName, extension);
+
+                //图片类型
+                //string contentType = extension == ".jpg" ? "image/jpeg" : extension == "png" ? "image/png" : "image/jpeg";
+
+                Stream stream = file.InputStream;
+
+
+                //存储到阿里云OSS。
+                var resultAliyun = AliyunOSS.PutFileAsync(filePath + newFileName, stream, "application/octet-stream");
+
+                //存储在本地服务器
+                //Task.Run(() =>
+                //{
+                //    string dirPath = IOHelper.GetMapPath(filePath);
+                //    if (!Directory.Exists(dirPath))
+                //        Directory.CreateDirectory(dirPath);
+                //    file.SaveAs(dirPath + newFileName);
+                //}).Wait();
+
+                if (await resultAliyun)
+                {
+                    return filePath + newFileName;
+                }
+                else
+                {
+                    return "-1";
+                }
+            }
+            else
+            {
+                return "-1";
+            }
+        }
         #endregion
 
 

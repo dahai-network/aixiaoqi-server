@@ -20,13 +20,15 @@ namespace Unitoys.WebApi.Controllers
         private IUserBillService _userBillService;
         private ISMSConfirmationService _smsConfirmationService;
         private IOrderService _orderService;
-        public UserController(IUserService userService, IPaymentService paymentService, IUserBillService userBillService, ISMSConfirmationService smsConfirmationService, IOrderService orderService)
+        private IUserLogService _userLogService;
+        public UserController(IUserService userService, IPaymentService paymentService, IUserBillService userBillService, ISMSConfirmationService smsConfirmationService, IOrderService orderService, IUserLogService userLogService)
         {
             this._userService = userService;
             this._paymentService = paymentService;
             this._userBillService = userBillService;
             this._smsConfirmationService = smsConfirmationService;
             this._orderService = orderService;
+            this._userLogService = userLogService;
         }
 
         /// <summary>
@@ -243,6 +245,56 @@ namespace Unitoys.WebApi.Controllers
                     }
                 }
                 return Ok(new StatusCodeRes(StatusCodeType.暂时无法保存头像, "暂时无法保存头像 uploadImageUrl：" + uploadImageUrl));
+            }
+            return Ok(new StatusCodeRes(StatusCodeType.失败));
+        }
+        /// <summary>
+        /// 上传用户日志
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IHttpActionResult> UploadUserLog()
+        {
+            var httpRequest = HttpContext.Current.Request;
+
+            //LoggerHelper.Info(httpRequest.Files.Count + "");
+            //LoggerHelper.Info(Request.Content.ReadAsStringAsync().Result);
+
+            if (httpRequest.Files.Count > 0)
+            {
+                var currentUser = WebUtil.GetApiUserSession();
+
+                List<string> logFileUrlList = new List<string>();
+
+                for (int i = 0; i < httpRequest.Files.Count; i++)
+                {
+                    HttpPostedFile file = httpRequest.Files[i];
+                    //2. 等待图片上传完成。
+                    string uploadImageUrl = await WebUtil.UploadLogFileAsync(file, "/Unitoys/UserLog/", System.IO.Path.GetFileNameWithoutExtension(file.FileName));
+                    
+                    //3. 判断图片是否上传成功。
+                    if (uploadImageUrl != "-1" && uploadImageUrl != "-2" && uploadImageUrl != "-3")
+                    {
+                        logFileUrlList.Add(uploadImageUrl);
+                    }
+                    else
+                    {
+                        return Ok(new StatusCodeRes(StatusCodeType.失败, "暂时无法保存文件 result：" + uploadImageUrl));
+                    }
+                }
+
+                UT_UserLog entity = new UT_UserLog();
+                entity.UserId = currentUser.ID;
+                entity.CreateDate = CommonHelper.GetDateTimeInt();
+                entity.LogFileUrl = string.Join(",", logFileUrlList);
+                if (await _userLogService.InsertAsync(entity))
+                {
+                    return Ok(new { status = 1, msg = "保存成功" });
+                }
+                else
+                {
+                    return Ok(new StatusCodeRes(StatusCodeType.失败, "保存失败"));
+                }
+
             }
             return Ok(new StatusCodeRes(StatusCodeType.失败));
         }

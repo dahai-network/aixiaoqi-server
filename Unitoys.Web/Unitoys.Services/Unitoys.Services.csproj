@@ -66,6 +66,7 @@
     <Compile Include="ProductAttributeService.cs" />
     <Compile Include="BannerConfiguration.cs" />
     <Compile Include="PushContentService.cs" />
+    <Compile Include="UserLogService.cs" />
     <Compile Include="UserReceiveService.cs" />
     <Compile Include="UserDeviceTelService.cs" />
     <Compile Include="OrderDeviceTelService.cs" />

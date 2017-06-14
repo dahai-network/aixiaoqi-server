@@ -59,6 +59,7 @@
     <Compile Include="IAttributeService.cs" />
     <Compile Include="IPushContentService.cs" />
     <Compile Include="IOrderDeviceTelService.cs" />
+    <Compile Include="IUserLogService.cs" />
     <Compile Include="IUserDeviceTelService.cs" />
     <Compile Include="IUserReceiveService.cs" />
     <Compile Include="IGlobalContentService.cs" />

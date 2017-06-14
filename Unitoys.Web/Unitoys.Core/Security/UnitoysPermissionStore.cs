@@ -343,6 +343,15 @@ namespace Unitoys.Core.Security
         public const string Can_Delete_Agent = "Can_Delete_Agent";
 
         #endregion
+
+        #region UserLog
+
+        public const string Can_Add_UserLog = "Can_Add_UserLog";
+        public const string Can_View_UserLog = "Can_View_UserLog";
+        public const string Can_Modify_UserLog = "Can_Modify_UserLog";
+        public const string Can_Delete_UserLog = "Can_Delete_UserLog";
+
+        #endregion
         public static List<Tuple<string, string, int>> Properties
         {
             get
@@ -537,6 +546,11 @@ namespace Unitoys.Core.Security
                 Tuple<string, string, int> Can_Modify_Agent = new Tuple<string, string, int>("Can_Modify_Agent", "修改推送代理商", 38);
                 Tuple<string, string, int> Can_Delete_Agent = new Tuple<string, string, int>("Can_Delete_Agent", "删除推送代理商", 38);
 
+                Tuple<string, string, int> Can_Add_UserLog = new Tuple<string, string, int>("Can_Add_UserLog", "添加用户日志", 39);
+                Tuple<string, string, int> Can_View_UserLog = new Tuple<string, string, int>("Can_View_UserLog", "查看用户日志", 39);
+                Tuple<string, string, int> Can_Modify_UserLog = new Tuple<string, string, int>("Can_Modify_UserLog", "修改用户日志", 39);
+                Tuple<string, string, int> Can_Delete_UserLog = new Tuple<string, string, int>("Can_Delete_UserLog", "删除用户日志", 39);
+
                 returnList.Add(Can_Add_User);
                 returnList.Add(Can_View_User);
                 returnList.Add(Can_Modify_User);
@@ -721,6 +735,11 @@ namespace Unitoys.Core.Security
                 returnList.Add(Can_View_Agent);
                 returnList.Add(Can_Modify_Agent);
                 returnList.Add(Can_Delete_Agent);
+
+                returnList.Add(Can_Add_UserLog);
+                returnList.Add(Can_View_UserLog);
+                returnList.Add(Can_Modify_UserLog);
+                returnList.Add(Can_Delete_UserLog);
                 #endregion
 
                 return returnList;
