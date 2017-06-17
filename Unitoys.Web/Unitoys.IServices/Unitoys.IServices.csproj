@@ -53,6 +53,7 @@
     <Compile Include="IAgentService.cs" />
     <Compile Include="IContactUSService.cs" />
     <Compile Include="IAfterSalesService.cs" />
+    <Compile Include="IDeviceBraceletUsageRecordService.cs" />
     <Compile Include="IPackageAttributeService.cs" />
     <Compile Include="IAttributeValueService.cs" />
     <Compile Include="IProductAttributeService.cs" />

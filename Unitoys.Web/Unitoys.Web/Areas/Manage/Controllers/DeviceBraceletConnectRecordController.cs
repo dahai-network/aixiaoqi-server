@@ -67,7 +67,10 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                DisconnectStatus = i.DisconnectStatus.ToString(),
                                ConnectDuration = i.DisconnectDate.HasValue ? GetHumanTime(i.DisconnectDate.Value - i.ConnectDate) : GetHumanTime(CommonHelper.GetDateTimeInt() - i.ConnectDate),
                                EjoinDevNameAndPort = i.EjoinDevNameAndPort,
+                               RegSuccessDate = i.RegSuccessDate,
+                               Remark = i.Remark,
                                Tel = i.UT_Users == null ? "" : i.UT_Users.Tel,
+                               ClientType = i.ClientType,
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };
@@ -75,6 +78,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             return Json(jsonResult, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 人类可识别的时间大小
+        /// </summary>
+        /// <param name="seconds">总秒数</param>
+        /// <returns></returns>
         private string GetHumanTime(int seconds)
         {
             TimeSpan ts = new TimeSpan(0, 0, seconds);

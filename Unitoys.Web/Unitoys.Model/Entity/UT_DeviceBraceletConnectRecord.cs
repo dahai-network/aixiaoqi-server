@@ -36,6 +36,10 @@ namespace Unitoys.Model
         /// </summary>
         public int? DisconnectDate { get; set; }
         /// <summary>
+        /// 注册成功时间
+        /// </summary>
+        public int? RegSuccessDate { get; set; }
+        /// <summary>
         /// 分配的设备名和端口号
         /// </summary>
         public string EjoinDevNameAndPort { get; set; }
@@ -48,12 +52,24 @@ namespace Unitoys.Model
         /// </summary>
         public EnumDisconnectStatus DisconnectStatus { get; set; }
         /// <summary>
+        /// 客户端类型
+        /// 01 IOS
+        /// 02 安卓
+        /// </summary>
+        public EnumClientType? ClientType { get; set; }
+        public string Remark { get; set; }
+        /// <summary>
         /// 备注
         /// </summary>
         //public string Remark { get; set; }
         public virtual UT_Users UT_Users { get; set; }
     }
-
+    public enum EnumClientType
+    {
+        未知 = 0,
+        iOS = 1,
+        Android = 2
+    }
     public enum EnumDisconnectStatus
     {
         不明 = 0,

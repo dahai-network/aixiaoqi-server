@@ -39,6 +39,7 @@ namespace Unitoys.Model
             this.UT_UserReceive = new HashSet<UT_UserReceive>();
             this.UT_UserDeviceTel = new HashSet<UT_UserDeviceTel>();
             this.UT_UserLog = new HashSet<UT_UserLog>();
+            this.UT_DeviceBraceletUsageRecord = new HashSet<UT_DeviceBraceletUsageRecord>();
         }
         /// <summary>
         /// 手机号码（需要短信验证）
@@ -141,6 +142,6 @@ namespace Unitoys.Model
         public virtual ICollection<UT_UserReceive> UT_UserReceive { get; set; }
         public virtual ICollection<UT_UserDeviceTel> UT_UserDeviceTel { get; set; }
         public virtual ICollection<UT_UserLog> UT_UserLog { get; set; }
-
+        public virtual ICollection<UT_DeviceBraceletUsageRecord> UT_DeviceBraceletUsageRecord { get; set; }
     }
 }

@@ -20,15 +20,17 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         private IPaymentService _paymentService;
         private IOrderService _orderService;
         private ISMSConfirmationService _smsConfirmationService;
+        private IDeviceBraceletConnectRecordService _deviceBraceletConnectRecordService;
 
         public UserController() { }
 
-        public UserController(IUserService userService, IPaymentService paymentService, IOrderService orderService, ISMSConfirmationService smsConfirmationService)
+        public UserController(IUserService userService, IPaymentService paymentService, IOrderService orderService, ISMSConfirmationService smsConfirmationService, IDeviceBraceletConnectRecordService deviceBraceletConnectRecordService)
         {
             this._userService = userService;
             this._paymentService = paymentService;
             this._orderService = orderService;
             this._smsConfirmationService = smsConfirmationService;
+            this._deviceBraceletConnectRecordService = deviceBraceletConnectRecordService;
         }
 
         public ActionResult Index()
@@ -325,42 +327,61 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 获取图标的配置参数
+        /// </summary>
+        /// <param name="createStartDate">开始时间</param>
+        /// <param name="createEndDate">结束时间</param>
+        /// <returns></returns>
         public async Task<ActionResult> GetOptionByBarChart(DateTime? createStartDate, DateTime? createEndDate)
         {
-            var listUser = await this._userService.GetEntitiesAsync(x =>
+            var listUser = (await _userService.GetEntitiesAsync(x =>
                 (
                 createStartDate.HasValue ? x.CreateDate >= createStartDate.Value : true)
                 && (createEndDate.HasValue ? x.CreateDate <= createEndDate.Value : true)
-                );
+                )).OrderByDescending(x => x.CreateDate);
 
-            var listPayment = await this._paymentService.GetEntitiesAsync(x =>
+            var listPayment = (await _paymentService.GetEntitiesAsync(x =>
                 (
                 createStartDate.HasValue ? x.CreateDate >= createStartDate.Value : true)
                 && (createEndDate.HasValue ? x.CreateDate <= createEndDate.Value : true)
                 && x.Status == 1
-                );
+                )).OrderByDescending(x => x.CreateDate);
 
             var createStartDateInt = createStartDate.HasValue ? CommonHelper.ConvertDateTimeInt(createStartDate.Value) : 0;
             var createEndDateInt = createEndDate.HasValue ? CommonHelper.ConvertDateTimeInt(createEndDate.Value) : 0;
 
-            var listOrderYesPayment = await this._orderService.GetEntitiesAsync(x =>
+            var listOrderYesPayment = (await this._orderService.GetEntitiesAsync(x =>
                (
                createStartDate.HasValue ? x.OrderDate >= createStartDateInt : true)
                && (createEndDate.HasValue ? x.OrderDate <= createEndDateInt : true)
                && x.PayStatus == PayStatusType.YesPayment
-               );
-            var listOrderActivation = await this._orderService.GetEntitiesAsync(x =>
+               )).OrderByDescending(x => x.OrderDate);
+
+            var listOrderActivation = (await _orderService.GetEntitiesAsync(x =>
               (
               x.ActivationDate.HasValue
               && createStartDate.HasValue ? x.ActivationDate >= createStartDateInt : true)
               && (createEndDate.HasValue ? x.ActivationDate <= createEndDateInt : true)
-              );
+              )).OrderByDescending(x => x.ActivationDate);
 
-            var listSmsConfirmation = await this._smsConfirmationService.GetEntitiesAsync(x =>
+            var listSmsConfirmation = (await _smsConfirmationService.GetEntitiesAsync(x =>
                (
                createStartDate.HasValue ? x.CreateDate >= createStartDate.Value : true)
                && (createEndDate.HasValue ? x.CreateDate <= createEndDate.Value : true)
-               );
+               )).OrderByDescending(x => x.CreateDate);
+
+            var listDeviceBraceletConnectRecord = (await _deviceBraceletConnectRecordService.GetEntitiesAsync(x =>
+              (
+              createStartDate.HasValue ? x.ConnectDate >= createStartDateInt : true)
+              && (createEndDate.HasValue ? x.ConnectDate <= createEndDateInt : true)
+              )).Distinct(new DeviceBraceletConnectRecordNoComparer()).OrderByDescending(x => x.CreateDate);
+
+            var listDeviceBraceletConnectRecordOnLineTime = (await _deviceBraceletConnectRecordService.GetEntitiesAsync(x =>
+              (
+              createStartDate.HasValue ? x.DisconnectDate >= createStartDateInt : true)
+              && (createEndDate.HasValue ? x.DisconnectDate <= createEndDateInt : true)
+              )).OrderByDescending(x => x.CreateDate);
 
             var opUser = GetChartOption(
                 "注册用户量",
@@ -391,7 +412,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     new ChartSeriesModel(){
                         name = "订单付款量",
                         type = "bar",
-                        data = listOrderYesPayment.GroupBy(x => CommonHelper.GetTime(x.OrderDate + "").ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+                        data = listOrderYesPayment.GroupBy(x => CommonHelper.GetTime(x.OrderDate + "").ToString("yyyy-MM-dd")).Select(x => x.Count()).ToList()
                     }
                 });
 
@@ -422,6 +443,126 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     }
                 });
 
+            //存在的客户端类型
+            var clientTypeDistinctList = listDeviceBraceletConnectRecord.Select(x => x.ClientType).Distinct();
+
+            #region 设备用户注册量
+
+            var listOpDeviceBraceletUserRegSuccess = new List<ChartSeriesModel>();
+            foreach (var item in clientTypeDistinctList)
+            {
+                var clientTypeDescr = (item.HasValue ? item.Value.ToString() : "无识别") + "-";
+
+                listOpDeviceBraceletUserRegSuccess.Add(new ChartSeriesModel()
+                {
+                    name = clientTypeDescr + "注册",
+                    type = "bar",
+                    data = listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item).Select(a => a.UserId).Distinct().Count() + "").ToList()
+                });
+                listOpDeviceBraceletUserRegSuccess.Add(new ChartSeriesModel()
+                {
+                    name = clientTypeDescr + "注册成功",
+                    type = "bar",
+                    data = listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item && a.RegSuccessDate.HasValue).Select(a => a.UserId).Distinct().Count() + "").ToList()
+                });
+            }
+
+            var opDeviceBraceletUserRegSuccess = GetChartOption(
+             "卡-注册人数",
+             listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+             listOpDeviceBraceletUserRegSuccess);
+
+            #endregion
+
+            #region 设备注册量
+
+            var listOpDeviceBraceletRegCount = new List<ChartSeriesModel>();
+            foreach (var item in clientTypeDistinctList)
+            {
+                var clientTypeDescr = (item.HasValue ? item.Value.ToString() : "无识别") + "-";
+
+                listOpDeviceBraceletRegCount.Add(new ChartSeriesModel()
+                {
+                    name = clientTypeDescr + "注册成功",
+                    type = "bar",
+                    data = listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item && a.RegSuccessDate.HasValue).Count() + "").ToList()
+                });
+                listOpDeviceBraceletRegCount.Add(new ChartSeriesModel()
+                {
+                    name = clientTypeDescr + "注册失败",
+                    type = "bar",
+                    data = listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item && !a.RegSuccessDate.HasValue).Count() + "").ToList()
+                });
+            }
+
+            var opDeviceBraceletRegCount = GetChartOption(
+            "卡-注册量",
+            listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+            listOpDeviceBraceletRegCount);
+
+            #endregion
+
+            #region 卡掉线次数
+
+            var listOpDeviceBraceletDisconnectDateCount = new List<ChartSeriesModel>();
+            foreach (var item in clientTypeDistinctList)
+            {
+                var clientTypeDescr = (item.HasValue ? item.Value.ToString() : "无识别") + "-";
+
+                listOpDeviceBraceletDisconnectDateCount.Add(new ChartSeriesModel()
+                {
+                    name = clientTypeDescr + "掉线次数",
+                    type = "bar",
+                    data = listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item == a.DisconnectDate.HasValue).Count() + "").ToList()
+                });
+            }
+
+            var opDeviceBraceletDisconnectDateCount = GetChartOption(
+           "卡-掉线次数",
+           listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+           listOpDeviceBraceletDisconnectDateCount);
+
+            #endregion
+
+            #region 卡平均在线时间
+
+            var listOpDeviceBraceletOnLineTime = new List<ChartSeriesModel>();
+            foreach (var item in clientTypeDistinctList)
+            {
+                var clientTypeDescr = (item.HasValue ? item.Value.ToString() : "无识别") + "-";
+
+                listOpDeviceBraceletOnLineTime.Add(new ChartSeriesModel()
+                {
+                    name = clientTypeDescr + "平均在线",
+                    type = "bar",
+                    data = listDeviceBraceletConnectRecordOnLineTime.GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x =>
+                        Convert.ToInt32(x.Where(a => a.ClientType == item == a.DisconnectDate.HasValue).GroupBy(a => a.SessionId).Average(a => a.OrderByDescending(b => b.DisconnectDate).FirstOrDefault().DisconnectDate - a.OrderBy(b => b.ConnectDate).FirstOrDefault().ConnectDate)) / 60
+                        ).ToList()
+                });
+            }
+
+            var opDeviceBraceletOnLineTime = GetChartOption(
+           "卡-单次在线时长平均值",
+           listDeviceBraceletConnectRecordOnLineTime.GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+           listOpDeviceBraceletOnLineTime);
+
+            #endregion
+
+            //var opDeviceBraceletRegCount = GetChartOption(
+            //"设备注册量",
+            //listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+            //new List<ChartSeriesModel>(){
+            //        new ChartSeriesModel(){
+            //            name = "注册成功",
+            //            type = "bar",
+            //            data = listDeviceBraceletConnectRecord.Where(x=>x.RegSuccessDate.HasValue).GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+            //        },new ChartSeriesModel(){
+            //            name = "注册失败",
+            //            type = "bar",
+            //            data = listDeviceBraceletConnectRecord.Where(x=>!x.RegSuccessDate.HasValue).GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Count() + "").ToList()
+            //        }
+            //    });
+
             return Json(new
             {
                 opUser = opUser,
@@ -429,6 +570,11 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 opOrderYesPayment = opOrderYesPayment,
                 opOrderActivation = opOrderActivation,
                 opOrderSmsConfirmation = opOrderSmsConfirmation,
+                opDeviceBraceletUserRegSuccess = opDeviceBraceletUserRegSuccess,
+                opDeviceBraceletRegCount = opDeviceBraceletRegCount,
+                opDeviceBraceletDisconnectDateCount = opDeviceBraceletDisconnectDateCount,
+                opDeviceBraceletOnLineTime = opDeviceBraceletOnLineTime
+
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -439,12 +585,12 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="names"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        private dynamic GetChartOption(string title, List<string> xAxisNames, List<ChartSeriesModel> seriesList)
+        private dynamic GetChartOption(string title, List<string> xAxisNames, List<ChartSeriesModel> seriesList, string formatter = "")
         {
             var option = new
             {
                 title = new { text = title },
-                tooltip = new { trigger = "axis" },
+                tooltip = new { trigger = "axis", formatter = formatter },
                 legend = new { data = title },
                 xAxis = new { data = xAxisNames },
                 yAxis = new { },
@@ -452,11 +598,60 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             };
             return option;
         }
+        /// <summary>
+        /// 人类可识别的时间大小
+        /// </summary>
+        /// <param name="seconds">总秒数</param>
+        /// <returns></returns>
+        private string GetHumanTime(int seconds)
+        {
+            TimeSpan ts = new TimeSpan(0, 0, seconds);
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            if (ts.Days > 0)
+            {
+                sb.Append((int)ts.TotalDays + "天");
+            }
+            if (ts.Hours > 0)
+            {
+                sb.Append(ts.Hours + "小时");
+            }
+            if (ts.Minutes > 0)
+            {
+                sb.Append(ts.Minutes + "分");
+            }
+            if (ts.Seconds > 0)
+            {
+                sb.Append(ts.Seconds + "秒");
+            }
+            return sb.ToString();
+        }
     }
     public class ChartSeriesModel
     {
         public string name { get; set; }
         public string type { get; set; }
-        public List<string> data { get; set; }
+        public dynamic data { get; set; }
+        //public List<double> data { get; set; }
+    }
+
+    // <summary>
+    /// 去"重复"时候的比较器(只要ProductNo相同，即认为是相同记录)
+    /// </summary>
+    public class DeviceBraceletConnectRecordNoComparer : IEqualityComparer<UT_DeviceBraceletConnectRecord>
+    {
+        public bool Equals(UT_DeviceBraceletConnectRecord p1, UT_DeviceBraceletConnectRecord p2)
+        {
+            if (p1 == null)
+                return p2 == null;
+            return p1.SessionId == p2.SessionId;
+        }
+
+        public int GetHashCode(UT_DeviceBraceletConnectRecord p)
+        {
+            if (p == null)
+                return 0;
+            return p.SessionId.GetHashCode();
+        }
     }
 }

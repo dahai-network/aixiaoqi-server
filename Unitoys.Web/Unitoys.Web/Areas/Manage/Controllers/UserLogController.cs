@@ -56,7 +56,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                            {
                                ID = i.ID,
                                Tel = i.UT_Users.Tel,
-                               LogFileUrl =string.Join(",",i.LogFileUrl.Split(',').Select(x => x.GetCompleteUrl())),
+                               LogFileUrl = string.Join(",", i.LogFileUrl.Split(',').Select(x => x.GetCompleteUrl())),
+                               LogFileSize = i.LogFileSize,
                                CreateDate = i.CreateDate,
                            };
 

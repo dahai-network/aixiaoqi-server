@@ -32,12 +32,15 @@
                     <th data-options="field:'Tel',width:120">用户名</th>
                     <th data-options="field:'SessionId',width:120">TCP会话</th>
                     <th data-options="field:'IMEI',width:120">设备号</th>
+                    <th data-options="field:'ClientType',width:120,formatter:formatClientType">客户端类型</th>
                     <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">创建时间</th>
                     @*<th data-options="field:'ConnectDate',width:100,formatter:formatDateTimeInt">连接时间</th>*@
+                    <th data-options="field:'RegSuccessDate',width:100,formatter:formatDateTimeInt">注册成功时间</th>
                     <th data-options="field:'DisconnectDate',width:100,formatter:formatDateTimeInt">断开时间</th>
                     <th data-options="field:'DisconnectStatus',width:100">断开状态</th>
                     <th data-options="field:'ConnectDuration',width:100,sortable:true">连接时长</th>
                     <th data-options="field:'EjoinDevNameAndPort',width:100">分配设备</th>
+                    <th data-options="field:'Remark',width:100">备注</th>
                 </tr>
             </thead>
         </table>
@@ -54,7 +57,18 @@
         dlg_Edit_form = dlg_Edit.find('form');
         setInterval(function () { grid.datagrid('reload'); }, 5000)
     })
-
+    function formatClientType(value, rec, index) {
+        if (value == 0) {
+            return "未知";
+        }
+        if (value == 1) {
+            return "iOS";
+        }
+        if (value == 2) {
+            return "Android";
+        }
+        return "未识别的设备";
+    }
     function doSearch() {
         $("#grid").datagrid('load', {
             tel: $("#tel").val() == null ? "" : $("#tel").val(),

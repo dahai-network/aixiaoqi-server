@@ -91,6 +91,8 @@ namespace Unitoys.Model
         public DbSet<UT_Agent> UT_Agent { get; set; }
         public DbSet<UT_ContactUS> UT_ContactUS { get; set; }
         public DbSet<UT_UserLog> UT_UserLog { get; set; }
+        public DbSet<UT_DeviceBraceletUsageRecord> UT_DeviceBraceletUsageRecord { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -153,7 +155,8 @@ namespace Unitoys.Model
             modelBuilder.Configurations.Add(new AgentConfiguration());
             modelBuilder.Configurations.Add(new ContactUSConfiguration());
             modelBuilder.Configurations.Add(new UserLogConfiguration());
-                
+            modelBuilder.Configurations.Add(new DeviceBraceletUsageRecordConfiguration());
+
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();  //表中都统一设置禁用一对多级联删除
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>(); //表中都统一设置禁用多对多级联删除
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>(); //表名为类名，不是上面带s的名字  //移除复数表名的契约

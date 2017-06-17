@@ -263,18 +263,20 @@ namespace Unitoys.WebApi.Controllers
             {
                 var currentUser = WebUtil.GetApiUserSession();
 
-                List<string> logFileUrlList = new List<string>();
+                //URL,Size
+                Dictionary<string, int> logFileInfo = new Dictionary<string, int>();
 
                 for (int i = 0; i < httpRequest.Files.Count; i++)
                 {
                     HttpPostedFile file = httpRequest.Files[i];
                     //2. 等待图片上传完成。
                     string uploadImageUrl = await WebUtil.UploadLogFileAsync(file, "/Unitoys/UserLog/", System.IO.Path.GetFileNameWithoutExtension(file.FileName));
-                    
+
                     //3. 判断图片是否上传成功。
                     if (uploadImageUrl != "-1" && uploadImageUrl != "-2" && uploadImageUrl != "-3")
                     {
-                        logFileUrlList.Add(uploadImageUrl);
+                        //logFileUrlList.Add(uploadImageUrl);
+                        logFileInfo.Add(uploadImageUrl, file.ContentLength);
                     }
                     else
                     {
@@ -285,7 +287,8 @@ namespace Unitoys.WebApi.Controllers
                 UT_UserLog entity = new UT_UserLog();
                 entity.UserId = currentUser.ID;
                 entity.CreateDate = CommonHelper.GetDateTimeInt();
-                entity.LogFileUrl = string.Join(",", logFileUrlList);
+                entity.LogFileUrl = string.Join(",", logFileInfo.Keys);
+                entity.LogFileSize = string.Join(",", logFileInfo.Values);
                 if (await _userLogService.InsertAsync(entity))
                 {
                     return Ok(new { status = 1, msg = "保存成功" });

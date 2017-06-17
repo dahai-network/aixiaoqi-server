@@ -335,6 +335,10 @@
         var eChartOrderYesPayment;
         var eChartOrderActivation;
         var eChartOrderSmsConfirmation;
+        var eChartDeviceBraceletUserRegSuccess;
+        var eChartDeviceBraceletRegCount;
+        var eChartDeviceBraceletDisconnectDateCount;
+        var eChartDeviceBraceletOnLineTime;
         function doSearch() {
             $.post("/User/GetOptionByBarChart", {
                 createStartDate: $("input[name$='createStartDate']").val(),
@@ -345,6 +349,11 @@
                 eChartOrderYesPayment.setOption(data.opOrderYesPayment);
                 eChartOrderActivation.setOption(data.opOrderActivation);
                 eChartOrderSmsConfirmation.setOption(data.opOrderSmsConfirmation);
+                eChartDeviceBraceletUserRegSuccess.setOption(data.opDeviceBraceletUserRegSuccess);
+                eChartDeviceBraceletRegCount.setOption(data.opDeviceBraceletRegCount);
+                eChartDeviceBraceletDisconnectDateCount.setOption(data.opDeviceBraceletDisconnectDateCount);
+                eChartDeviceBraceletOnLineTime.setOption(data.opDeviceBraceletOnLineTime);
+                
             })
         }
         function setDateRange(interval, number) {
@@ -456,6 +465,11 @@
             eChartOrderYesPayment = echarts.init(document.getElementById('eChartOrderYesPayment'));
             eChartOrderActivation = echarts.init(document.getElementById('eChartOrderActivation'));
             eChartOrderSmsConfirmation = echarts.init(document.getElementById('eChartOrderSmsConfirmation'));
+            eChartDeviceBraceletUserRegSuccess = echarts.init(document.getElementById('eChartDeviceBraceletUserRegSuccess'));
+            eChartDeviceBraceletRegCount = echarts.init(document.getElementById('eChartDeviceBraceletRegCount'));
+            eChartDeviceBraceletDisconnectDateCount = echarts.init(document.getElementById('eChartDeviceBraceletDisconnectDateCount'));
+            eChartDeviceBraceletOnLineTime = echarts.init(document.getElementById('eChartDeviceBraceletOnLineTime'));
+
             //doSearch();
             setDateRange('d', -1);
         });
@@ -513,7 +527,11 @@
                         <div id="eChartPayment" style="width: 600px; height: 400px; float: left;"></div>
                         <div id="eChartOrderYesPayment" style="width: 600px; height: 400px; float: left;"></div>
                         <div id="eChartOrderActivation" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartDeviceBraceletUserRegSuccess" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartDeviceBraceletRegCount" style="width: 600px; height: 400px; float: left;"></div>
                         <div id="eChartOrderSmsConfirmation" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartDeviceBraceletDisconnectDateCount" style="width: 600px; height: 400px; float: left;"></div>
+                        <div id="eChartDeviceBraceletOnLineTime" style="width: 600px; height: 400px; float: left;"></div>
                     </div>
                 </div>
 

@@ -63,6 +63,7 @@
     <Compile Include="Configuration\AfterSalesConfiguration.cs" />
     <Compile Include="Configuration\AgentConfiguration.cs" />
     <Compile Include="Configuration\ContactUSConfiguration.cs" />
+    <Compile Include="Configuration\DeviceBraceletUsageRecordConfiguration.cs" />
     <Compile Include="Configuration\PackageAttributeConfiguration.cs" />
     <Compile Include="Configuration\AttributeValueConfiguration.cs" />
     <Compile Include="Configuration\ProductAttributeConfiguration.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Entity\UT_PushContent.cs" />
     <Compile Include="Entity\UT_OrderDeviceTel.cs" />
     <Compile Include="Entity\UT_UserLog.cs" />
+    <Compile Include="Entity\UT_DeviceBraceletUsageRecord.cs" />
     <Compile Include="Entity\UT_UserReceive.cs" />
     <Compile Include="Entity\UT_UserDeviceTel.cs" />
     <Compile Include="Entity\UT_News.cs" />

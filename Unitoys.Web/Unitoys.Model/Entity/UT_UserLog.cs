@@ -21,6 +21,10 @@ namespace Unitoys.Model
         /// </summary>
         public string LogFileUrl { get; set; }
         /// <summary>
+        /// 日志文件大小(字节单位)，多个为逗号分隔
+        /// </summary>
+        public string LogFileSize { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public int CreateDate { get; set; }

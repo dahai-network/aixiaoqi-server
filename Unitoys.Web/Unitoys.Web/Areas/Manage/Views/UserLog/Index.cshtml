@@ -25,6 +25,7 @@
                 <tr>
                     <th data-options="field:'Tel',width:100">用户</th>
                     <th data-options="field:'LogFileUrl',width:100,formatter:formatLogFileUrl">日志</th>
+                    <th data-options="field:'LogFileSize',width:100,formatter:formatLogFileSize">日志大小</th>
                     <th data-options="field:'CreateDate',width:100,formatter:formatDateTimeInt">上传时间</th>
                 </tr>
             </thead>
@@ -151,6 +152,41 @@
             return str;
         }
         return value;
+    }
+    function formatLogFileSize(value, rec, index) {
+        if (value) {
+            var str = '';
+            $.each(value.split(','), function (i, o) {
+                if (str) {
+                    str += '<br/>';
+                }
+                str += humanReadableFilesize(o);
+            })
+            return str;
+        }
+        return value;
+    }
+    function humanReadableFilesize(size) {
+        var units = new Array("B", "KB", "MB", "GB", "TB", "PB");
+        var mod = 1024.0;
+        var i = 0;
+        while (size >= mod) {
+            size /= mod;
+            i++;
+        }
+        //return Math.round(size) + units[i];
+        return formatNum(size, 1) + units[i];
+    }
+
+    //格式化数字类型,保留小数点后几位,非四舍五入
+    //size:值
+    //n:保留位数
+    function formatNum(size, n) {
+        var sizeStr = size.toString();
+        if (sizeStr.lastIndexOf('.') > -1)
+            return sizeStr.substring(0, sizeStr.toString().indexOf('.') + 1 + n);
+        else
+            return sizeStr;
     }
     function doSearch() {
         $("#grid").datagrid('load', {

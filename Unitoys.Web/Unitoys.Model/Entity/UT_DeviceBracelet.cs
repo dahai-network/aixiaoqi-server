@@ -12,7 +12,6 @@ namespace Unitoys.Model
     /// </summary>
     public class UT_DeviceBracelet : UT_Entity
     {
-
         /// <summary>
         /// 用户ID
         /// </summary>

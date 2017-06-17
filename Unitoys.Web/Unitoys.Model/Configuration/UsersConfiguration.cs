@@ -72,6 +72,8 @@ namespace Unitoys.Model
             this.HasMany(t => t.UT_UserDeviceTel).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
             //用户日志1对多
             this.HasMany(t => t.UT_UserLog).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
+            //用户设备使用记录
+            this.HasMany(t => t.UT_DeviceBraceletUsageRecord).WithRequired(t => t.UT_Users).HasForeignKey(t => t.UserId);
 
             this.Property(t => t.PassWord).HasMaxLength(32).IsRequired();
 

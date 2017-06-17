@@ -14,11 +14,13 @@ namespace Unitoys.WebApi.Controllers
     public class DeviceBraceletController : ApiController
     {
         private IDeviceBraceletService _deviceBraceletService;
+        private IDeviceBraceletUsageRecordService _deviceBraceletUsageRecordService;
         private IEjoinDevSlotService _ejoinDevSlotService;
-        public DeviceBraceletController(IDeviceBraceletService deviceBraceletService, IEjoinDevSlotService ejoinDevSlotService)
+        public DeviceBraceletController(IDeviceBraceletService deviceBraceletService, IEjoinDevSlotService ejoinDevSlotService, IDeviceBraceletUsageRecordService deviceBraceletUsageRecordService)
         {
             this._deviceBraceletService = deviceBraceletService;
             this._ejoinDevSlotService = ejoinDevSlotService;
+            this._deviceBraceletUsageRecordService = deviceBraceletUsageRecordService;
         }
 
         /// <summary>
@@ -194,7 +196,7 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
-        /// 更新用户设备版本号
+        /// 更新用户设备版本号和电量等信息
         /// </summary>
         /// <param name="version"></param>
         /// <returns>0失败/1成功/2用户未绑定设备</returns>
@@ -214,6 +216,7 @@ namespace Unitoys.WebApi.Controllers
                 entity.Version = model.Version;
                 entity.UpdateDate = CommonHelper.GetDateTimeInt();
 
+                await _deviceBraceletUsageRecordService.InsertAsync(new UT_DeviceBraceletUsageRecord() { IMEI = entity.IMEI, UserId = entity.UserId, Version = entity.Version, Power = entity.Power, CreateDate = CommonHelper.GetDateTimeInt() });
                 return await _deviceBraceletService.UpdateAsync(entity) == true ? 1 : 0;
             }
             else

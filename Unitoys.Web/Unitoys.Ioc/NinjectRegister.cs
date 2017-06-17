@@ -94,6 +94,7 @@ namespace Unitoys.Ioc
             Kernel.Bind<IAgentService>().To<AgentService>();
             Kernel.Bind<IContactUSService>().To<ContactUSService>();
             Kernel.Bind<IUserLogService>().To<UserLogService>();
+            Kernel.Bind<IDeviceBraceletUsageRecordService>().To<DeviceBraceletUsageRecordService>();
         }
 
         private static void AddFilterBindings()
