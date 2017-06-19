@@ -38,10 +38,12 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetList(int page, int rows, string sort, string order, string iMEI, string tel, DateTime? createStartDate, DateTime? createEndDate, bool? isOnLine)
+        public async Task<ActionResult> GetList(int page, int rows, string sort, string order, string iMEI, string tel, DateTime? createStartDate, DateTime? createEndDate, DateTime? disconnectStartDate, DateTime? disconnectEndDate, bool? isOnLine)
         {
             int? beginSMSTimeInt = null;
             int? endSMSTimeInt = null;
+            int? beginDisconnectTimeInt = null;
+            int? endDisconnectTimeInt = null;
             if (createStartDate.HasValue)
             {
                 beginSMSTimeInt = CommonHelper.ConvertDateTimeInt(createStartDate.Value);
@@ -50,7 +52,16 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             {
                 endSMSTimeInt = CommonHelper.ConvertDateTimeInt(createEndDate.Value);
             }
-            var pageRowsDb = await _deviceBraceletConnectRecordService.SearchAsync(page, rows, sort, order, iMEI, tel, beginSMSTimeInt, endSMSTimeInt, isOnLine);
+            if (disconnectStartDate.HasValue)
+            {
+                beginDisconnectTimeInt = CommonHelper.ConvertDateTimeInt(disconnectStartDate.Value);
+            }
+            if (disconnectEndDate.HasValue)
+            {
+                endDisconnectTimeInt = CommonHelper.ConvertDateTimeInt(disconnectEndDate.Value);
+            }
+
+            var pageRowsDb = await _deviceBraceletConnectRecordService.SearchAsync(page, rows, sort, order, iMEI, tel, beginSMSTimeInt, endSMSTimeInt, beginDisconnectTimeInt, endDisconnectTimeInt, isOnLine);
 
             int totalNum = pageRowsDb.Key;
 

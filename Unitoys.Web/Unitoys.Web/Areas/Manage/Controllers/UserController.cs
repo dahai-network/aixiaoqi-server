@@ -513,13 +513,13 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 {
                     name = clientTypeDescr + "掉线次数",
                     type = "bar",
-                    data = listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item == a.DisconnectDate.HasValue).Count() + "").ToList()
+                    data = listDeviceBraceletConnectRecordOnLineTime.Where(x => x.DisconnectDate.HasValue && x.RegSuccessDate.HasValue && x.DisconnectStatus != EnumDisconnectStatus.秒连接移除端口).GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Where(a => a.ClientType == item).Count() + "").ToList()
                 });
             }
 
             var opDeviceBraceletDisconnectDateCount = GetChartOption(
            "卡-掉线次数",
-           listDeviceBraceletConnectRecord.GroupBy(x => CommonHelper.GetTime(x.ConnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+           listDeviceBraceletConnectRecordOnLineTime.Where(x => x.DisconnectDate.HasValue && x.RegSuccessDate.HasValue && x.DisconnectStatus != EnumDisconnectStatus.秒连接移除端口).GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
            listOpDeviceBraceletDisconnectDateCount);
 
             #endregion
@@ -535,15 +535,21 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 {
                     name = clientTypeDescr + "平均在线",
                     type = "bar",
-                    data = listDeviceBraceletConnectRecordOnLineTime.GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x =>
-                        Convert.ToInt32(x.Where(a => a.ClientType == item == a.DisconnectDate.HasValue).GroupBy(a => a.SessionId).Average(a => a.OrderByDescending(b => b.DisconnectDate).FirstOrDefault().DisconnectDate - a.OrderBy(b => b.ConnectDate).FirstOrDefault().ConnectDate)) / 60
-                        ).ToList()
+                    data =
+                    listDeviceBraceletConnectRecordOnLineTime
+                    .Where(x => x.RegSuccessDate.HasValue && x.DisconnectDate.HasValue)
+                    .GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd"))
+                    .Select(x =>
+                        Convert.ToInt32(x.Where(a => a.ClientType == item)
+                        .GroupBy(a => a.SessionId)
+                        .Average(a => a.OrderByDescending(b => b.DisconnectDate).FirstOrDefault().DisconnectDate - a.OrderBy(b => b.ConnectDate).FirstOrDefault().ConnectDate)) / 60
+                    ).ToList()
                 });
             }
 
             var opDeviceBraceletOnLineTime = GetChartOption(
            "卡-单次在线时长平均值",
-           listDeviceBraceletConnectRecordOnLineTime.GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
+           listDeviceBraceletConnectRecordOnLineTime.Where(x => x.RegSuccessDate.HasValue && x.DisconnectDate.HasValue).GroupBy(x => CommonHelper.GetTime(x.DisconnectDate + "").ToString("yyyy-MM-dd")).Select(x => x.Key).ToList(),
            listOpDeviceBraceletOnLineTime);
 
             #endregion

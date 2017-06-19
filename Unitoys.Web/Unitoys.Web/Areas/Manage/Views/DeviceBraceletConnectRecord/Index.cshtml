@@ -14,6 +14,10 @@
                 <input id="createStartDate" type="text" class="easyui-datetimebox" name="createStartDate" data-options="showSeconds:false" style="height:25px;" />
                 <span>-</span>
                 <input id="createEndDate" type="text" class="easyui-datetimebox" name="createEndDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>断开时间:</span>
+                <input id="disconnectStartDate" type="text" class="easyui-datetimebox" name="disconnectStartDate" data-options="showSeconds:false" style="height:25px;" />
+                <span>-</span>
+                <input id="disconnectEndDate" type="text" class="easyui-datetimebox" name="disconnectEndDate" data-options="showSeconds:false" style="height:25px;" />
                 <span>连接状态:</span>
                 <select id="isOnLinessss" class="easyui-combobox" name="isOnLinessss" style="width:200px;">
                     <option value="">-- 请选择 --</option>
@@ -75,6 +79,8 @@
             iMEI: $("#iMEI").val() == null ? "" : $("#iMEI").val(),
             createStartDate: $("input[name$='createStartDate']").val(),
             createEndDate: $("input[name$='createEndDate']").val(),
+            disconnectStartDate: $("input[name$='disconnectStartDate']").val(),
+            disconnectEndDate: $("input[name$='disconnectEndDate']").val(),
             isOnline: $("#isOnLinessss").combobox("getValue"),
         });
     }

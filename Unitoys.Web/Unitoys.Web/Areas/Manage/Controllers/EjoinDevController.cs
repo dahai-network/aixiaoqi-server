@@ -52,7 +52,8 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                RegIp = i.RegIp,
                                Version = i.Version,
                                Mac = i.Mac,
-                               ModType = i.ModType
+                               ModType = i.ModType,
+                               RegDate = i.RegDate,
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };

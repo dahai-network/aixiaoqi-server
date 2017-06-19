@@ -12,7 +12,7 @@ namespace Unitoys.Services
 {
     public class DeviceBraceletConnectRecordService : BaseService<UT_DeviceBraceletConnectRecord>, IDeviceBraceletConnectRecordService
     {
-        public async Task<KeyValuePair<int, List<UT_DeviceBraceletConnectRecord>>> SearchAsync(int page, int rows, string sort, string order, string iMEI, string tel, int? createStartDate, int? createEndDate, bool? isOnLine)
+        public async Task<KeyValuePair<int, List<UT_DeviceBraceletConnectRecord>>> SearchAsync(int page, int rows, string sort, string order, string iMEI, string tel, int? createStartDate, int? createEndDate, int? beginDisconnectTimeInt, int? endDisconnectTimeInt, bool? isOnLine)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -29,11 +29,19 @@ namespace Unitoys.Services
                 {
                     query = query.Where(x => x.CreateDate >= createStartDate);
                 }
-
                 if (createEndDate.HasValue)
                 {
                     query = query.Where(x => x.CreateDate <= createEndDate);
                 }
+                if (beginDisconnectTimeInt.HasValue)
+                {
+                    query = query.Where(x => x.DisconnectDate >= beginDisconnectTimeInt);
+                }
+                if (endDisconnectTimeInt.HasValue)
+                {
+                    query = query.Where(x => x.DisconnectDate <= endDisconnectTimeInt);
+                }
+
                 if (isOnLine.HasValue)
                 {
                     query = query.Where(x => x.DisconnectDate.HasValue == !isOnLine);

@@ -344,6 +344,7 @@
                 createStartDate: $("input[name$='createStartDate']").val(),
                 createEndDate: $("input[name$='createEndDate']").val()
             }, function (data) {
+                initEChart();
                 eChartUser.setOption(data.opUser);
                 eChartPayment.setOption(data.opPayment);
                 eChartOrderYesPayment.setOption(data.opOrderYesPayment);
@@ -458,7 +459,12 @@
                     }
                 });
             })
+            initEChart();
+            //doSearch();
+            setDateRange('d', -1);
+        });
 
+        function initEChart() {
             // 基于准备好的dom，初始化echarts实例
             eChartUser = echarts.init(document.getElementById('eChartUser'));
             eChartPayment = echarts.init(document.getElementById('eChartPayment'));
@@ -469,10 +475,7 @@
             eChartDeviceBraceletRegCount = echarts.init(document.getElementById('eChartDeviceBraceletRegCount'));
             eChartDeviceBraceletDisconnectDateCount = echarts.init(document.getElementById('eChartDeviceBraceletDisconnectDateCount'));
             eChartDeviceBraceletOnLineTime = echarts.init(document.getElementById('eChartDeviceBraceletOnLineTime'));
-
-            //doSearch();
-            setDateRange('d', -1);
-        });
+        }
     </script>
 </head>
 <body class="easyui-layout" style="overflow-y: hidden" fit="true" scroll="no">

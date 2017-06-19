@@ -15,7 +15,7 @@ namespace Unitoys.Model
         public UT_EjoinDev()
         {
             this.UT_EjoinDevSlot = new HashSet<UT_EjoinDevSlot>();
-         }
+        }
         /// <summary>
         /// 设备名，注册名
         /// </summary>
@@ -44,6 +44,10 @@ namespace Unitoys.Model
         /// 设备MAC地址
         /// </summary>
         public string Mac { get; set; }
+        /// <summary>
+        /// 注册时间
+        /// </summary>
+        public int? RegDate { get; set; }
         /// <summary>
         /// 设备类型
         /// </summary>

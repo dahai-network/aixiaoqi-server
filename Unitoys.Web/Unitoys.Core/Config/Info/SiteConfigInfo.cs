@@ -117,6 +117,14 @@ namespace Unitoys.Core.Config
         /// </summary>
         public string IosVersion { get; set; }
         /// <summary>
+        /// 是否强制
+        /// </summary>
+        public string IosUpgradeMandatory { get; set; }
+        /// <summary>
+        /// 升级内容
+        /// </summary>
+        public string IosUpgradeDescr { get; set; }
+        /// <summary>
         /// 是否开启赠送用户金额
         /// </summary>
         public string IsOpenRegGift { get; set; }
