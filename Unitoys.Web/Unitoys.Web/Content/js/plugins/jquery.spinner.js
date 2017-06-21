@@ -1,147 +1,127 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2){
-var _3=$("<span class=\"spinner\">"+"<span class=\"spinner-arrow\">"+"<span class=\"spinner-arrow-up\"></span>"+"<span class=\"spinner-arrow-down\"></span>"+"</span>"+"</span>").insertAfter(_2);
-$(_2).addClass("spinner-text").prependTo(_3);
-return _3;
-};
-function _4(_5,_6){
-var _7=$.data(_5,"spinner").options;
-var _8=$.data(_5,"spinner").spinner;
-if(_6){
-_7.width=_6;
-}
-var _9=$("<div style=\"display:none\"></div>").insertBefore(_8);
-_8.appendTo("body");
-if(isNaN(_7.width)){
-_7.width=$(_5).outerWidth();
-}
-_8._outerWidth(_7.width);
-$(_5)._outerWidth(_8.width()-_8.find(".spinner-arrow").outerWidth());
-_8.insertAfter(_9);
-_9.remove();
-};
-function _a(_b){
-var _c=$.data(_b,"spinner").options;
-var _d=$.data(_b,"spinner").spinner;
-_d.find(".spinner-arrow-up,.spinner-arrow-down").unbind(".spinner");
-if(!_c.disabled){
-_d.find(".spinner-arrow-up").bind("mouseenter.spinner",function(){
-$(this).addClass("spinner-arrow-hover");
-}).bind("mouseleave.spinner",function(){
-$(this).removeClass("spinner-arrow-hover");
-}).bind("click.spinner",function(){
-_c.spin.call(_b,false);
-_c.onSpinUp.call(_b);
-$(_b).validatebox("validate");
-});
-_d.find(".spinner-arrow-down").bind("mouseenter.spinner",function(){
-$(this).addClass("spinner-arrow-hover");
-}).bind("mouseleave.spinner",function(){
-$(this).removeClass("spinner-arrow-hover");
-}).bind("click.spinner",function(){
-_c.spin.call(_b,true);
-_c.onSpinDown.call(_b);
-$(_b).validatebox("validate");
-});
-}
-};
-function _e(_f,_10){
-var _11=$.data(_f,"spinner").options;
-if(_10){
-_11.disabled=true;
-$(_f).attr("disabled",true);
+var _3=$.data(_2,"spinner");
+var _4=_3.options;
+var _5=$.extend(true,[],_4.icons);
+if(_4.spinAlign=="left"||_4.spinAlign=="right"){
+_4.spinArrow=true;
+_4.iconAlign=_4.spinAlign;
+var _6={iconCls:"spinner-arrow",handler:function(e){
+var _7=$(e.target).closest(".spinner-arrow-up,.spinner-arrow-down");
+_13(e.data.target,_7.hasClass("spinner-arrow-down"));
+}};
+if(_4.spinAlign=="left"){
+_5.unshift(_6);
 }else{
-_11.disabled=false;
-$(_f).removeAttr("disabled");
+_5.push(_6);
 }
-};
-$.fn.spinner=function(_12,_13){
-if(typeof _12=="string"){
-var _14=$.fn.spinner.methods[_12];
-if(_14){
-return _14(this,_13);
 }else{
-return this.validatebox(_12,_13);
+_4.spinArrow=false;
+if(_4.spinAlign=="vertical"){
+if(_4.buttonAlign!="top"){
+_4.buttonAlign="bottom";
+}
+_4.clsLeft="textbox-button-bottom";
+_4.clsRight="textbox-button-top";
+}else{
+_4.clsLeft="textbox-button-left";
+_4.clsRight="textbox-button-right";
 }
 }
-_12=_12||{};
+$(_2).addClass("spinner-f").textbox($.extend({},_4,{icons:_5,doSize:false,onResize:function(_8,_9){
+if(!_4.spinArrow){
+var _a=$(this).next();
+var _b=_a.find(".textbox-button:not(.spinner-button)");
+if(_b.length){
+var _c=_b.outerWidth();
+var _d=_b.outerHeight();
+var _e=_a.find(".spinner-button."+_4.clsLeft);
+var _f=_a.find(".spinner-button."+_4.clsRight);
+if(_4.buttonAlign=="right"){
+_f.css("marginRight",_c+"px");
+}else{
+if(_4.buttonAlign=="left"){
+_e.css("marginLeft",_c+"px");
+}else{
+if(_4.buttonAlign=="top"){
+_f.css("marginTop",_d+"px");
+}else{
+_e.css("marginBottom",_d+"px");
+}
+}
+}
+}
+}
+_4.onResize.call(this,_8,_9);
+}}));
+$(_2).attr("spinnerName",$(_2).attr("textboxName"));
+_3.spinner=$(_2).next();
+_3.spinner.addClass("spinner");
+if(_4.spinArrow){
+var _10=_3.spinner.find(".spinner-arrow");
+_10.append("<a href=\"javascript:;\" class=\"spinner-arrow-up\" tabindex=\"-1\"></a>");
+_10.append("<a href=\"javascript:;\" class=\"spinner-arrow-down\" tabindex=\"-1\"></a>");
+}else{
+var _11=$("<a href=\"javascript:;\" class=\"textbox-button spinner-button\"></a>").addClass(_4.clsLeft).appendTo(_3.spinner);
+var _12=$("<a href=\"javascript:;\" class=\"textbox-button spinner-button\"></a>").addClass(_4.clsRight).appendTo(_3.spinner);
+_11.linkbutton({iconCls:_4.reversed?"spinner-button-up":"spinner-button-down",onClick:function(){
+_13(_2,!_4.reversed);
+}});
+_12.linkbutton({iconCls:_4.reversed?"spinner-button-down":"spinner-button-up",onClick:function(){
+_13(_2,_4.reversed);
+}});
+if(_4.disabled){
+$(_2).spinner("disable");
+}
+if(_4.readonly){
+$(_2).spinner("readonly");
+}
+}
+$(_2).spinner("resize");
+};
+function _13(_14,_15){
+var _16=$(_14).spinner("options");
+_16.spin.call(_14,_15);
+_16[_15?"onSpinDown":"onSpinUp"].call(_14);
+$(_14).spinner("validate");
+};
+$.fn.spinner=function(_17,_18){
+if(typeof _17=="string"){
+var _19=$.fn.spinner.methods[_17];
+if(_19){
+return _19(this,_18);
+}else{
+return this.textbox(_17,_18);
+}
+}
+_17=_17||{};
 return this.each(function(){
-var _15=$.data(this,"spinner");
-if(_15){
-$.extend(_15.options,_12);
+var _1a=$.data(this,"spinner");
+if(_1a){
+$.extend(_1a.options,_17);
 }else{
-_15=$.data(this,"spinner",{options:$.extend({},$.fn.spinner.defaults,$.fn.spinner.parseOptions(this),_12),spinner:_1(this)});
-$(this).removeAttr("disabled");
+_1a=$.data(this,"spinner",{options:$.extend({},$.fn.spinner.defaults,$.fn.spinner.parseOptions(this),_17)});
 }
-$(this).val(_15.options.value);
-$(this).attr("readonly",!_15.options.editable);
-_e(this,_15.options.disabled);
-_4(this);
-$(this).validatebox(_15.options);
-_a(this);
-});
-};
-$.fn._outerWidth=function(_16){
-return this.each(function(){
-if(!$.boxModel&&$.browser.msie){
-$(this).width(_16);
-}else{
-$(this).width(_16-($(this).outerWidth()-$(this).width()));
-}
+_1(this);
 });
 };
 $.fn.spinner.methods={options:function(jq){
-var _17=$.data(jq[0],"spinner").options;
-return $.extend(_17,{value:jq.val()});
-},destroy:function(jq){
-return jq.each(function(){
-var _18=$.data(this,"spinner").spinner;
-$(this).validatebox("destroy");
-_18.remove();
-});
-},resize:function(jq,_19){
-return jq.each(function(){
-_4(this,_19);
-});
-},enable:function(jq){
-return jq.each(function(){
-_e(this,false);
-_a(this);
-});
-},disable:function(jq){
-return jq.each(function(){
-_e(this,true);
-_a(this);
-});
-},getValue:function(jq){
-return jq.val();
-},setValue:function(jq,_1a){
-return jq.each(function(){
-var _1b=$.data(this,"spinner").options;
-_1b.value=_1a;
-$(this).val(_1a);
-});
-},clear:function(jq){
-return jq.each(function(){
-var _1c=$.data(this,"spinner").options;
-_1c.value="";
-$(this).val("");
-});
+var _1b=jq.textbox("options");
+return $.extend($.data(jq[0],"spinner").options,{width:_1b.width,value:_1b.value,originalValue:_1b.originalValue,disabled:_1b.disabled,readonly:_1b.readonly});
 }};
-$.fn.spinner.parseOptions=function(_1d){
-var t=$(_1d);
-return $.extend({},$.fn.validatebox.parseOptions(_1d),{width:(parseInt(_1d.style.width)||undefined),value:(t.val()||undefined),min:t.attr("min"),max:t.attr("max"),increment:(parseFloat(t.attr("increment"))||undefined),editable:(t.attr("editable")?t.attr("editable")=="true":undefined),disabled:(t.attr("disabled")?true:undefined)});
+$.fn.spinner.parseOptions=function(_1c){
+return $.extend({},$.fn.textbox.parseOptions(_1c),$.parser.parseOptions(_1c,["min","max","spinAlign",{increment:"number",reversed:"boolean"}]));
 };
-$.fn.spinner.defaults=$.extend({},$.fn.validatebox.defaults,{width:"auto",value:"",min:null,max:null,increment:1,editable:true,disabled:false,spin:function(_1e){
+$.fn.spinner.defaults=$.extend({},$.fn.textbox.defaults,{min:null,max:null,increment:1,spinAlign:"right",reversed:false,spin:function(_1d){
 },onSpinUp:function(){
 },onSpinDown:function(){
 }});

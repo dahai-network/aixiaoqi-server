@@ -1,21 +1,23 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2){
+$(_2).addClass("numberspinner-f");
 var _3=$.data(_2,"numberspinner").options;
-$(_2).spinner(_3).numberbox(_3);
+$(_2).numberbox($.extend({},_3,{doSize:false})).spinner(_3);
+$(_2).numberbox("setValue",_3.value);
 };
 function _4(_5,_6){
 var _7=$.data(_5,"numberspinner").options;
 var v=parseFloat($(_5).numberbox("getValue")||_7.value)||0;
-if(_6==true){
+if(_6){
 v-=_7.increment;
 }else{
 v+=_7.increment;
@@ -28,7 +30,7 @@ var _a=$.fn.numberspinner.methods[_8];
 if(_a){
 return _a(this,_9);
 }else{
-return this.spinner(_8,_9);
+return this.numberbox(_8,_9);
 }
 }
 _8=_8||{};
@@ -43,25 +45,14 @@ _1(this);
 });
 };
 $.fn.numberspinner.methods={options:function(jq){
-var _c=$.data(jq[0],"numberspinner").options;
-return $.extend(_c,{value:jq.numberbox("getValue")});
-},setValue:function(jq,_d){
-return jq.each(function(){
-$(this).numberbox("setValue",_d);
-});
-},getValue:function(jq){
-return jq.numberbox("getValue");
-},clear:function(jq){
-return jq.each(function(){
-$(this).spinner("clear");
-$(this).numberbox("clear");
-});
+var _c=jq.numberbox("options");
+return $.extend($.data(jq[0],"numberspinner").options,{width:_c.width,value:_c.value,originalValue:_c.originalValue,disabled:_c.disabled,readonly:_c.readonly});
 }};
-$.fn.numberspinner.parseOptions=function(_e){
-return $.extend({},$.fn.spinner.parseOptions(_e),$.fn.numberbox.parseOptions(_e),{});
+$.fn.numberspinner.parseOptions=function(_d){
+return $.extend({},$.fn.spinner.parseOptions(_d),$.fn.numberbox.parseOptions(_d),{});
 };
-$.fn.numberspinner.defaults=$.extend({},$.fn.spinner.defaults,$.fn.numberbox.defaults,{spin:function(_f){
-_4(this,_f);
+$.fn.numberspinner.defaults=$.extend({},$.fn.spinner.defaults,$.fn.numberbox.defaults,{spin:function(_e){
+_4(this,_e);
 }});
 })(jQuery);
 

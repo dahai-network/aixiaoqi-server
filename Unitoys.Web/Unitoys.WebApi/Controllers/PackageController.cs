@@ -105,6 +105,7 @@ namespace Unitoys.WebApi.Controllers
                            PackageNum = i.PackageNum,
                            Operators = i.Operators,
                            Price = i.Price.ToString(),
+                           OriginalPrice = i.OriginalPrice.HasValue ? i.OriginalPrice.ToString() : "",
                            //Flow = i.Flow,
                            Flow = "不限制流量",
                            //Desction = i.Desction,
@@ -147,7 +148,7 @@ namespace Unitoys.WebApi.Controllers
                            ApnName = packageResult.ApnName,
                            DescTitlePic = packageResult.DescTitlePic.GetPackageCompleteUrl(),
                            DescPic = packageResult.DescPic.GetPackageCompleteUrl(),
-                           OriginalPrice = packageResult.OriginalPrice,
+                           OriginalPrice = packageResult.OriginalPrice.HasValue ? packageResult.OriginalPrice.ToString() : "",
                        };
             return Ok(new { status = 1, data = new { list = data } });
         }
@@ -177,7 +178,7 @@ namespace Unitoys.WebApi.Controllers
         }
 
         /// <summary>
-        /// 根据订单ID查属性
+        /// 根据套餐ID查属性
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -198,7 +199,7 @@ namespace Unitoys.WebApi.Controllers
                            ExpireDaysDescr = i.ExpireDaysDescr ?? "",
                            FlowDescr = i.FlowDescr ?? "",
                            Price = i.Price.ToString(),
-                           OriginalPrice = i.OriginalPrice.ToString(),
+                           OriginalPrice = i.OriginalPrice.HasValue ? i.OriginalPrice.ToString() : "",
                        };
 
             return Ok(new { status = 1, data = new { list = data } });

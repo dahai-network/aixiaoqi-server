@@ -1,11 +1,11 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2){
@@ -34,15 +34,29 @@ if(_9){
 $.extend(_9.options,_7);
 }else{
 _1(this);
-$.data(this,"droppable",{options:$.extend({},$.fn.droppable.defaults,_7)});
+$.data(this,"droppable",{options:$.extend({},$.fn.droppable.defaults,$.fn.droppable.parseOptions(this),_7)});
 }
 });
 };
-$.fn.droppable.methods={};
-$.fn.droppable.defaults={accept:null,onDragEnter:function(e,_a){
-},onDragOver:function(e,_b){
-},onDragLeave:function(e,_c){
-},onDrop:function(e,_d){
+$.fn.droppable.methods={options:function(jq){
+return $.data(jq[0],"droppable").options;
+},enable:function(jq){
+return jq.each(function(){
+$(this).droppable({disabled:false});
+});
+},disable:function(jq){
+return jq.each(function(){
+$(this).droppable({disabled:true});
+});
+}};
+$.fn.droppable.parseOptions=function(_a){
+var t=$(_a);
+return $.extend({},$.parser.parseOptions(_a,["accept"]),{disabled:(t.attr("disabled")?true:undefined)});
+};
+$.fn.droppable.defaults={accept:null,disabled:false,onDragEnter:function(e,_b){
+},onDragOver:function(e,_c){
+},onDragLeave:function(e,_d){
+},onDrop:function(e,_e){
 }};
 })(jQuery);
 

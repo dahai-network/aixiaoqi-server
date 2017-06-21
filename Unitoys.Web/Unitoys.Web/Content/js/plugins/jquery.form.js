@@ -1,147 +1,261 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2,_3){
-_3=_3||{};
-if(_3.onSubmit){
-if(_3.onSubmit.call(_2)==false){
+var _4=$.data(_2,"form").options;
+$.extend(_4,_3||{});
+var _5=$.extend({},_4.queryParams);
+if(_4.onSubmit.call(_2,_5)==false){
 return;
 }
+var _6=$(_2).find(".textbox-text:focus");
+_6.triggerHandler("blur");
+_6.focus();
+var _7=null;
+if(_4.dirty){
+var ff=[];
+$.map(_4.dirtyFields,function(f){
+if($(f).hasClass("textbox-f")){
+$(f).next().find(".textbox-value").each(function(){
+ff.push(this);
+});
+}else{
+ff.push(f);
 }
-var _4=$(_2);
-if(_3.url){
-_4.attr("action",_3.url);
+});
+_7=$(_2).find("input[name]:enabled,textarea[name]:enabled,select[name]:enabled").filter(function(){
+return $.inArray(this,ff)==-1;
+});
+_7.attr("disabled","disabled");
 }
-var _5="easyui_frame_"+(new Date().getTime());
-var _6=$("<iframe id="+_5+" name="+_5+"></iframe>").attr("src",window.ActiveXObject?"javascript:false":"about:blank").css({position:"absolute",top:-1000,left:-1000});
-var t=_4.attr("target"),a=_4.attr("action");
-_4.attr("target",_5);
+if(_4.ajax){
+if(_4.iframe){
+_8(_2,_5);
+}else{
+if(window.FormData!==undefined){
+_9(_2,_5);
+}else{
+_8(_2,_5);
+}
+}
+}else{
+$(_2).submit();
+}
+if(_4.dirty){
+_7.removeAttr("disabled");
+}
+};
+function _8(_a,_b){
+var _c=$.data(_a,"form").options;
+var _d="easyui_frame_"+(new Date().getTime());
+var _e=$("<iframe id="+_d+" name="+_d+"></iframe>").appendTo("body");
+_e.attr("src",window.ActiveXObject?"javascript:false":"about:blank");
+_e.css({position:"absolute",top:-1000,left:-1000});
+_e.bind("load",cb);
+_f(_b);
+function _f(_10){
+var _11=$(_a);
+if(_c.url){
+_11.attr("action",_c.url);
+}
+var t=_11.attr("target"),a=_11.attr("action");
+_11.attr("target",_d);
+var _12=$();
 try{
-_6.appendTo("body");
-_6.bind("load",cb);
-_4[0].submit();
+for(var n in _10){
+var _13=$("<input type=\"hidden\" name=\""+n+"\">").val(_10[n]).appendTo(_11);
+_12=_12.add(_13);
+}
+_14();
+_11[0].submit();
 }
 finally{
-_4.attr("action",a);
-t?_4.attr("target",t):_4.removeAttr("target");
+_11.attr("action",a);
+t?_11.attr("target",t):_11.removeAttr("target");
+_12.remove();
 }
-var _7=10;
+};
+function _14(){
+var f=$("#"+_d);
+if(!f.length){
+return;
+}
+try{
+var s=f.contents()[0].readyState;
+if(s&&s.toLowerCase()=="uninitialized"){
+setTimeout(_14,100);
+}
+}
+catch(e){
+cb();
+}
+};
+var _15=10;
 function cb(){
-_6.unbind();
-var _8=$("#"+_5).contents().find("body");
-var _9=_8.html();
-if(_9==""){
-if(--_7){
+var f=$("#"+_d);
+if(!f.length){
+return;
+}
+f.unbind();
+var _16="";
+try{
+var _17=f.contents().find("body");
+_16=_17.html();
+if(_16==""){
+if(--_15){
 setTimeout(cb,100);
 return;
 }
-return;
 }
-var ta=_8.find(">textarea");
+var ta=_17.find(">textarea");
 if(ta.length){
-_9=ta.val();
+_16=ta.val();
 }else{
-var _a=_8.find(">pre");
-if(_a.length){
-_9=_a.html();
+var pre=_17.find(">pre");
+if(pre.length){
+_16=pre.html();
 }
 }
-if(_3.success){
-_3.success(_9);
 }
+catch(e){
+}
+_c.success.call(_a,_16);
 setTimeout(function(){
-_6.unbind();
-_6.remove();
+f.unbind();
+f.remove();
 },100);
 };
 };
-function _b(_c,_d){
-if(!$.data(_c,"form")){
-$.data(_c,"form",{options:$.extend({},$.fn.form.defaults)});
+function _9(_18,_19){
+var _1a=$.data(_18,"form").options;
+var _1b=new FormData($(_18)[0]);
+for(var _1c in _19){
+_1b.append(_1c,_19[_1c]);
 }
-var _e=$.data(_c,"form").options;
-if(typeof _d=="string"){
-var _f={};
-if(_e.onBeforeLoad.call(_c,_f)==false){
+$.ajax({url:_1a.url,type:"post",xhr:function(){
+var xhr=$.ajaxSettings.xhr();
+if(xhr.upload){
+xhr.upload.addEventListener("progress",function(e){
+if(e.lengthComputable){
+var _1d=e.total;
+var _1e=e.loaded||e.position;
+var _1f=Math.ceil(_1e*100/_1d);
+_1a.onProgress.call(_18,_1f);
+}
+},false);
+}
+return xhr;
+},data:_1b,dataType:"html",cache:false,contentType:false,processData:false,complete:function(res){
+_1a.success.call(_18,res.responseText);
+}});
+};
+function _20(_21,_22){
+var _23=$.data(_21,"form").options;
+if(typeof _22=="string"){
+var _24={};
+if(_23.onBeforeLoad.call(_21,_24)==false){
 return;
 }
-$.ajax({url:_d,data:_f,dataType:"json",success:function(_10){
-_11(_10);
+$.ajax({url:_22,data:_24,dataType:"json",success:function(_25){
+_26(_25);
 },error:function(){
-_e.onLoadError.apply(_c,arguments);
+_23.onLoadError.apply(_21,arguments);
 }});
 }else{
-_11(_d);
+_26(_22);
 }
-function _11(_12){
-var _13=$(_c);
-for(var _14 in _12){
-var val=_12[_14];
-var rr=_15(_14,val);
-if(!rr.length){
-var f=_13.find("input[numberboxName=\""+_14+"\"]");
-if(f.length){
-f.numberbox("setValue",val);
-}else{
-$("input[name=\""+_14+"\"]",_13).val(val);
-$("textarea[name=\""+_14+"\"]",_13).val(val);
-$("select[name=\""+_14+"\"]",_13).val(val);
+function _26(_27){
+var _28=$(_21);
+for(var _29 in _27){
+var val=_27[_29];
+if(!_2a(_29,val)){
+if(!_2b(_29,val)){
+_28.find("input[name=\""+_29+"\"]").val(val);
+_28.find("textarea[name=\""+_29+"\"]").val(val);
+_28.find("select[name=\""+_29+"\"]").val(val);
 }
 }
-_16(_14,val);
 }
-_e.onLoadSuccess.call(_c,_12);
-_1f(_c);
+_23.onLoadSuccess.call(_21,_27);
+_28.form("validate");
 };
-function _15(_17,val){
-var _18=$(_c);
-var rr=$("input[name=\""+_17+"\"][type=radio], input[name=\""+_17+"\"][type=checkbox]",_18);
-$.fn.prop?rr.prop("checked",false):rr.attr("checked",false);
-rr.each(function(){
-var f=$(this);
-console.log(_17+":"+f.val()+","+val);
-if(f.val()==String(val)){
-$.fn.prop?f.prop("checked",true):f.attr("checked",true);
+function _2a(_2c,val){
+var cc=$(_21).find("[switchbuttonName=\""+_2c+"\"]");
+if(cc.length){
+cc.switchbutton("uncheck");
+cc.each(function(){
+if(_2d($(this).switchbutton("options").value,val)){
+$(this).switchbutton("check");
 }
 });
-return rr;
-};
-function _16(_19,val){
-var _1a=$(_c);
-var cc=["combobox","combotree","combogrid","datetimebox","datebox","combo"];
-var c=_1a.find("[comboName=\""+_19+"\"]");
-if(c.length){
-for(var i=0;i<cc.length;i++){
-var _1b=cc[i];
-if(c.hasClass(_1b+"-f")){
-if(c[_1b]("options").multiple){
-c[_1b]("setValues",val);
-}else{
-c[_1b]("setValue",val);
+return true;
 }
+cc=$(_21).find("input[name=\""+_2c+"\"][type=radio], input[name=\""+_2c+"\"][type=checkbox]");
+if(cc.length){
+cc._propAttr("checked",false);
+cc.each(function(){
+if(_2d($(this).val(),val)){
+$(this)._propAttr("checked",true);
+}
+});
+return true;
+}
+return false;
+};
+function _2d(v,val){
+if(v==String(val)||$.inArray(v,$.isArray(val)?val:[val])>=0){
+return true;
+}else{
+return false;
+}
+};
+function _2b(_2e,val){
+var _2f=$(_21).find("[textboxName=\""+_2e+"\"],[sliderName=\""+_2e+"\"]");
+if(_2f.length){
+for(var i=0;i<_23.fieldTypes.length;i++){
+var _30=_23.fieldTypes[i];
+var _31=_2f.data(_30);
+if(_31){
+if(_31.options.multiple||_31.options.range){
+_2f[_30]("setValues",val);
+}else{
+_2f[_30]("setValue",val);
+}
+return true;
+}
+}
+}
+return false;
+};
+};
+function _32(_33){
+$("input,select,textarea",_33).each(function(){
+if($(this).hasClass("textbox-value")){
 return;
 }
-}
-}
-};
-};
-function _1c(_1d){
-$("input,select,textarea",_1d).each(function(){
 var t=this.type,tag=this.tagName.toLowerCase();
 if(t=="text"||t=="hidden"||t=="password"||tag=="textarea"){
 this.value="";
 }else{
 if(t=="file"){
-var _1e=$(this);
-_1e.after(_1e.clone().val(""));
-_1e.remove();
+var _34=$(this);
+if(!_34.hasClass("textbox-value")){
+var _35=_34.clone().val("");
+_35.insertAfter(_34);
+if(_34.data("validatebox")){
+_34.validatebox("destroy");
+_35.validatebox();
+}else{
+_34.remove();
+}
+}
 }else{
 if(t=="checkbox"||t=="radio"){
 this.checked=false;
@@ -153,76 +267,144 @@ this.selectedIndex=-1;
 }
 }
 });
-if($.fn.combo){
-$(".combo-f",_1d).combo("clear");
+var tmp=$();
+var _36=$(_33);
+var _37=$.data(_33,"form").options;
+for(var i=0;i<_37.fieldTypes.length;i++){
+var _38=_37.fieldTypes[i];
+var _39=_36.find("."+_38+"-f").not(tmp);
+if(_39.length&&_39[_38]){
+_39[_38]("clear");
+tmp=tmp.add(_39);
 }
-if($.fn.combobox){
-$(".combobox-f",_1d).combobox("clear");
 }
-if($.fn.combotree){
-$(".combotree-f",_1d).combotree("clear");
-}
-if($.fn.combogrid){
-$(".combogrid-f",_1d).combogrid("clear");
-}
-_1f(_1d);
+_36.form("validate");
 };
-function _20(_21){
-var _22=$.data(_21,"form").options;
-var _23=$(_21);
-_23.unbind(".form").bind("submit.form",function(){
+function _3a(_3b){
+_3b.reset();
+var _3c=$(_3b);
+var _3d=$.data(_3b,"form").options;
+for(var i=_3d.fieldTypes.length-1;i>=0;i--){
+var _3e=_3d.fieldTypes[i];
+var _3f=_3c.find("."+_3e+"-f");
+if(_3f.length&&_3f[_3e]){
+_3f[_3e]("reset");
+}
+}
+_3c.form("validate");
+};
+function _40(_41){
+var _42=$.data(_41,"form").options;
+$(_41).unbind(".form");
+if(_42.ajax){
+$(_41).bind("submit.form",function(){
 setTimeout(function(){
-_1(_21,_22);
+_1(_41,_42);
 },0);
 return false;
 });
-};
-function _1f(_24){
-if($.fn.validatebox){
-var box=$(".validatebox-text",_24);
-if(box.length){
-box.validatebox("validate");
-box.trigger("focus");
-box.trigger("blur");
-var _25=$(".validatebox-invalid:first",_24).focus();
-return _25.length==0;
 }
+$(_41).bind("_change.form",function(e,t){
+if($.inArray(t,_42.dirtyFields)==-1){
+_42.dirtyFields.push(t);
+}
+_42.onChange.call(this,t);
+}).bind("change.form",function(e){
+var t=e.target;
+if(!$(t).hasClass("textbox-text")){
+if($.inArray(t,_42.dirtyFields)==-1){
+_42.dirtyFields.push(t);
+}
+_42.onChange.call(this,t);
+}
+});
+_43(_41,_42.novalidate);
+};
+function _44(_45,_46){
+_46=_46||{};
+var _47=$.data(_45,"form");
+if(_47){
+$.extend(_47.options,_46);
+}else{
+$.data(_45,"form",{options:$.extend({},$.fn.form.defaults,$.fn.form.parseOptions(_45),_46)});
+}
+};
+function _48(_49){
+if($.fn.validatebox){
+var t=$(_49);
+t.find(".validatebox-text:not(:disabled)").validatebox("validate");
+var _4a=t.find(".validatebox-invalid");
+_4a.filter(":not(:disabled):first").focus();
+return _4a.length==0;
 }
 return true;
 };
-$.fn.form=function(_26,_27){
-if(typeof _26=="string"){
-return $.fn.form.methods[_26](this,_27);
+function _43(_4b,_4c){
+var _4d=$.data(_4b,"form").options;
+_4d.novalidate=_4c;
+$(_4b).find(".validatebox-text:not(:disabled)").validatebox(_4c?"disableValidation":"enableValidation");
+};
+$.fn.form=function(_4e,_4f){
+if(typeof _4e=="string"){
+this.each(function(){
+_44(this);
+});
+return $.fn.form.methods[_4e](this,_4f);
 }
-_26=_26||{};
 return this.each(function(){
-if(!$.data(this,"form")){
-$.data(this,"form",{options:$.extend({},$.fn.form.defaults,_26)});
-}
-_20(this);
+_44(this,_4e);
+_40(this);
 });
 };
-$.fn.form.methods={submit:function(jq,_28){
+$.fn.form.methods={options:function(jq){
+return $.data(jq[0],"form").options;
+},submit:function(jq,_50){
 return jq.each(function(){
-_1(this,$.extend({},$.fn.form.defaults,_28||{}));
+_1(this,_50);
 });
-},load:function(jq,_29){
+},load:function(jq,_51){
 return jq.each(function(){
-_b(this,_29);
+_20(this,_51);
 });
 },clear:function(jq){
 return jq.each(function(){
-_1c(this);
+_32(this);
+});
+},reset:function(jq){
+return jq.each(function(){
+_3a(this);
 });
 },validate:function(jq){
-return _1f(jq[0]);
+return _48(jq[0]);
+},disableValidation:function(jq){
+return jq.each(function(){
+_43(this,true);
+});
+},enableValidation:function(jq){
+return jq.each(function(){
+_43(this,false);
+});
+},resetValidation:function(jq){
+return jq.each(function(){
+$(this).find(".validatebox-text:not(:disabled)").validatebox("resetValidation");
+});
+},resetDirty:function(jq){
+return jq.each(function(){
+$(this).form("options").dirtyFields=[];
+});
 }};
-$.fn.form.defaults={url:null,onSubmit:function(){
+$.fn.form.parseOptions=function(_52){
+var t=$(_52);
+return $.extend({},$.parser.parseOptions(_52,[{ajax:"boolean",dirty:"boolean"}]),{url:(t.attr("action")?t.attr("action"):undefined)});
+};
+$.fn.form.defaults={fieldTypes:["combobox","combotree","combogrid","combotreegrid","datetimebox","datebox","combo","datetimespinner","timespinner","numberspinner","spinner","slider","searchbox","numberbox","passwordbox","filebox","textbox","switchbutton"],novalidate:false,ajax:true,iframe:true,dirty:false,dirtyFields:[],url:null,queryParams:{},onSubmit:function(_53){
 return $(this).form("validate");
-},success:function(_2a){
-},onBeforeLoad:function(_2b){
-},onLoadSuccess:function(_2c){
+},onProgress:function(_54){
+},success:function(_55){
+},onBeforeLoad:function(_56){
+},onLoadSuccess:function(_57){
 },onLoadError:function(){
+},onChange:function(_58){
 }};
 })(jQuery);
 

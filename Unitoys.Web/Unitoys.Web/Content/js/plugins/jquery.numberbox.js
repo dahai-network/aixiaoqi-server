@@ -1,218 +1,178 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2){
-var v=$("<input type=\"hidden\">").insertAfter(_2);
-var _3=$(_2).attr("name");
-if(_3){
-v.attr("name",_3);
-$(_2).removeAttr("name").attr("numberboxName",_3);
-}
-return v;
+var _3=$.data(_2,"numberbox");
+var _4=_3.options;
+$(_2).addClass("numberbox-f").textbox(_4);
+$(_2).textbox("textbox").css({imeMode:"disabled"});
+$(_2).attr("numberboxName",$(_2).attr("textboxName"));
+_3.numberbox=$(_2).next();
+_3.numberbox.addClass("numberbox");
+var _5=_4.parser.call(_2,_4.value);
+var _6=_4.formatter.call(_2,_5);
+$(_2).numberbox("initValue",_5).numberbox("setText",_6);
 };
-function _4(_5){
-var _6=$.data(_5,"numberbox").options;
-var fn=_6.onChange;
-_6.onChange=function(){
+function _7(_8,_9){
+var _a=$.data(_8,"numberbox");
+var _b=_a.options;
+_b.value=parseFloat(_9);
+var _9=_b.parser.call(_8,_9);
+var _c=_b.formatter.call(_8,_9);
+_b.value=_9;
+$(_8).textbox("setText",_c).textbox("setValue",_9);
+_c=_b.formatter.call(_8,$(_8).textbox("getValue"));
+$(_8).textbox("setText",_c);
 };
-_7(_5,_6.parser.call(_5,_6.value));
-_6.onChange=fn;
-};
-function _8(_9){
-return $.data(_9,"numberbox").field.val();
-};
-function _7(_a,_b){
-var _c=$.data(_a,"numberbox");
-var _d=_c.options;
-var _e=_8(_a);
-_b=_d.parser.call(_a,_b);
-_d.value=_b;
-_c.field.val(_b);
-$(_a).val(_d.formatter.call(_a,_b));
-if(_e!=_b){
-_d.onChange.call(_a,_b,_e);
-}
-};
-function _f(_10){
-var _11=$.data(_10,"numberbox").options;
-$(_10).unbind(".numberbox").bind("keypress.numberbox",function(e){
-if(e.which==45){
-return true;
-}
-if(e.which==46){
-return true;
+$.fn.numberbox=function(_d,_e){
+if(typeof _d=="string"){
+var _f=$.fn.numberbox.methods[_d];
+if(_f){
+return _f(this,_e);
 }else{
-if((e.which>=48&&e.which<=57&&e.ctrlKey==false&&e.shiftKey==false)||e.which==0||e.which==8){
-return true;
-}else{
-if(e.ctrlKey==true&&(e.which==99||e.which==118)){
-return true;
-}else{
-return false;
+return this.textbox(_d,_e);
 }
 }
-}
-}).bind("paste.numberbox",function(){
-if(window.clipboardData){
-var s=clipboardData.getData("text");
-if(!/\D/.test(s)){
-return true;
-}else{
-return false;
-}
-}else{
-return false;
-}
-}).bind("dragenter.numberbox",function(){
-return false;
-}).bind("blur.numberbox",function(){
-_7(_10,$(this).val());
-$(this).val(_11.formatter.call(_10,_8(_10)));
-}).bind("focus.numberbox",function(){
-var vv=_8(_10);
-if($(this).val()!=vv){
-$(this).val(vv);
-}
-});
-};
-function _12(_13){
-if($.fn.validatebox){
-var _14=$.data(_13,"numberbox").options;
-$(_13).validatebox(_14);
-}
-};
-function _15(_16,_17){
-var _18=$.data(_16,"numberbox").options;
-if(_17){
-_18.disabled=true;
-$(_16).attr("disabled",true);
-}else{
-_18.disabled=false;
-$(_16).removeAttr("disabled");
-}
-};
-$.fn.numberbox=function(_19,_1a){
-if(typeof _19=="string"){
-var _1b=$.fn.numberbox.methods[_19];
-if(_1b){
-return _1b(this,_1a);
-}else{
-return this.validatebox(_19,_1a);
-}
-}
-_19=_19||{};
+_d=_d||{};
 return this.each(function(){
-var _1c=$.data(this,"numberbox");
-if(_1c){
-$.extend(_1c.options,_19);
+var _10=$.data(this,"numberbox");
+if(_10){
+$.extend(_10.options,_d);
 }else{
-_1c=$.data(this,"numberbox",{options:$.extend({},$.fn.numberbox.defaults,$.fn.numberbox.parseOptions(this),_19),field:_1(this)});
-$(this).removeAttr("disabled");
-$(this).css({imeMode:"disabled"});
+_10=$.data(this,"numberbox",{options:$.extend({},$.fn.numberbox.defaults,$.fn.numberbox.parseOptions(this),_d)});
 }
-_15(this,_1c.options.disabled);
-_f(this);
-_12(this);
-_4(this);
+_1(this);
 });
 };
 $.fn.numberbox.methods={options:function(jq){
-return $.data(jq[0],"numberbox").options;
-},destroy:function(jq){
-return jq.each(function(){
-$.data(this,"numberbox").field.remove();
-$(this).validatebox("destroy");
-$(this).remove();
-});
-},disable:function(jq){
-return jq.each(function(){
-_15(this,true);
-});
-},enable:function(jq){
-return jq.each(function(){
-_15(this,false);
-});
+var _11=jq.data("textbox")?jq.textbox("options"):{};
+return $.extend($.data(jq[0],"numberbox").options,{width:_11.width,originalValue:_11.originalValue,disabled:_11.disabled,readonly:_11.readonly});
 },fix:function(jq){
 return jq.each(function(){
-_7(this,$(this).val());
+var _12=$(this).numberbox("options");
+_12.value=null;
+var _13=_12.parser.call(this,$(this).numberbox("getText"));
+$(this).numberbox("setValue",_13);
 });
-},setValue:function(jq,_1d){
+},setValue:function(jq,_14){
 return jq.each(function(){
-_7(this,_1d);
+_7(this,_14);
 });
-},getValue:function(jq){
-return _8(jq[0]);
 },clear:function(jq){
 return jq.each(function(){
-var _1e=$.data(this,"numberbox");
-_1e.field.val("");
-$(this).val("");
+$(this).textbox("clear");
+$(this).numberbox("options").value="";
+});
+},reset:function(jq){
+return jq.each(function(){
+$(this).textbox("reset");
+$(this).numberbox("setValue",$(this).numberbox("getValue"));
 });
 }};
-$.fn.numberbox.parseOptions=function(_1f){
-var t=$(_1f);
-return $.extend({},$.fn.validatebox.parseOptions(_1f),{disabled:(t.attr("disabled")?true:undefined),value:(t.val()||undefined),min:(t.attr("min")=="0"?0:parseFloat(t.attr("min"))||undefined),max:(t.attr("max")=="0"?0:parseFloat(t.attr("max"))||undefined),precision:(parseInt(t.attr("precision"))||undefined),decimalSeparator:(t.attr("decimalSeparator")?t.attr("decimalSeparator"):undefined),groupSeparator:(t.attr("groupSeparator")?t.attr("groupSeparator"):undefined),prefix:(t.attr("prefix")?t.attr("prefix"):undefined),suffix:(t.attr("suffix")?t.attr("suffix"):undefined)});
+$.fn.numberbox.parseOptions=function(_15){
+var t=$(_15);
+return $.extend({},$.fn.textbox.parseOptions(_15),$.parser.parseOptions(_15,["decimalSeparator","groupSeparator","suffix",{min:"number",max:"number",precision:"number"}]),{prefix:(t.attr("prefix")?t.attr("prefix"):undefined)});
 };
-$.fn.numberbox.defaults=$.extend({},$.fn.validatebox.defaults,{disabled:false,value:"",min:null,max:null,precision:0,decimalSeparator:".",groupSeparator:"",prefix:"",suffix:"",formatter:function(_20){
-if(!_20){
-return _20;
+$.fn.numberbox.defaults=$.extend({},$.fn.textbox.defaults,{inputEvents:{keypress:function(e){
+var _16=e.data.target;
+var _17=$(_16).numberbox("options");
+return _17.filter.call(_16,e);
+},blur:function(e){
+$(e.data.target).numberbox("fix");
+},keydown:function(e){
+if(e.keyCode==13){
+$(e.data.target).numberbox("fix");
 }
-_20=_20+"";
-var _21=$(this).numberbox("options");
-var s1=_20,s2="";
-var _22=_20.indexOf(".");
-if(_22>=0){
-s1=_20.substring(0,_22);
-s2=_20.substring(_22+1,_20.length);
+}},min:null,max:null,precision:0,decimalSeparator:".",groupSeparator:"",prefix:"",suffix:"",filter:function(e){
+var _18=$(this).numberbox("options");
+var s=$(this).numberbox("getText");
+if(e.metaKey||e.ctrlKey){
+return true;
 }
-if(_21.groupSeparator){
+if($.inArray(String(e.which),["46","8","13","0"])>=0){
+return true;
+}
+var tmp=$("<span></span>");
+tmp.html(String.fromCharCode(e.which));
+var c=tmp.text();
+tmp.remove();
+if(!c){
+return true;
+}
+if(c=="-"||c==_18.decimalSeparator){
+return (s.indexOf(c)==-1)?true:false;
+}else{
+if(c==_18.groupSeparator){
+return true;
+}else{
+if("0123456789".indexOf(c)>=0){
+return true;
+}else{
+return false;
+}
+}
+}
+},formatter:function(_19){
+if(!_19){
+return _19;
+}
+_19=_19+"";
+var _1a=$(this).numberbox("options");
+var s1=_19,s2="";
+var _1b=_19.indexOf(".");
+if(_1b>=0){
+s1=_19.substring(0,_1b);
+s2=_19.substring(_1b+1,_19.length);
+}
+if(_1a.groupSeparator){
 var p=/(\d+)(\d{3})/;
 while(p.test(s1)){
-s1=s1.replace(p,"$1"+_21.groupSeparator+"$2");
+s1=s1.replace(p,"$1"+_1a.groupSeparator+"$2");
 }
 }
 if(s2){
-return _21.prefix+s1+_21.decimalSeparator+s2+_21.suffix;
+return _1a.prefix+s1+_1a.decimalSeparator+s2+_1a.suffix;
 }else{
-return _21.prefix+s1+_21.suffix;
+return _1a.prefix+s1+_1a.suffix;
 }
 },parser:function(s){
 s=s+"";
-var _23=$(this).numberbox("options");
-if(_23.groupSeparator){
-s=s.replace(new RegExp("\\"+_23.groupSeparator,"g"),"");
+var _1c=$(this).numberbox("options");
+if(_1c.prefix){
+s=$.trim(s.replace(new RegExp("\\"+$.trim(_1c.prefix),"g"),""));
 }
-if(_23.decimalSeparator){
-s=s.replace(new RegExp("\\"+_23.decimalSeparator,"g"),".");
+if(_1c.suffix){
+s=$.trim(s.replace(new RegExp("\\"+$.trim(_1c.suffix),"g"),""));
 }
-if(_23.prefix){
-s=s.replace(new RegExp("\\"+$.trim(_23.prefix),"g"),"");
+if(parseFloat(s)!=_1c.value){
+if(_1c.groupSeparator){
+s=$.trim(s.replace(new RegExp("\\"+_1c.groupSeparator,"g"),""));
 }
-if(_23.suffix){
-s=s.replace(new RegExp("\\"+$.trim(_23.suffix),"g"),"");
+if(_1c.decimalSeparator){
+s=$.trim(s.replace(new RegExp("\\"+_1c.decimalSeparator,"g"),"."));
 }
 s=s.replace(/\s/g,"");
-var val=parseFloat(s).toFixed(_23.precision);
+}
+var val=parseFloat(s).toFixed(_1c.precision);
 if(isNaN(val)){
 val="";
 }else{
-if(typeof (_23.min)=="number"&&val<_23.min){
-val=_23.min.toFixed(_23.precision);
+if(typeof (_1c.min)=="number"&&val<_1c.min){
+val=_1c.min.toFixed(_1c.precision);
 }else{
-if(typeof (_23.max)=="number"&&val>_23.max){
-val=_23.max.toFixed(_23.precision);
+if(typeof (_1c.max)=="number"&&val>_1c.max){
+val=_1c.max.toFixed(_1c.precision);
 }
 }
 }
 return val;
-},onChange:function(_24,_25){
 }});
 })(jQuery);
 

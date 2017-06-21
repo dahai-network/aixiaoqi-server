@@ -1,60 +1,58 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2){
 $(_2).addClass("progressbar");
-$(_2).html("<div class=\"progressbar-text\"></div><div class=\"progressbar-value\">&nbsp;</div>");
+$(_2).html("<div class=\"progressbar-text\"></div><div class=\"progressbar-value\"><div class=\"progressbar-text\"></div></div>");
+$(_2).bind("_resize",function(e,_3){
+if($(this).hasClass("easyui-fluid")||_3){
+_4(_2);
+}
+return false;
+});
 return $(_2);
 };
-function _3(_4,_5){
-var _6=$.data(_4,"progressbar").options;
-var _7=$.data(_4,"progressbar").bar;
-if(_5){
-_6.width=_5;
+function _4(_5,_6){
+var _7=$.data(_5,"progressbar").options;
+var _8=$.data(_5,"progressbar").bar;
+if(_6){
+_7.width=_6;
 }
-_7._outerWidth(_6.width);
-_7.find("div.progressbar-text").width(_7.width());
+_8._size(_7);
+_8.find("div.progressbar-text").css("width",_8.width());
+_8.find("div.progressbar-text,div.progressbar-value").css({height:_8.height()+"px",lineHeight:_8.height()+"px"});
 };
-$.fn.progressbar=function(_8,_9){
-if(typeof _8=="string"){
-var _a=$.fn.progressbar.methods[_8];
-if(_a){
-return _a(this,_9);
-}
-}
-_8=_8||{};
-return this.each(function(){
-var _b=$.data(this,"progressbar");
+$.fn.progressbar=function(_9,_a){
+if(typeof _9=="string"){
+var _b=$.fn.progressbar.methods[_9];
 if(_b){
-$.extend(_b.options,_8);
-}else{
-_b=$.data(this,"progressbar",{options:$.extend({},$.fn.progressbar.defaults,$.fn.progressbar.parseOptions(this),_8),bar:_1(this)});
+return _b(this,_a);
 }
-$(this).progressbar("setValue",_b.options.value);
-_3(this);
-});
-};
-$.fn._outerWidth=function(_c){
+}
+_9=_9||{};
 return this.each(function(){
-if(!$.boxModel&&$.browser.msie){
-$(this).width(_c);
+var _c=$.data(this,"progressbar");
+if(_c){
+$.extend(_c.options,_9);
 }else{
-$(this).width(_c-($(this).outerWidth()-$(this).width()));
+_c=$.data(this,"progressbar",{options:$.extend({},$.fn.progressbar.defaults,$.fn.progressbar.parseOptions(this),_9),bar:_1(this)});
 }
+$(this).progressbar("setValue",_c.options.value);
+_4(this);
 });
 };
 $.fn.progressbar.methods={options:function(jq){
 return $.data(jq[0],"progressbar").options;
 },resize:function(jq,_d){
 return jq.each(function(){
-_3(this,_d);
+_4(this,_d);
 });
 },getValue:function(jq){
 return $.data(jq[0],"progressbar").options.value;
@@ -78,10 +76,9 @@ _f.onChange.call(this,_e,_11);
 });
 }};
 $.fn.progressbar.parseOptions=function(_12){
-var t=$(_12);
-return {width:(parseInt(_12.style.width)||undefined),value:(t.attr("value")?parseInt(t.attr("value")):undefined),text:t.attr("text")};
+return $.extend({},$.parser.parseOptions(_12,["width","height","text",{value:"number"}]));
 };
-$.fn.progressbar.defaults={width:"auto",value:0,text:"{value}%",onChange:function(_13,_14){
+$.fn.progressbar.defaults={width:"auto",height:22,value:0,text:"{value}%",onChange:function(_13,_14){
 }};
 })(jQuery);
 

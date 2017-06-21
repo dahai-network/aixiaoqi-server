@@ -1,106 +1,49 @@
-﻿/**
- * jQuery EasyUI 1.2.6
+/**
+ * jQuery EasyUI 1.5.2
  * 
- * Licensed under the GPL terms
- * To use it on other terms please contact us
+ * Copyright (c) 2009-2017 www.jeasyui.com. All rights reserved.
  *
- * Copyright(c) 2009-2012 stworthy [ stworthy@gmail.com ] 
- * 
+ * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
+ * To use it on other terms please contact us: info@jeasyui.com
+ *
  */
 (function($){
 function _1(_2){
 var _3=$.data(_2,"splitbutton").options;
-var _4=$(_2);
-_4.removeClass("s-btn-active s-btn-plain-active").addClass("s-btn");
-_4.linkbutton($.extend({},_3,{text:_3.text+"<span class=\"s-btn-downarrow\">&nbsp;</span>"}));
-if(_3.menu){
-$(_3.menu).menu({onShow:function(){
-_4.addClass((_3.plain==true)?"s-btn-plain-active":"s-btn-active");
-},onHide:function(){
-_4.removeClass((_3.plain==true)?"s-btn-plain-active":"s-btn-active");
-}});
-}
-_5(_2,_3.disabled);
+$(_2).menubutton(_3);
+$(_2).addClass("s-btn");
 };
-function _5(_6,_7){
-var _8=$.data(_6,"splitbutton").options;
-_8.disabled=_7;
-var _9=$(_6);
-var _a=_9.find(".s-btn-downarrow");
-if(_7){
-_9.linkbutton("disable");
-_a.unbind(".splitbutton");
+$.fn.splitbutton=function(_4,_5){
+if(typeof _4=="string"){
+var _6=$.fn.splitbutton.methods[_4];
+if(_6){
+return _6(this,_5);
 }else{
-_9.linkbutton("enable");
-_a.unbind(".splitbutton");
-_a.bind("click.splitbutton",function(){
-_b();
-return false;
-});
-var _c=null;
-_a.bind("mouseenter.splitbutton",function(){
-_c=setTimeout(function(){
-_b();
-},_8.duration);
-return false;
-}).bind("mouseleave.splitbutton",function(){
-if(_c){
-clearTimeout(_c);
+return this.menubutton(_4,_5);
 }
-});
 }
-function _b(){
-if(!_8.menu){
-return;
-}
-var _d=_9.offset().left;
-if(_d+$(_8.menu).outerWidth()+5>$(window).width()){
-_d=$(window).width()-$(_8.menu).outerWidth()-5;
-}
-$("body>div.menu-top").menu("hide");
-$(_8.menu).menu("show",{left:_d,top:_9.offset().top+_9.outerHeight()});
-_9.blur();
-};
-};
-$.fn.splitbutton=function(_e,_f){
-if(typeof _e=="string"){
-return $.fn.splitbutton.methods[_e](this,_f);
-}
-_e=_e||{};
+_4=_4||{};
 return this.each(function(){
-var _10=$.data(this,"splitbutton");
-if(_10){
-$.extend(_10.options,_e);
+var _7=$.data(this,"splitbutton");
+if(_7){
+$.extend(_7.options,_4);
 }else{
-$.data(this,"splitbutton",{options:$.extend({},$.fn.splitbutton.defaults,$.fn.splitbutton.parseOptions(this),_e)});
+$.data(this,"splitbutton",{options:$.extend({},$.fn.splitbutton.defaults,$.fn.splitbutton.parseOptions(this),_4)});
 $(this).removeAttr("disabled");
 }
 _1(this);
 });
 };
 $.fn.splitbutton.methods={options:function(jq){
-return $.data(jq[0],"splitbutton").options;
-},enable:function(jq){
-return jq.each(function(){
-_5(this,false);
-});
-},disable:function(jq){
-return jq.each(function(){
-_5(this,true);
-});
-},destroy:function(jq){
-return jq.each(function(){
-var _11=$(this).splitbutton("options");
-if(_11.menu){
-$(_11.menu).menu("destroy");
-}
-$(this).remove();
-});
+var _8=jq.menubutton("options");
+var _9=$.data(jq[0],"splitbutton").options;
+$.extend(_9,{disabled:_8.disabled,toggle:_8.toggle,selected:_8.selected});
+return _9;
 }};
-$.fn.splitbutton.parseOptions=function(_12){
-var t=$(_12);
-return $.extend({},$.fn.linkbutton.parseOptions(_12),{menu:t.attr("menu"),duration:t.attr("duration")});
+$.fn.splitbutton.parseOptions=function(_a){
+var t=$(_a);
+return $.extend({},$.fn.linkbutton.parseOptions(_a),$.parser.parseOptions(_a,["menu",{plain:"boolean",duration:"number"}]));
 };
-$.fn.splitbutton.defaults=$.extend({},$.fn.linkbutton.defaults,{plain:true,menu:null,duration:100});
+$.fn.splitbutton.defaults=$.extend({},$.fn.linkbutton.defaults,{plain:true,menu:null,duration:100,cls:{btn1:"m-btn-active s-btn-active",btn2:"m-btn-plain-active s-btn-plain-active",arrow:"m-btn-downarrow",trigger:"m-btn-line"}});
 })(jQuery);
 

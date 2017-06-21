@@ -43,7 +43,7 @@ namespace Unitoys.Model
         /// <summary>
         /// 原价
         /// </summary>
-        public decimal OriginalPrice { get; set; }
+        public decimal? OriginalPrice { get; set; }
         /// <summary>
         /// 显示顺序
         /// </summary>

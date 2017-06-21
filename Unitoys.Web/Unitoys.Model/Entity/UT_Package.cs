@@ -138,7 +138,7 @@ namespace Unitoys.Model
         /// <summary>
         /// 原价
         /// </summary>
-        public decimal OriginalPrice { get; set; }
+        public decimal? OriginalPrice { get; set; }
 
         public virtual ICollection<UT_Order> UT_Order { get; set; }
         public virtual UT_Country UT_Country { get; set; }
