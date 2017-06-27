@@ -35,7 +35,7 @@ namespace Unitoys.Core
                 }
                 catch(Exception e)
                 {
-                    LoggerHelper.Error("Redis数据库访问出错！"+e.Message);
+                    LoggerHelper.Error("Redis数据库访问出错！"+e.Message,e);
                     return null;
                 }
                 

@@ -81,7 +81,7 @@
         </table>
     </div>
 </div>
-<div id="dlg-edit" class="easyui-dialog" title="添加套餐" style="width:550px;height:450px;padding:20px"
+<div id="dlg-edit" class="easyui-dialog" title="添加套餐" style="width:800px;height:450px;padding:20px"
      data-options="
                 iconCls: 'icon-save',
                 closed:true,
@@ -445,6 +445,44 @@
                     <input name="UseDescr" id="UseDescr" class="easyui-textbox" data-options="multiline:true" style="width: 250px; height: 100px">
                 </td>
             </tr>
+            <tr>
+                <td colspan="2">
+                    <table id="dg" class="easyui-datagrid" title="套餐属性" style="width:680px;height:auto"
+                           data-options="
+                            rownumbers:true,
+                            fitColumns:true,
+                            iconCls: 'icon-edit',
+                            singleSelect: true,
+                            toolbar: '#tb',
+                            pagination:true,
+                            url: '',
+                            method: 'get',
+                            onClickCell: onClickCell,
+                            onEndEdit: onEndEdit
+            ">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'Flow',width:120,editor:'numberbox'">流量</th>
+                                <th data-options="field:'CallMinutes',width:120,align:'right',editor:{type:'numberbox'}">通话分钟</th>
+                                <th data-options="field:'ExpireDays',width:120,align:'right',editor:'numberbox'">有效天数</th>
+                                <th data-options="field:'FlowDescr',width:250,editor:'textbox'">流量描述</th>
+                                <th data-options="field:'CallMinutesDescr',width:250,editor:'textbox'">通话描述</th>
+                                <th data-options="field:'ExpireDaysDescr',width:250,editor:'textbox'">有效天数描述</th>
+                                <th data-options="field:'Price',width:80,editor:{type:'numberbox',options:{precision:2}}">价格</th>
+                                <th data-options="field:'OriginalPrice',width:80,editor:{type:'numberbox',options:{precision:2}}">原价</th>
+                                <th data-options="field:'DisplayOrder',width:80,editor:'numberbox'">顺序</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="tb" style="height:auto">
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">Append</a>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">Remove</a>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">Accept</a>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">Reject</a>
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>
+                    </div>
+                </td>
+            </tr>
         </table>
     </form>
 </div>
@@ -461,6 +499,8 @@
             dlg_Edit.dialog('open');
             dlg_Edit.dialog('setTitle', '添加套餐');
             dlg_Edit_form.url = '/Manage/Package/Add/';
+            $('#dg').datagrid('loadData', { total: 0, rows: [] });
+
         }
     }, {
         text: '下架套餐',
@@ -570,12 +610,49 @@
         dlg_Edit_form.form('load', rowData); //加载到表单的控件上
 
         dlg_Edit_form.url = '/Manage/Package/Update';
+
+        $("#dg").datagrid({
+            'url': '/Manage/PackageAttribute/GetList', queryParams:
+                {
+                    packageId: rowData.ID,
+                }
+        })
+
+        //$("#dg").datagrid('load', {
+        //    packageId: rowData.ID
+        //});
+
+
     }
     //保存数据
     function saveData() {
         dlg_Edit_form.form('submit', {
             url: dlg_Edit_form.url,
-            onSubmit: function () {
+            onSubmit: function (param) {
+                if (endEditing()) {
+                    //取值需写在endEditing()下
+                    var inserted = $('#dg').datagrid('getChanges', "inserted");
+                    var updated = $('#dg').datagrid('getChanges', "updated");
+                    var deleted = $('#dg').datagrid('getChanges', "deleted");
+
+
+                    $.each(inserted, function (i, o) {
+                        $.each(o, function (a, b) {
+                            param['inserted[' + i + '].' + a] = b;
+                        })
+                    })
+                    $.each(updated, function (i, o) {
+                        $.each(o, function (a, b) {
+                            param['updated[' + i + '].' + a] = b;
+                        })
+                    })
+                    $.each(deleted, function (i, o) {
+                        $.each(o, function (a, b) {
+                            param['deleted[' + i + '].' + a] = b;
+                        })
+                    })
+                    //$('#dg').datagrid('acceptChanges');
+                }
                 return $(this).form('validate');
             },
             success: successCallback
@@ -625,5 +702,73 @@
             Msgshow('请先选择要删除的记录。');
 
         }
+    }
+
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dg').datagrid('validateRow', editIndex)) {
+            $('#dg').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function onClickCell(index, field) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                var ed = $('#dg').datagrid('getEditor', { index: index, field: field });
+                if (ed) {
+                    ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+                editIndex = index;
+            } else {
+                setTimeout(function () {
+                    $('#dg').datagrid('selectRow', editIndex);
+                }, 0);
+            }
+        }
+    }
+    function onEndEdit(index, row) {
+        var ed = $(this).datagrid('getEditor', {
+            index: index,
+            field: 'productid'
+        });
+        //row.productname = $(ed.target).combobox('getText');
+    }
+    function append() {
+        if (endEditing()) {
+            $('#dg').datagrid('appendRow', { DisplayOrder: '1', ID: $('#ID').val() });
+            editIndex = $('#dg').datagrid('getRows').length - 1;
+            $('#dg').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function removeit() {
+        if (editIndex == undefined) { return }
+        $('#dg').datagrid('cancelEdit', editIndex)
+                .datagrid('deleteRow', editIndex);
+        editIndex = undefined;
+    }
+    function accept() {
+        if (endEditing()) {
+            //取值需写在endEditing()下
+            var inserted = $('#dg').datagrid('getChanges', "inserted");
+            var deleted = $('#dg').datagrid('getChanges', "deleted");
+            var updated = $('#dg').datagrid('getChanges', "updated");
+
+            $('#dg').datagrid('acceptChanges');
+        }
+    }
+    function reject() {
+        $('#dg').datagrid('rejectChanges');
+        editIndex = undefined;
+    }
+    function getChanges() {
+        var rows = $('#dg').datagrid('getChanges');
+        alert(rows.length + ' rows are changed!');
     }
 </script>

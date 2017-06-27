@@ -28,6 +28,10 @@ namespace Unitoys.WebApi.Models
         /// 组合ID
         /// </summary>
         public Guid? PackageAttributeId { get; set; }
+        /// <summary>
+        /// 激活时间日期传递。BeginTime和BeginDateTime必须传一个
+        /// </summary>
+        public DateTime? BeginDateTime { get; set; }
 
     }
     public class AddReceiveBindingModel

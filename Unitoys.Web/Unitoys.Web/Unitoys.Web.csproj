@@ -145,6 +145,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manage\Controllers\AgentController.cs" />
     <Compile Include="Areas\Manage\Controllers\DeviceBraceletUsageRecordController.cs" />
+    <Compile Include="Areas\Manage\Controllers\PackageAttributeController.cs" />
     <Compile Include="Areas\Manage\Controllers\UserLogController.cs" />
     <Compile Include="Areas\Manage\Controllers\ContactUSController.cs" />
     <Compile Include="Areas\Manage\Controllers\AfterSalesController.cs" />

@@ -89,7 +89,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
 
         [HttpPost]
         [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Add_Package)]
-        public async Task<ActionResult> Add(UT_Package model)
+        public async Task<ActionResult> Add(UT_Package model, List<UT_PackageAttribute> inserted)
         {
             JsonAjaxResult result = new JsonAjaxResult();
 
@@ -156,7 +156,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 package.DescTitlePic = model.DescTitlePic ?? "";
                 package.DescPic = model.DescPic ?? "";
 
-                if (await _packageService.InsertAsync(package))
+                if (await _packageService.InsertEntityPackageAttributeAsync(package, inserted))
                 {
                     result.Success = true;
                     result.Msg = "添加成功！";
@@ -177,7 +177,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_Package)]
-        public async Task<ActionResult> Update(UT_Package model)
+        public async Task<ActionResult> Update(UT_Package model, List<UT_PackageAttribute> inserted, List<UT_PackageAttribute> updated, List<UT_PackageAttribute> deleted)
         {
             JsonAjaxResult result = new JsonAjaxResult();
 
@@ -245,7 +245,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     package.DescTitlePic = model.DescTitlePic ?? "";
                     package.DescPic = model.DescPic ?? "";
 
-                    if (await _packageService.UpdateAsync(package))
+                    if (await _packageService.UpdateEntityPackageAttributeAsync(package, inserted, updated, deleted))
                     {
                         result.Success = true;
                         result.Msg = "更新成功！";
@@ -282,7 +282,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 }
                 else
                 {
-                    opResult = await _packageService.DeleteAsync(await _packageService.GetEntityByIdAsync(ID.Value));
+                    opResult = await _packageService.DeleteEntityPackageAttributeAsync(ID.Value);
                 }
 
                 if (opResult)

@@ -80,9 +80,57 @@ namespace Unitoys.WebApi.Controllers
                         if (orderOrPayment.StartsWith("8022", StringComparison.OrdinalIgnoreCase))
                         {
                             //处理订单完成。
-                            if (await _orderService.OnAfterOrderSuccess(orderOrPayment, total_amount))
+                            var resultNum = await _orderService.OnAfterOrderSuccess(orderOrPayment, total_amount);
+                            if (resultNum == 0 || resultNum == 10 || resultNum <= -11)
                             {
                                 result_msg = "success";
+                                switch (resultNum)
+                                {
+                                    case 10://激活成功
+                                    case 0:
+                                        //result_msg = "success";
+                                        break;
+                                    //return Ok(new { status = 1, msg = "支付成功！" });
+                                    //case -12:
+                                    //    PayDataResult.SetValue("return_code", "SUCCESS");
+                                    //    PayDataResult.SetValue("return_msg", "支付成功,激活失败,超过最晚激活日期");
+                                    //    break;
+                                    ////return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期, "支付成功,激活失败,超过最晚激活日期"));
+                                    //case -13:
+                                    //    PayDataResult.SetValue("return_code", "SUCCESS");
+                                    //    PayDataResult.SetValue("return_msg", "支付成功,激活失败,超过最晚激活日期");
+                                    //    break;
+                                    ////return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常, "支付成功,激活失败,激活类型异常"));
+                                    //case -14:
+                                    //    PayDataResult.SetValue("return_code", "SUCCESS");
+                                    //    PayDataResult.SetValue("return_msg", "支付成功,暂时无法激活,请联系客服");
+                                    //    break;
+                                    ////return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "支付成功,暂时无法激活,请联系客服"));
+                                    //case -15:
+                                    //    PayDataResult.SetValue("return_code", "SUCCESS");
+                                    //    PayDataResult.SetValue("return_msg", "支付成功,激活失败,超过最晚激活日期");
+                                    //    break;
+                                    ////return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "支付成功,激活失败,超过最晚激活日期"));
+                                    ////case 10:
+                                    ////    return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = model.OrderID } });// Data = order.PackageOrderData 
+                                    //case -11:
+                                    //    PayDataResult.SetValue("return_code", "SUCCESS");
+                                    //    PayDataResult.SetValue("return_msg", "支付成功,激活失败，可能订单不存在或未支付");
+                                    //    break;
+                                    ////return Ok(new StatusCodeRes(StatusCodeType.失败, "支付成功,激活失败，可能订单不存在或未支付"));
+                                    //case -16:
+                                    //    PayDataResult.SetValue("return_code", "SUCCESS");
+                                    //    PayDataResult.SetValue("return_msg", "支付成功,套餐激活后,更新订单失败");
+                                    //    break;
+                                    //return Ok(new StatusCodeRes(StatusCodeType.内部错误, "支付成功,套餐激活后,更新订单失败"));
+                                    default:
+                                        //PayDataResult.SetValue("return_code", "SUCCESS");
+                                        //PayDataResult.SetValue("return_msg", "支付成功,套餐激活出现问题");
+                                        //result_msg = "success";
+                                        LoggerHelper.Error("支付宝回调方法，出现套餐激活失败相关异常,result:" + resultNum, new Exception("订单回调失败"));
+                                        break;
+                                    //return Ok(new StatusCodeRes(StatusCodeType.内部错误, "支付成功,套餐激活出现问题"));
+                                }
                             }
                         }
                         else if (orderOrPayment.StartsWith("9022", StringComparison.OrdinalIgnoreCase))

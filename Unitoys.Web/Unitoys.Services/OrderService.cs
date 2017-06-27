@@ -8,6 +8,7 @@ using Unitoys.IServices;
 using Unitoys.Model;
 using System.Data.Entity;
 using System.Linq.Expressions;
+using Unitoys.ESIM_MVNO;
 
 namespace Unitoys.Services
 {
@@ -29,7 +30,7 @@ namespace Unitoys.Services
         /// <param name="orderDate">订单日期</param>
         /// <param name="PaymentMethod">支付方式</param>
         /// <returns>0失败/1成功/2套餐被锁定/3不允许购买多个/4已 免费领取 此套餐/5 设备号码验证/6无有效已验证号码/8组合ID与套餐不匹配</returns>
-        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, decimal MonthPackageFee, Guid? packageAttributeId)
+        public async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> AddOrder(Guid userId, Guid packageId, int quantity, PaymentMethodType PaymentMethod, decimal MonthPackageFee, Guid? packageAttributeId, DateTime? BeginDateTime)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -76,7 +77,7 @@ namespace Unitoys.Services
                     }
                 }
 
-                return await Add(db, userId, package, packageAttribute, quantity, PaymentMethod, deviceTel, MonthPackageFee);
+                return await Add(db, userId, package, packageAttribute, quantity, PaymentMethod, deviceTel, MonthPackageFee, BeginDateTime);
             }
         }
 
@@ -111,7 +112,7 @@ namespace Unitoys.Services
                 {
                     return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(5, null));
                 }
-                return await Add(db, userId, package, null, 1, PaymentMethodType.Gift, null, 0);
+                return await Add(db, userId, package, null, 1, PaymentMethodType.Gift, null, 0, null);
             }
         }
 
@@ -126,7 +127,7 @@ namespace Unitoys.Services
         /// <param name="deviceTel"></param>
         /// <param name="MonthPackageFee"></param>
         /// <returns></returns>
-        private static async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> Add(UnitoysEntities db, Guid userId, UT_Package package, UT_PackageAttribute packageAttribute, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee)
+        private static async Task<KeyValuePair<string, KeyValuePair<int, UT_Order>>> Add(UnitoysEntities db, Guid userId, UT_Package package, UT_PackageAttribute packageAttribute, int quantity, PaymentMethodType PaymentMethod, string deviceTel, decimal MonthPackageFee, DateTime? BeginDateTime)
         {
             if (package != null)
             {
@@ -155,6 +156,13 @@ namespace Unitoys.Services
                 order.PackageIsSupport4G = package.IsSupport4G;
                 order.PackageIsApn = package.IsApn;
                 order.PackageApnName = package.ApnName;
+
+                if (BeginDateTime.HasValue)
+                {
+                    order.EffectiveDate = CommonHelper.ConvertDateTimeInt(BeginDateTime.Value);
+                    order.EffectiveDateDesc = BeginDateTime;
+                }
+
                 //order.PayUserAmount = PayUserAmount;
                 //order.IsPayUserAmount = IsPayUserAmount;
                 order.PaymentMethod = PaymentMethod;
@@ -231,6 +239,27 @@ namespace Unitoys.Services
             else
             {
                 order.ExpireDate = CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.EffectiveDate.Value.ToString()).AddMonths(order.ExpireDays * order.Quantity));
+            }
+        }
+
+        /// <summary>
+        /// 获取最晚激活时间
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private static int GetLastCanActivationDate(UT_Order order)
+        {
+            if (order == null)
+            {
+                return 0;
+            }
+            if (order.PackageCategory == CategoryType.KingCard)
+            {
+                return CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(3));
+            }
+            else
+            {
+                return CommonHelper.ConvertDateTimeInt(CommonHelper.GetTime(order.OrderDate.ToString()).AddMonths(6));
             }
         }
 
@@ -324,7 +353,29 @@ namespace Unitoys.Services
 
                         db.UT_UserBill.Add(userBill);
 
-                        return await db.SaveChangesAsync() > 0 ? 0 : -1;
+                        var payResult = await db.SaveChangesAsync() > 0 ? 0 : -1;
+
+                        //付款成功后激活订单
+                        if (payResult != 0)
+                        {
+                            return payResult;
+                        }
+                        //流量套餐-激活订单
+                        if (payOrder.PackageCategory == CategoryType.Flow && (payOrder.EffectiveDate.HasValue || payOrder.EffectiveDateDesc.HasValue))
+                        {
+                            var activationResult = await Activation(payUser.ID, payOrder, payOrder.UT_Package, payUser, payOrder.EffectiveDate, payOrder.EffectiveDateDesc, db);
+                            if (activationResult == 10)
+                            {
+                                if (await db.SaveChangesAsync() <= 0)
+                                {
+                                    LoggerHelper.Error("套餐激活成功,更新数据库失败");
+                                    //return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
+                                    return -16;
+                                }
+                            }
+                            return activationResult;
+                        }
+                        return 0;
                     }
                 }
                 return -1;
@@ -337,7 +388,7 @@ namespace Unitoys.Services
         /// <param name="orderNum">订单编号</param>
         /// <param name="payAmount">支付金额</param>
         /// <returns></returns>
-        public async Task<bool> OnAfterOrderSuccess(string orderNum, decimal payAmount)
+        public async Task<int> OnAfterOrderSuccess(string orderNum, decimal payAmount)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -363,7 +414,7 @@ namespace Unitoys.Services
                         {
                             LoggerHelper.Error("订单错误支付更新失败", new Exception("订单错误支付更新失败"));
                         }
-                        return false;
+                        return -1;
                     }
                     if (payAmount > orderOnlineAmount)
                     {
@@ -371,7 +422,7 @@ namespace Unitoys.Services
                     }
 
                     //如果是已付款状态，直接返回true表示已经处理好了。
-                    if (order.PayStatus == PayStatusType.YesPayment) return true;
+                    if (order.PayStatus == PayStatusType.YesPayment) return 0;
 
                     //设置为已付款，付款日期设置为当前，并保存。
                     order.PayDate = CommonHelper.GetDateTimeInt();
@@ -458,9 +509,31 @@ namespace Unitoys.Services
                     //    db.Entry<UT_Users>(user).State = EntityState.Modified;
                     //}
 
-                    return await db.SaveChangesAsync() > 0;
+                    var payResult = await db.SaveChangesAsync() > 0 ? 0 : -1;
+
+                    //付款成功后激活订单
+                    if (payResult != 0)
+                    {
+                        return payResult;
+                    }
+                    //流量套餐-激活订单
+                    if (order.PackageCategory == CategoryType.Flow && (order.EffectiveDate.HasValue || order.EffectiveDateDesc.HasValue))
+                    {
+                        var activationResult = await Activation(order.ID, order, order.UT_Package, user, order.EffectiveDate, order.EffectiveDateDesc, db);
+                        if (activationResult == 10)
+                        {
+                            if (await db.SaveChangesAsync() <= 0)
+                            {
+                                LoggerHelper.Error("套餐激活成功,更新数据库失败");
+                                //return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
+                                return -16;
+                            }
+                        }
+                        return activationResult;
+                    }
+                    return 0;
                 }
-                return false;
+                return -1;
             }
         }
 
@@ -698,6 +771,153 @@ namespace Unitoys.Services
                 }
                 return await query.AnyAsync();
             }
+        }
+
+        /// <summary>
+        /// 激活订单（MVNO购卡）
+        /// </summary>
+        /// <param name="UserID">用户ID</param>
+        /// <param name="OrderID">订单ID</param>
+        /// <param name="BeginTime">开始生效时间戳</param>
+        /// <param name="BeginDateTime">开始生效日期格式</param>
+        /// <returns>
+        /// -12：激活失败_超过最晚激活日期
+        /// -13：激活失败_激活类型异常（非流量套餐）
+        /// -14：激活套餐失败_可能套餐已过期 "暂时无法激活,请联系客服"
+        /// -15：卡激活过程异常（购卡异常）
+        /// -11：失败
+        /// 10：成功
+        /// -16：套餐激活成功,更新数据库失败
+        /// </returns>
+        public async Task<int> Activation(Guid UserID, Guid OrderID, int? BeginTime, DateTime? BeginDateTime)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var order = await db.UT_Order.FindAsync();
+                var result = await Activation(UserID, order, null, null, BeginTime, BeginDateTime, db);
+                if (result == 10)
+                {
+                    if (await db.SaveChangesAsync() <= 0)
+                    {
+                        LoggerHelper.Error("套餐激活成功,更新数据库失败");
+                        //return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
+                        return -16;
+                    }
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 激活订单（MVNO购卡）
+        /// </summary>
+        /// <param name="UserID">用户ID</param>
+        /// <param name="order">订单实体</param>
+        /// <param name="package">套餐实体，减少多余的访问，如果原来已获取到，便传入，不传入则根据order的套餐来获取</param>
+        /// <param name="user">用户实体，减少多余的访问，如果原来已获取到，便传入，不传入则根据order的用户来获取</param>
+        /// <param name="BeginTime">开始生效时间戳</param>
+        /// <param name="BeginDateTime">开始生效日期格式</param>
+        /// <param name="db">数据库上下午，用于复用与事务</param>
+        /// <returns>
+        /// -12：激活失败_超过最晚激活日期
+        /// -13：激活失败_激活类型异常（非流量套餐）
+        /// -14：激活套餐失败_可能套餐已过期 "暂时无法激活,请联系客服"
+        /// -15：卡激活过程异常（购卡异常）
+        /// -11：失败
+        /// 10：成功
+        /// </returns>
+        private async Task<int> Activation(Guid UserID, UT_Order order, UT_Package package, UT_Users user, int? BeginTime, DateTime? BeginDateTime, UnitoysEntities db)
+        {
+            //为什么用10和-11等数字，只是作用于区分此错误属于激活部分
+            //UT_Order order = await db.UT_Order.FindAsync(OrderID);
+            if (order != null && UserID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
+            {
+                var LastCanActivationDate = GetLastCanActivationDate(order);
+
+                if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
+                {
+                    return -12;
+                    //return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期));
+                }
+                if (order.PackageCategory != CategoryType.Flow)
+                {
+                    //
+                    return -13;
+                    //return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常));
+                }
+                if (order.OrderStatus == 0)
+                {
+                    //1.购买产品
+                    if (package == null)
+                        package = await db.UT_Package.FindAsync(order.PackageId);
+                    if (user == null)
+                        user = await db.UT_Users.FindAsync(order.UserId);
+                    try
+                    {
+                        //2.购买订单卡
+                        //var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
+
+                        ResponseModel<BuyProduct> result = null;
+
+                        //服务生效时间，激活时间。兼容时间戳版本
+                        string beginTime = BeginDateTime.HasValue
+                            ? BeginDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                            : CommonHelper.GetTime(BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss");
+
+                        //如果是不能购买多个的套餐则认为有效天数字段只是用于描述
+                        if (package.IsCanBuyMultiple)
+                        {
+                            result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, beginTime, order.Quantity * package.ExpireDays);
+                        }
+                        else
+                        {
+                            result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, beginTime, order.Quantity);
+                        }
+
+                        if (result.status != "1")
+                        {
+                            LoggerHelper.Error("订单ID:" + order.ID + ",购买产品失败,返回msg：" + result.msg);
+                            return -14;
+                            //return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "暂时无法激活,请联系客服"));
+                            //return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期));
+                        }
+
+                        //3.保存订单Id
+                        order.PackageOrderId = result.data.orderId;
+                        //order.PackageOrderData = result.data.data;
+
+                        order.EffectiveDate = BeginDateTime.HasValue ? CommonHelper.ConvertDateTimeInt(BeginDateTime.Value) : BeginTime;
+                        order.EffectiveDateDesc = BeginDateTime;
+
+                        SetExpireDate(order);
+
+                        order.OrderStatus = OrderStatusType.UnactivatError;//默认是激活失败
+                        order.ActivationDate = CommonHelper.GetDateTimeInt();
+
+                        db.UT_Order.Attach(order);
+                        db.Entry<UT_Order>(order).State = EntityState.Modified;
+
+                        //if (!await _orderService.UpdateAsync(order))
+                        //{
+                        //    LoggerHelper.Error("套餐激活成功,更新数据库失败");
+                        //    return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        //卡激活过程异常
+                        LoggerHelper.Error(ex.Message, ex);
+                        return -15;
+                        //throw;
+                    }
+                }
+                return 10;
+                //4.返回订单卡数据
+                //return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
+            }
+            //return Ok(new StatusCodeRes(StatusCodeType.失败, "激活失败，可能订单不存在或未支付"));
+
+            return -11;
         }
     }
 }

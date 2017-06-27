@@ -57,7 +57,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, model.MonthPackageFee ?? 0, model.PackageAttributeId);
+                var result = await _orderService.AddOrder(currentUser.ID, model.PackageID, model.Quantity, model.PaymentMethod, model.MonthPackageFee ?? 0, model.PackageAttributeId, model.BeginDateTime);
 
                 if (result.Value.Key == 1 && result.Value.Value != null)
                 {
@@ -416,93 +416,34 @@ namespace Unitoys.WebApi.Controllers
             {
                 return Ok(new StatusCodeRes(StatusCodeType.参数错误, "激活失败，时间格式错误"));
             }
-            if (model.OrderID != Guid.Empty)
+            if (model.OrderID == Guid.Empty)
             {
-                var currentUser = WebUtil.GetApiUserSession();
-
-                UT_Order order = await _orderService.GetEntityByIdAsync(model.OrderID);
-                if (order != null && currentUser.ID == order.UserId && order.PayDate != null && order.PayStatus == PayStatusType.YesPayment)
-                {
-                    var LastCanActivationDate = GetLastCanActivationDate(order);
-
-                    if (CommonHelper.GetDateTimeInt() > LastCanActivationDate)
-                    {
-                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期));
-                    }
-                    if (order.PackageCategory != CategoryType.Flow)
-                    {
-                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常));
-                    }
-                    if (order.OrderStatus == 0)
-                    {
-                        //1.购买产品
-                        UT_Package package = await _packageService.GetEntityByIdAsync(order.PackageId);
-                        UT_Users user = await _userService.GetEntityByIdAsync(order.UserId);
-
-                        try
-                        {
-                            //2.购买订单卡
-                            //var result = await ESIMUtil.BuyProduct(package.PackageNum, user.Tel, order.OrderNum, model.BeginTime, order.Quantity * package.ExpireDays);
-
-                            ResponseModel<BuyProduct> result = null;
-
-                            //服务生效时间，激活时间。兼容时间戳版本
-                            string beginTime = model.BeginDateTime.HasValue
-                                ? model.BeginDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                                : CommonHelper.GetTime(model.BeginTime + "").ToString("yyyy-MM-dd HH:mm:ss");
-
-                            //如果是不能购买多个的套餐则认为有效天数字段只是用于描述
-                            if (package.IsCanBuyMultiple)
-                            {
-                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, beginTime, order.Quantity * package.ExpireDays);
-                            }
-                            else
-                            {
-                                result = await new Unitoys.ESIM_MVNO.MVNOServiceApi().BuyProduct(user.Tel, package.PackageNum, beginTime, order.Quantity);
-                            }
-
-                            if (result.status != "1")
-                            {
-                                LoggerHelper.Error("订单ID:" + order.ID + ",购买产品失败,返回msg：" + result.msg);
-
-                                return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "暂时无法激活,请联系客服"));
-                                //return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期));
-                            }
-
-                            //3.保存订单Id
-                            order.PackageOrderId = result.data.orderId;
-                            //order.PackageOrderData = result.data.data;
-
-                            order.EffectiveDate = model.BeginDateTime.HasValue ? CommonHelper.ConvertDateTimeInt(model.BeginDateTime.Value) : model.BeginTime;
-                            order.EffectiveDateDesc = model.BeginDateTime;
-                            SetExpireDate(order);
-                            if (model.BeginDateTime.HasValue)
-                            {
-
-                            }
-                            order.OrderStatus = OrderStatusType.UnactivatError;//默认是激活失败
-                            order.ActivationDate = CommonHelper.GetDateTimeInt();
-                            if (!await _orderService.UpdateAsync(order))
-                            {
-                                LoggerHelper.Error("套餐激活失败,更新数据库失败");
-                                return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LoggerHelper.Error(ex.Message, ex);
-                            throw;
-                        }
-                    }
-
-                    //4.返回订单卡数据
-                    return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = order.ID } });// Data = order.PackageOrderData 
-                }
-
-                return Ok(new StatusCodeRes(StatusCodeType.失败, "激活失败，可能订单不存在或未支付"));
+                return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误"));
             }
-            //return Ok(new { status = 0, msg = "订单ID格式错误！" });
-            return Ok(new StatusCodeRes(StatusCodeType.参数错误, "订单ID格式错误"));
+
+            var currentUser = WebUtil.GetApiUserSession();
+
+            var result = await _orderService.Activation(currentUser.ID, model.OrderID, model.BeginTime, model.BeginDateTime);
+            switch (result)
+            {
+                case -12:
+                    return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期));
+                case -13:
+                    return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常));
+                case -14:
+                    return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "暂时无法激活,请联系客服"));
+                case -15:
+                    return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "激活出现问题,暂时无法激活,请联系客服"));
+                case 10:
+                    return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = model.OrderID } });// Data = order.PackageOrderData 
+                case -11:
+                    return Ok(new StatusCodeRes(StatusCodeType.失败, "激活失败，可能订单不存在或未支付"));
+                case -16:
+                    return Ok(new StatusCodeRes(StatusCodeType.内部错误, "更新订单失败"));
+                default:
+                    return Ok(new StatusCodeRes(StatusCodeType.内部错误, "套餐激活出现问题"));
+            }
+
         }
 
         /// <summary>
@@ -745,9 +686,30 @@ namespace Unitoys.WebApi.Controllers
 
             int resultNum = await _orderService.PayOrderByUserAmount(currentUser.ID, model.OrderID);
 
-            if (resultNum == 0)
+            if (resultNum == 0 || resultNum == 10 || resultNum <= -11)
             {
-                return Ok(new { status = 1, msg = "支付成功！" });
+                switch (resultNum)
+                {
+                    case 10://激活成功
+                    case 0:
+                        return Ok(new { status = 1, msg = "支付成功！" });
+                    case -12:
+                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_超过最晚激活日期, "支付成功,激活失败,超过最晚激活日期"));
+                    case -13:
+                        return Ok(new StatusCodeRes(StatusCodeType.激活失败_激活类型异常, "支付成功,激活失败,激活类型异常"));
+                    case -14:
+                        return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "支付成功,暂时无法激活,请联系客服"));
+                    case -15:
+                        return Ok(new StatusCodeRes(StatusCodeType.激活套餐失败_可能套餐已过期, "支付成功,激活出现问题,暂时无法激活,请联系客服"));
+                    //case 10:
+                    //    return Ok(new { status = 1, msg = "订单待激活", data = new { OrderID = model.OrderID } });// Data = order.PackageOrderData 
+                    case -11:
+                        return Ok(new StatusCodeRes(StatusCodeType.失败, "支付成功,激活失败，可能订单不存在或未支付"));
+                    case -16:
+                        return Ok(new StatusCodeRes(StatusCodeType.内部错误, "支付成功,套餐激活后,更新订单失败"));
+                    default:
+                        return Ok(new StatusCodeRes(StatusCodeType.内部错误, "支付成功,套餐激活出现问题"));
+                }
             }
             else if (resultNum == -2)
             {

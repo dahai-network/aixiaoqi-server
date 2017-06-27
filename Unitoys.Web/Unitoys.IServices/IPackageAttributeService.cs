@@ -18,7 +18,7 @@ namespace Unitoys.IServices
         /// <param name="createStartDate">创建开始时间</param>
         /// <param name="createEndDate">创建结束时间</param>
         /// <returns></returns>
-        Task<KeyValuePair<int, List<UT_PackageAttribute>>> SearchAsync(int page, int rows, string packageName, int? createStartDate, int? createEndDate);
+        Task<KeyValuePair<int, List<UT_PackageAttribute>>> SearchAsync(int page, int rows, string packageName, int? createStartDate, int? createEndDate, Guid packageId);
         Task<KeyValuePair<int, List<UT_PackageAttribute>>> GetByPackageId(Guid packageId);
     }
 }

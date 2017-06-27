@@ -126,6 +126,10 @@
       <Project>{a45f71b9-fe2b-4ed5-8de1-8f5f199d3708}</Project>
       <Name>Unitoys.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Unitoys.ESIM_MVNO\Unitoys.ESIM_MVNO.csproj">
+      <Project>{f5ba37e4-3816-4b60-bffe-8e03fe49510b}</Project>
+      <Name>Unitoys.ESIM_MVNO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Unitoys.IServices\Unitoys.IServices.csproj">
       <Project>{d50aa7f8-3f4d-43c2-8136-267b0114b229}</Project>
       <Name>Unitoys.IServices</Name>

@@ -12,11 +12,11 @@ namespace Unitoys.Services
 {
     public class PackageAttributeService : BaseService<UT_PackageAttribute>, IPackageAttributeService
     {
-        public async Task<KeyValuePair<int, List<UT_PackageAttribute>>> SearchAsync(int page, int rows, string packageName, int? createStartDate, int? createEndDate)
+        public async Task<KeyValuePair<int, List<UT_PackageAttribute>>> SearchAsync(int page, int rows, string packageName, int? createStartDate, int? createEndDate, Guid packageId)
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var query = db.UT_PackageAttribute.Include(x => x.UT_Package).Where(x => true);
+                var query = db.UT_PackageAttribute.Include(x => x.UT_Package).Where(x => x.PackageId == packageId);
                 if (!string.IsNullOrEmpty(packageName))
                 {
                     query = query.Where(x => x.UT_Package.PackageName.Contains(packageName));

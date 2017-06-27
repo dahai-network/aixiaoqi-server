@@ -96,6 +96,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
+
         /// <summary>
         /// 更新用户基本信息和体形
         // </summary>
@@ -167,6 +168,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
+
         [HttpPost]
         public async Task<IHttpActionResult> ModifyEmail([FromBody]QueryUpdateUser queryModel)
         {
@@ -199,6 +201,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
+
         /// <summary>
         /// 更新用户头像
         /// </summary>
@@ -270,7 +273,7 @@ namespace Unitoys.WebApi.Controllers
                 {
                     HttpPostedFile file = httpRequest.Files[i];
                     //2. 等待图片上传完成。
-                    string uploadImageUrl = await WebUtil.UploadLogFileAsync(file, "/Unitoys/UserLog/", System.IO.Path.GetFileNameWithoutExtension(file.FileName));
+                    string uploadImageUrl = await WebUtil.UploadLogFileAsync(file, "/Unitoys/UserLog/", Guid.NewGuid().ToString() + "_" + System.IO.Path.GetFileNameWithoutExtension(file.FileName));
 
                     //3. 判断图片是否上传成功。
                     if (uploadImageUrl != "-1" && uploadImageUrl != "-2" && uploadImageUrl != "-3")
@@ -301,6 +304,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new StatusCodeRes(StatusCodeType.失败));
         }
+
         /// <summary>
         /// 修改密码
         /// </summary>
@@ -357,6 +361,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(new { status = 0, msg = errorMsg });
         }
+
         /// <summary>
         /// 找回密码
         /// </summary>
@@ -414,6 +419,7 @@ namespace Unitoys.WebApi.Controllers
             }
             return Ok(errorMsg);
         }
+
         /// <summary>
         /// 获取用户消费记录
         /// </summary>
@@ -504,6 +510,7 @@ namespace Unitoys.WebApi.Controllers
 
             //return Ok(new StatusCodeRes(StatusCodeType.找不到该用户));
         }
+
         /// <summary>
         /// 获取指定用户手机号是否在线
         /// </summary>

@@ -93,7 +93,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                     if (orderOrPayment.StartsWith("8022", StringComparison.OrdinalIgnoreCase))
                     {
                         //处理订单完成。
-                        if (await _orderService.OnAfterOrderSuccess(orderOrPayment, order.Quantity * order.UnitPrice))
+                        if (await _orderService.OnAfterOrderSuccess(orderOrPayment, order.Quantity * order.UnitPrice) == 0)
                         {
                             result.Success = true;
                             result.Msg = "更新成功！";

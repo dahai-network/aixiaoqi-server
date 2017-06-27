@@ -72,6 +72,95 @@ namespace Unitoys.Services
             }
         }
 
+        /// <summary>
+        /// 新增套餐实体和多属性组合
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="insertedList"></param>
+        /// <returns></returns>
+        public async Task<bool> InsertEntityPackageAttributeAsync(UT_Package entity, List<UT_PackageAttribute> insertedList)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                db.UT_Package.Add(entity);
+
+                foreach (var attrEntity in insertedList)
+                {
+                    attrEntity.PackageId = entity.ID;
+                    db.UT_PackageAttribute.Add(attrEntity);
+                }
+                return await db.SaveChangesAsync() > 0;
+            }
+        }
+
+        /// <summary>
+        /// 更新套餐实体和多属性组合
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="insertedList"></param>
+        /// <param name="updatedList"></param>
+        /// <param name="deletedList"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateEntityPackageAttributeAsync(UT_Package entity, List<UT_PackageAttribute> insertedList, List<UT_PackageAttribute> updatedList, List<UT_PackageAttribute> deletedList)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                db.UT_Package.Attach(entity);
+                db.Entry<UT_Package>(entity).State = EntityState.Modified;
+
+                if (insertedList != null)
+                    foreach (var attrEntity in insertedList)
+                    {
+                        attrEntity.PackageId = entity.ID;
+                        db.UT_PackageAttribute.Add(attrEntity);
+                    }
+                if (updatedList != null)
+                    foreach (var attrEntity in updatedList)
+                    {
+                        attrEntity.PackageId = entity.ID;
+                        db.UT_PackageAttribute.Attach(attrEntity);
+                        db.Entry<UT_PackageAttribute>(attrEntity).State = EntityState.Modified;
+                    }
+                if (deletedList != null)
+                    foreach (var attrEntity in deletedList)
+                    {
+                        attrEntity.PackageId = entity.ID;
+                        db.UT_PackageAttribute.Attach(attrEntity);
+                        db.Entry<UT_PackageAttribute>(attrEntity).State = EntityState.Deleted;
+                    }
+                return await db.SaveChangesAsync() > 0;
+            }
+        }
+
+        /// <summary>
+        /// 删除套餐实体和多属性组合
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteEntityPackageAttributeAsync(Guid ID)
+        {
+            using (UnitoysEntities db = new UnitoysEntities())
+            {
+                var entity = await db.UT_Package.Include(x => x.UT_PackageAttribute).FirstOrDefaultAsync(x => x.ID == ID);
+
+                if (entity.UT_PackageAttribute != null)
+                {
+                    var list = entity.UT_PackageAttribute.ToList();
+                    foreach (var attrEntity in entity.UT_PackageAttribute.ToList())
+                    {
+                        attrEntity.PackageId = entity.ID;
+                        db.UT_PackageAttribute.Attach(attrEntity);
+                        db.Entry<UT_PackageAttribute>(attrEntity).State = EntityState.Deleted;
+                    }
+                }
+
+                db.UT_Package.Attach(entity);
+                db.Entry<UT_Package>(entity).State = EntityState.Deleted;
+
+                return await db.SaveChangesAsync() > 0;
+            }
+        }
+
         //public async Task<KeyValuePair<int, List<UT_Package>>> GetRelaxed(Guid userId)
         //{
         //    using (UnitoysEntities db = new UnitoysEntities())

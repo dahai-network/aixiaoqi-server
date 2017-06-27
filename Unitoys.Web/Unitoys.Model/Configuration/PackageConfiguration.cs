@@ -16,6 +16,8 @@ namespace Unitoys.Model
             this.HasMany(t => t.UT_Order).WithRequired(t => t.UT_Package).HasForeignKey(t => t.PackageId);
             //用户领取1对多
             this.HasMany(t => t.UT_UserReceive).WithRequired(t => t.UT_Package).HasForeignKey(t => t.PackageId);
+            //套餐属性1对多
+            this.HasMany(t => t.UT_PackageAttribute).WithRequired(t => t.UT_Package).HasForeignKey(t => t.PackageId);
 
             this.Property(t => t.PackageName).HasMaxLength(100).IsRequired();
 
@@ -25,7 +27,7 @@ namespace Unitoys.Model
 
             this.Property(t => t.Pic).HasMaxLength(100);
 
-            
+
         }
     }
 }

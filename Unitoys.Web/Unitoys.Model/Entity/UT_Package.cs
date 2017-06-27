@@ -16,6 +16,7 @@ namespace Unitoys.Model
         {
             this.UT_Order = new HashSet<UT_Order>();
             this.UT_UserReceive = new HashSet<UT_UserReceive>();
+            this.UT_PackageAttribute = new HashSet<UT_PackageAttribute>();
         }
         /// <summary>
         /// 套餐名称
@@ -143,6 +144,7 @@ namespace Unitoys.Model
         public virtual ICollection<UT_Order> UT_Order { get; set; }
         public virtual UT_Country UT_Country { get; set; }
         public virtual ICollection<UT_UserReceive> UT_UserReceive { get; set; }
+        public virtual ICollection<UT_PackageAttribute> UT_PackageAttribute { get; set; }
     }
     public enum CategoryType
     {

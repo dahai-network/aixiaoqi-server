@@ -38,5 +38,28 @@ namespace Unitoys.IServices
         /// <param name="category">类型</param>
         /// <returns></returns>
         //Task<KeyValuePair<int, List<UT_Package>>> GetRelaxed(Guid userId);
+
+        /// <summary>
+        /// 新增套餐实体和多属性组合
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="insertedList"></param>
+        /// <returns></returns>
+        Task<bool> InsertEntityPackageAttributeAsync(UT_Package entity, List<UT_PackageAttribute> insertedList);
+        /// <summary>
+        /// 更新套餐实体和多属性组合
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="insertedList"></param>
+        /// <param name="updatedList"></param>
+        /// <param name="deletedList"></param>
+        /// <returns></returns>
+        Task<bool> UpdateEntityPackageAttributeAsync(UT_Package entity, List<UT_PackageAttribute> insertedList, List<UT_PackageAttribute> updatedList, List<UT_PackageAttribute> deletedList);
+        /// <summary>
+        /// 删除套餐实体和多属性组合
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        Task<bool> DeleteEntityPackageAttributeAsync(Guid ID);
     }
 }
