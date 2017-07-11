@@ -149,8 +149,30 @@ namespace Unitoys.WebApi.Controllers
                            DescTitlePic = packageResult.DescTitlePic.GetPackageCompleteUrl(),
                            DescPic = packageResult.DescPic.GetPackageCompleteUrl(),
                            OriginalPrice = packageResult.OriginalPrice.HasValue ? packageResult.OriginalPrice.ToString() : "",
+                           LastCanActivationDate = GetLastCanActivationDate(packageResult).ToString(),
                        };
             return Ok(new { status = 1, data = new { list = data } });
+        }
+
+        /// <summary>
+        /// 获取最晚激活时间
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private static int GetLastCanActivationDate(UT_Package order)
+        {
+            if (order == null)
+            {
+                return 0;
+            }
+            if (order.Category == CategoryType.KingCard)
+            {
+                return CommonHelper.ConvertDateTimeInt(DateTime.Now.AddMonths(3));
+            }
+            else
+            {
+                return CommonHelper.ConvertDateTimeInt(DateTime.Now.AddMonths(6));
+            }
         }
 
         /// <summary>

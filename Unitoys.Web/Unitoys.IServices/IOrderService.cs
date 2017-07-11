@@ -42,8 +42,9 @@ namespace Unitoys.IServices
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <param name="orderId">订单ID</param>
+        /// <param name="descr">描述前缀</param>
         /// <returns></returns>
-        Task<int> CancelOrder(Guid userId, Guid orderId);
+        Task<int> CancelOrder(Guid userId, Guid orderId, string descr = "");
         /// <summary>
         /// 查询
         /// </summary>

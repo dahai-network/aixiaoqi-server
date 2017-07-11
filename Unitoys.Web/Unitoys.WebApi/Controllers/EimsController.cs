@@ -599,7 +599,7 @@ namespace Unitoys.WebApi.Controllers
 
             if (SecureHelper.IsBase64String(model.SMSContent))
             {
-                entity.SMSContent = System.Text.ASCIIEncoding.UTF8.GetString(Convert.FromBase64String(model.SMSContent.Replace(' ', '+')));//处理Base64传递过程中会出现的+号变空格问题
+                entity.SMSContent = System.Text.ASCIIEncoding.UTF8.GetString(Convert.FromBase64String(model.SMSContent.Replace(' ', '+').Replace("\\u0000", " ").Replace("}", "")));//处理Base64传递过程中会出现的+号变空格问题
             }
             else
             {

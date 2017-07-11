@@ -113,5 +113,62 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 设置取消订单操作
+        /// </summary>
+        /// <param name="LoginName"></param>
+        /// <param name="PassWord"></param>
+        /// <param name="TrueName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [RequireRolesOrPermissions(UnitoysPermissionStore.Can_Modify_Order)]
+        public async Task<ActionResult> Cancel(Guid? ID)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+            if (ID.HasValue)
+            {
+                UT_Order order = await _orderService.GetEntityByIdAsync(ID.Value);
+                int resultNum = await _orderService.CancelOrder(order.UserId, order.ID);
+
+                if (resultNum == 0)
+                {
+                    result.Success = true;
+                    result.Msg = "取消成功！";
+                }
+                else if (resultNum == -2)
+                {
+                    result.Success = false;
+                    result.Msg = "订单已经被取消！";
+                }
+                else if (resultNum == -3)
+                {
+                    result.Success = false;
+                    result.Msg = "此订单不属于该用户！";
+                }
+                else if (resultNum == -4)
+                {
+                    result.Success = false;
+                    result.Msg = "订单已被使用！";
+                }
+                else if (resultNum == -5)
+                {
+                    result.Success = false;
+                    result.Msg = "订单不允许取消！";
+
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "取消失败！";
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "请求失败！";
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

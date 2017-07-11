@@ -58,22 +58,6 @@
         <input type="hidden" value="" id="ID" name="ID" />
         <table cellpadding="5" class="tb_form">
             <tr>
-                <td style="text-align:right">
-                    所属大洲：
-                </td>
-                <td>
-                    <select id="Continents" name="Continents" class="easyui-combobox" style="width:100px">
-                        <option value="0">亚洲</option>
-                        <option value="1">非洲</option>
-                        <option value="2">欧洲</option>
-                        <option value="3">北美洲</option>
-                        <option value="4">南美洲</option>
-                        <option value="5">大洋洲</option>
-                        <option value="6">南极洲</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
                 <td style="text-align:right" width="100">
                     公司名字：
                 </td>
@@ -94,7 +78,7 @@
                     注册地址：
                 </td>
                 <td>
-                    <input type="text" name="RegisteredAddress" id="RegisteredAddress" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 /> $/MB
+                    <input type="text" name="RegisteredAddress" id="RegisteredAddress" class="easyui-textbox" style="width: 200px; height: 33px;" />
                 </td>
             </tr>
             <tr>
@@ -118,7 +102,14 @@
                     公司性质：
                 </td>
                 <td>
-                    <input type="text" name="CorporationNature" id="CorporationNature" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                    <select id="CorporationNature" name="CorporationNature" class="easyui-combobox" style="width:100px">
+                        <option value="0">未知</option>
+                        <option value="1">国有</option>
+                        <option value="2">三资</option>
+                        <option value="3">私营</option>
+                        <option value="4">联营</option>
+                        <option value="5">个体</option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -243,10 +234,11 @@
             </tr>
             <tr>
                 <td style="text-align:right">
-                    是否代理其他产品：
+                    所代理产品其他产品：
                 </td>
                 <td>
-                    <input type="text" name="IsAgentOtherProducts" id="IsAgentOtherProducts" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
+                    @*<input type="checkbox" name="Rate" id="Rate" class="easyui-checkbox" style="width: 100px;height:33px;" maxlength=50 />*@
+                    <input type="checkbox" id="IsAgentOtherProducts" name="IsAgentOtherProducts" value="true" />
                 </td>
             </tr>
             <tr>
@@ -257,6 +249,7 @@
                     <input type="text" name="OtherProducts" id="OtherProducts" class="easyui-textbox" style="width: 100px;height:33px;" maxlength=50 />
                 </td>
             </tr>
+            
             <tr>
                 <td style="text-align:right">
                     开发市场设想：
@@ -336,16 +329,19 @@
             Msgshow('请先选择要删除的记录。');
         }
     }
-    function formatCorporationNature(value, rec, index) {
+    function formatStatus(value, rec, index) {
         if (value == 0) {
-            return "非热门";
+            return "待审核";
         }
         if (value == 1) {
-            return "热门";
+            return "<span style='color:green'>审核通过</span>";
+        }
+        if (value == 2) {
+            return "<span style='color:red'>审核不通过</span>";
         }
         return value;
     }
-    function formatStatus(value, rec, index) {
+    function formatCorporationNature(value, rec, index) {
         if (value == 0) {
             return "未知";
         }
@@ -381,7 +377,7 @@
     function onDbOpenDialog(index, rowData, value) {
         dlg_Edit.dialog('open');
         dlg_Edit_form.form('clear'); //清除之前面选中的表单
-        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.AgentName + "的费率信息");
+        dlg_Edit.dialog('setTitle', '您正在查看的是：' + rowData.CompanyName + "的代理信息");
         dlg_Edit_form.form('load', rowData); //加载到表单的控件上
         dlg_Edit_form.url = '/Manage/Agent/Update';
         $("#j_UploadResult").html("");

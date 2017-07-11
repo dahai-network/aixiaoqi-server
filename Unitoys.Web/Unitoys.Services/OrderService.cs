@@ -540,9 +540,11 @@ namespace Unitoys.Services
         /// <summary>
         /// 取消订单
         /// </summary>
-        /// <param name="orderNum">订单编号</param>
+        /// <param name="userId">用户ID</param>
+        /// <param name="orderId">订单ID</param>
+        /// <param name="descr">描述前缀</param>
         /// <returns></returns>
-        public async Task<int> CancelOrder(Guid userId, Guid orderId)
+        public async Task<int> CancelOrder(Guid userId, Guid orderId, string descr = "")
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
@@ -597,7 +599,7 @@ namespace Unitoys.Services
                         userBill.CreateDate = CommonHelper.GetDateTimeInt();
                         userBill.BillType = 1; //收入
                         userBill.PayType = 5; //取消订单
-                        userBill.Descr = "取消订单:" + order.PackageName;
+                        userBill.Descr = descr + "取消订单:" + order.PackageName;
 
                         db.UT_UserBill.Add(userBill);
                     }

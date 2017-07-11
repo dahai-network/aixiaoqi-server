@@ -204,7 +204,7 @@ namespace Unitoys.WebApi.Controllers
             }
             else
             {
-                int resultNum = await _orderService.CancelOrder(currentUser.ID, model.OrderID);
+                int resultNum = await _orderService.CancelOrder(currentUser.ID, model.OrderID, "官方");
 
                 if (resultNum == 0)
                 {
@@ -645,7 +645,7 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> ActivationLocalCompleted([FromBody]ActivationBindingModel model)
         {
-            if (model.OrderID != Guid.Empty)
+            if (model != null && model.OrderID != Guid.Empty)
             {
                 var currentUser = WebUtil.GetApiUserSession();
 

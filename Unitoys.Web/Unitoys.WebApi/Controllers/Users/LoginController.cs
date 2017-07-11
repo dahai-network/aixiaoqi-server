@@ -194,6 +194,16 @@ namespace Unitoys.WebApi.Controllers
                 return Ok(new { status = 0, msg = "未登录！" });
             }
         }
+        /// <summary>
+        /// 判断是token是否过期
+        /// </summary>
+        /// <returns></returns>
+        //[HttpGet]
+        //[NoLogin]
+        //public string GetTel()
+        //{
+        //    return WebUtil.GetApiKeyByTel(tel);
+        //}
     }
 
     public class QueryLoginUser

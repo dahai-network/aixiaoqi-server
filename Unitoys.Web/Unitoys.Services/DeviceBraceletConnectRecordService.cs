@@ -62,6 +62,9 @@ namespace Unitoys.Services
                                 case "ConnectDuration":
                                     query = query.OrderByDescending(x => x.DisconnectDate.HasValue ? x.ConnectDate - x.DisconnectDate : null);
                                     break;
+                                case "DisconnectDate":
+                                    query = query.OrderByDescending(x => x.DisconnectDate);
+                                    break;
                                 default:
                                     throw new Exception("意外的排序字段");
                                     break;
@@ -74,6 +77,9 @@ namespace Unitoys.Services
                             {
                                 case "ConnectDuration":
                                     query = query.OrderBy(x => x.DisconnectDate.HasValue ? x.ConnectDate - x.DisconnectDate : null);
+                                    break;
+                                case "DisconnectDate":
+                                    query = query.OrderBy(x => x.DisconnectDate);
                                     break;
                                 default:
                                     throw new Exception("意外的排序字段");
