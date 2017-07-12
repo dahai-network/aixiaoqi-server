@@ -795,7 +795,7 @@ namespace Unitoys.Services
         {
             using (UnitoysEntities db = new UnitoysEntities())
             {
-                var order = await db.UT_Order.FindAsync();
+                var order = await db.UT_Order.FindAsync(OrderID);
                 var result = await Activation(UserID, order, null, null, BeginTime, BeginDateTime, db);
                 if (result == 10)
                 {

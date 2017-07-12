@@ -105,8 +105,21 @@
 
                                 }
                             });
+                            if (!HasFlash()) {
+                                $('#spHasFlash').show();
+                            }
                         });
+                        function HasFlash() {
+                            try {
+                                return Boolean(new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
+                            } catch (exception) {
+                                return ('undefined' != typeof navigator.mimeTypes['application/x-shockwave-flash']);
+                            }
+                            return false;
+
+                        }
                     </script>
+                    <span id="spHasFlash" style="font-size:18px;display:none;">您还没有安装flash播放器,请点击<a style="font-size:25px;color:red;" href="//www.adobe.com/go/getflash" target="_blank">这里</a>安装</span>
                 </td>
             </tr>
         </table>
