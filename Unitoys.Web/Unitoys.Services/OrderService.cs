@@ -519,7 +519,7 @@ namespace Unitoys.Services
                     //流量套餐-激活订单
                     if (order.PackageCategory == CategoryType.Flow && (order.EffectiveDate.HasValue || order.EffectiveDateDesc.HasValue))
                     {
-                        var activationResult = await Activation(order.ID, order, order.UT_Package, user, order.EffectiveDate, order.EffectiveDateDesc, db);
+                        var activationResult = await Activation(user.ID, order, order.UT_Package, user, order.EffectiveDate, order.EffectiveDateDesc, db);
                         if (activationResult == 10)
                         {
                             if (await db.SaveChangesAsync() <= 0)

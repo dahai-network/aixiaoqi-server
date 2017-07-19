@@ -128,7 +128,7 @@ namespace Unitoys.WebApi.Controllers
             var data = new
                        {
                            PackageId = packageResult.ID,
-                           PackageName = packageResult.PackageName,
+                           PackageName = (packageResult.UT_Country != null ? packageResult.UT_Country.CountryName + " " : "") + packageResult.PackageName,
                            PackageNum = packageResult.PackageNum,
                            Operators = packageResult.Operators,
                            Price = packageResult.Price.ToString(),

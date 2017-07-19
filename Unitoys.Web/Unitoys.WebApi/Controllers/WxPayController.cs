@@ -242,6 +242,7 @@ namespace Unitoys.WebApi.Controllers
                         //3.微信支付成功
                         //处理订单完成。
                         var resultNum = await _orderService.OnAfterOrderSuccess(orderOrPayment, totalFee / 100);
+                        //var resultNum = await _orderService.OnAfterOrderSuccess("80221707191014540238", totalFee / 100);
 
                         if (resultNum == 0 || resultNum == 10 || resultNum <= -11)
                         {
