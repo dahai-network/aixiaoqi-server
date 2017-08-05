@@ -549,6 +549,7 @@ namespace Unitoys.WebApi.Controllers
         /// <param name="rpts"></param>
         /// <returns></returns>
         [NoLogin]
+        [HttpPost]
         public async Task<IHttpActionResult> SMSNewReport([FromBody]SMSNewReportBindingModel model)
         {
             #region 日志

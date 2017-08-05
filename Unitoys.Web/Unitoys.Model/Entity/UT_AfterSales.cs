@@ -28,6 +28,7 @@ namespace Unitoys.Model
         /// 联系地址
         /// </summary>
         public string Address { get; set; }
+        public DateTime? BuyDate { get; set; }
         /// <summary>
         /// 问题描述
         /// </summary>

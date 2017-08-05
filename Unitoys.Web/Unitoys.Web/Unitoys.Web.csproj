@@ -1219,6 +1219,10 @@
       <Project>{a45f71b9-fe2b-4ed5-8de1-8f5f199d3708}</Project>
       <Name>Unitoys.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Unitoys.ESIM_MVNO\Unitoys.ESIM_MVNO.csproj">
+      <Project>{f5ba37e4-3816-4b60-bffe-8e03fe49510b}</Project>
+      <Name>Unitoys.ESIM_MVNO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Unitoys.Ioc\Unitoys.Ioc.csproj">
       <Project>{82da6b34-1691-42e4-bcf1-eff8361978f4}</Project>
       <Name>Unitoys.Ioc</Name>

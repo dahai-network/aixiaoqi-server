@@ -47,6 +47,8 @@ namespace Unitoys.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Send(SendSMSBindingModelForContent model)
         {
+            //return Ok(new StatusCodeRes(StatusCodeType.必填参数为空, "维护中"));
+
             model.SMSContent = System.Web.HttpUtility.UrlDecode(model.SMSContent, System.Text.Encoding.UTF8);
             model.To = System.Web.HttpUtility.UrlDecode(model.To, System.Text.Encoding.UTF8);
             long TryParseInt = 0;

@@ -67,6 +67,25 @@ namespace Unitoys.Services
                     }
                 }
 
+                //流量套餐先查询MVNO是否存在未使用套餐购买
+                //if (package.Category == CategoryType.Flow)
+                //{
+                //    var notUsedNumProduct = await new Unitoys.ESIM_MVNO.MVNOServiceApi().QueryProduct(package.PackageNum);
+
+                //    //查询失败
+                //    if (notUsedNumProduct.status == "1")
+                //    {
+                //        //库存不足
+                //        if (notUsedNumProduct.data.NotUsedNum <= 0)
+                //        {
+
+                //        }
+                //    }
+
+
+                //    return new KeyValuePair<string, KeyValuePair<int, UT_Order>>("", new KeyValuePair<int, UT_Order>(0, null));
+                //}
+
                 UT_PackageAttribute packageAttribute = null;
                 if (packageAttributeId.HasValue)
                 {

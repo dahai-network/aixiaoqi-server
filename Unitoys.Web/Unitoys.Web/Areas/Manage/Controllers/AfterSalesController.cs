@@ -56,9 +56,10 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                            {
                                ID = i.ID,
                                AfterSalesNum = i.AfterSalesNum,
-                               Name = i.Contact,
+                               Contact = i.Contact,
                                MobilePhone = i.MobilePhone,
                                Address = i.Address,
+                               BuyDate = i.BuyDate.ToString(),
                                ProblemDescr = i.ProblemDescr,
                                Pic1 = i.Pic1.GetCompleteUrl(),
                                Pic2 = i.Pic2.GetCompleteUrl(),
@@ -70,7 +71,7 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                                ProductModel = i.ProductModel,
                                ExpressCompany = i.ExpressCompany,
                                AuditRemark = i.AuditRemark,
-                               CreateDate = i.CreateDate,
+                               CreateDate = CommonHelper.GetTime(i.CreateDate + "").ToString(),
                            };
 
             var jsonResult = new { total = totalNum, rows = pageRows };

@@ -69,6 +69,10 @@
         text: '取消',
         iconCls: 'icon-cut',
         handler: setCancel
+    }, {
+        text: '查询余量',
+        iconCls: 'icon-search',
+        handler: queryRemain
     }];
     function formatPaymentMethod(value, rec, index) {
         if (value == 1) {
@@ -187,6 +191,31 @@
             });
         } else {
             Msgshow('请先选择要删除的记录。');
+
+        }
+    }
+    //查询订单余量
+    function queryRemain() {
+        var arr = getSelectedArr();
+        if (arr.length > 0) {
+            $.ajax({
+                url: '/Manage/Order/QueryRemain',
+                type: 'post',
+                data: "ID=" + getSelectedID(),
+                error: function () {
+                    Msgalert('错误', '设置失败!', 'error');
+                    grid.datagrid('clearSelections');
+                },
+                success: function (data) {
+                    if (data.Success) {
+                        Msgfade(data.Msg); //提示消息
+                    } else {
+                        Msgalert('错误', data.Msg, 'error');
+                    }
+                }
+            });
+        } else {
+            Msgshow('请先选择要查询的记录。');
 
         }
     }

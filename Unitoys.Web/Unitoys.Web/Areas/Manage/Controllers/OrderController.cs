@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Unitoys.Core;
 using Unitoys.Core.Security;
+using Unitoys.ESIM_MVNO;
 using Unitoys.IServices;
 using Unitoys.Model;
 using Unitoys.Web.Models;
@@ -169,6 +170,109 @@ namespace Unitoys.Web.Areas.Manage.Controllers
                 result.Msg = "请求失败！";
             }
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<ActionResult> QueryRemain(Guid? ID)
+        {
+            JsonAjaxResult result = new JsonAjaxResult();
+            if (ID.HasValue)
+            {
+                UT_Order order = await _orderService.GetEntityByIdAsync(ID.Value);
+                var resultRemain = await new MVNOServiceApi().QueryOrderRemain(order.PackageOrderId);
+
+                if (resultRemain.status != "1")
+                {
+                    result.Success = false;
+                    result.Msg = "查询MVNO数据失败！";
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Msg = string.Format("总流量：{2}，服务剩余时间：{0},服务剩余流量：{1}", GetHumanTime(resultRemain.data.remainTime * 60), HumanReadableFileSize(resultRemain.data.remainSize), HumanReadableFileSizeMB(resultRemain.data.trafficSize));
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "请求失败！";
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
+
+        //此方法在手环连接记录中有重复
+        /// <summary>
+        /// 人类可识别的时间大小
+        /// </summary>
+        /// <param name="seconds">总秒数</param>
+        /// <returns></returns>
+        private string GetHumanTime(int seconds)
+        {
+            TimeSpan ts = new TimeSpan(0, 0, seconds);
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            if (ts.Days > 0)
+            {
+                sb.Append((int)ts.TotalDays + "天");
+            }
+            if (ts.Hours > 0)
+            {
+                sb.Append(ts.Hours + "小时");
+            }
+            if (ts.Minutes > 0)
+            {
+                sb.Append(ts.Minutes + "分");
+            }
+            if (ts.Seconds > 0)
+            {
+                sb.Append(ts.Seconds + "秒");
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 人类可识别的文件大小显示格式
+        /// </summary>
+        /// <param name="size">文件大小(KB为单位)</param>
+        /// <returns></returns>
+        public static string HumanReadableFileSize(double size)
+        {
+            string[] units = new string[] { "KB", "MB", "GB", "TB", "PB" };
+            double mod = 1024.0;
+            int i = 0;
+            while (size >= mod)
+            {
+                size /= mod;
+                i++;
+            }
+
+            //四舍六入
+            return Math.Round(size) + units[i];
+
+            //取小数点后一位
+            //return size.ToString("0.0");
+        }
+        /// <summary>
+        /// 人类可识别的文件大小显示格式
+        /// </summary>
+        /// <param name="size">文件大小(KB为单位)</param>
+        /// <returns></returns>
+        public static string HumanReadableFileSizeMB(double size)
+        {
+            string[] units = new string[] {"MB", "GB", "TB", "PB" };
+            double mod = 1024.0;
+            int i = 0;
+            while (size >= mod)
+            {
+                size /= mod;
+                i++;
+            }
+
+            //四舍六入
+            return Math.Round(size) + units[i];
+
+            //取小数点后一位
+            //return size.ToString("0.0");
         }
     }
 }

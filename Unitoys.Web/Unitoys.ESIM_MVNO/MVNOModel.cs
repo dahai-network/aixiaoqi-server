@@ -19,6 +19,28 @@ namespace Unitoys.ESIM_MVNO
         public string endTime { get; set; }
         public EsimResource esimResource { get; set; }
     }
+    public class QueryProduct
+    {
+        public int NotUsedNum { get; set; }
+    }
+    public class QueryOrderRemain
+    {
+        public string orderId { get; set; }
+        public string beginTime { get; set; }
+        public string endTime { get; set; }
+        /// <summary>
+        /// 服务剩余时间
+        /// </summary>
+        public int remainTime { get; set; }
+        /// <summary>
+        /// 服务剩余流量
+        /// </summary>
+        public int remainSize { get; set; }
+        /// <summary>
+        /// 产品可使用最大流量
+        /// </summary>
+        public int trafficSize { get; set; }
+    }
 
     public class EsimResource
     {

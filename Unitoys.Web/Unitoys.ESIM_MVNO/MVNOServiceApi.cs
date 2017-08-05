@@ -60,6 +60,46 @@ namespace Unitoys.ESIM_MVNO
 
             return model;
         }
+
+        /// <summary>
+        /// 查询产品
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="productId">产品编号</param>
+        /// <param name="beginTime">服务生效时间、激活时间</param>
+        /// <param name="quantity">订购数量天数，默认1天</param>
+        /// <returns></returns>
+        public async Task<ResponseModel<QueryProduct>> QueryProduct(string productId)
+        {
+            var requestJson = JsonConvert.SerializeObject(new
+            {
+                productId = productId,
+                //activeType = activeType
+            });
+            var model = await HttpPost<ResponseModel<QueryProduct>>("/api/channel/QueryProduct", requestJson);
+
+            return model;
+        }
+
+        /// <summary>
+        /// 查询余量
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="productId">产品编号</param>
+        /// <param name="beginTime">服务生效时间、激活时间</param>
+        /// <param name="quantity">订购数量天数，默认1天</param>
+        /// <returns></returns>
+        public async Task<ResponseModel<QueryOrderRemain>> QueryOrderRemain(string orderid)
+        {
+            var requestJson = JsonConvert.SerializeObject(new
+            {
+                OrderId = orderid,
+                //activeType = activeType
+            });
+            var model = await HttpPost<ResponseModel<QueryOrderRemain>>("/api/channel/QueryOrderRemain", requestJson);
+
+            return model;
+        }
         public static async Task<T> HttpPost<T>(string url, string requestJson)
         {
             HttpClient client = new HttpClient();
