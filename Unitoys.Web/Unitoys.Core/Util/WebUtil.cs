@@ -21,6 +21,28 @@ namespace Unitoys.Core
         private static SessionHelper session = new SessionHelper();
         private static ApiSessionHelper apiSession = new ApiSessionHelper();
 
+        #region 验证码Session
+
+        /// <summary>
+        /// 获取验证码Session
+        /// </summary>
+        /// <returns></returns>
+        public static string GetValidateCodeSession()
+        {
+            return session.GetSessionVCode("ValidateCode") as string;
+        }
+        /// <summary>
+        /// 设置验证码Session
+        /// </summary>
+        /// <param name="modal"></param>
+        public static void SetValidateCodeSession(string code)
+        {
+            session.SetSessionVCode("ValidateCode", code, Guid.NewGuid());
+        }
+
+
+        #endregion
+
         #region 管理员Session
         /// <summary>
         /// 获取管理员Session

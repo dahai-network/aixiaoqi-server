@@ -193,6 +193,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Manage\ManageAreaRegistration.cs" />
+    <Compile Include="Areas\Manage\Models\ValidateCode.cs" />
     <Compile Include="Areas\wx\Controllers\CacheController.cs" />
     <Compile Include="Areas\wx\Controllers\SpeakRecordController.cs" />
     <Compile Include="Areas\wx\Controllers\UserInfoController.cs" />
@@ -1319,7 +1320,6 @@
     <Content Include="App_Data\qqwry.dat" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Manage\Models\" />
     <Folder Include="Areas\wx\Models\" />
   </ItemGroup>
   <ItemGroup>

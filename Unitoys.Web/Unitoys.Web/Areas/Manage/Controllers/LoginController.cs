@@ -7,6 +7,7 @@ using System.Web.Security;
 using Unitoys.Core;
 using Unitoys.IServices;
 using Unitoys.Model;
+using Unitoys.Web.Areas.Manage.Models;
 
 namespace Unitoys.Web.Areas.Manage.Controllers
 {
@@ -28,6 +29,21 @@ namespace Unitoys.Web.Areas.Manage.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        /// <summary>
+        /// 获取验证码
+        /// </summary>
+        /// <returns></returns>
+        public FileResult GetValidateCode()
+        {
+            ValidateCode vCode = new ValidateCode();
+            string code = vCode.CreateValidateCode(4);
+            //System.Web.HttpContext.Current.Session["ValidateCode"] = code;
+            WebUtil.SetValidateCodeSession(code);
+            byte[] bytes = vCode.CreateValidateGraphic(code);
+            return File(bytes, @"image/jpeg");
+        }
+
         /// <summary>
         /// 对用户登录的操作进行验证
         /// </summary>
@@ -36,11 +52,15 @@ namespace Unitoys.Web.Areas.Manage.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult CheckLogin(string loginName, string passWord)
+        public ActionResult CheckLogin(string loginName, string passWord, string code)
         {
             string result = "";
-            
-            if (string.IsNullOrEmpty(loginName))
+
+            if (WebUtil.GetValidateCodeSession() == null || WebUtil.GetValidateCodeSession() != code)
+            {
+                result = "验证码错误";
+            }
+            else if (string.IsNullOrEmpty(loginName))
             {
                 result = "用户名不能为空";
             }

@@ -28,12 +28,13 @@
             width: 408px;
             height: 264px;
             background: url(/content/images/manage/login_box_bg.png);
+            /*background-size: 408px 284px;*/
         }
 
             .mainbox .ipt {
                 width: 301px;
-                height: 100px;
-                margin: 80px auto 0;
+                height: 135px;
+                margin: 60px auto 0;
             }
 
             .mainbox .submit {
@@ -55,9 +56,14 @@
             <div style="margin-bottom:10px">
                 <input class="easyui-textbox" id="LoginName" style="width:100%;height:40px;padding:12px" data-options="prompt:'用户名',iconCls:'icon-man',iconWidth:38">
             </div>
-            <div style="margin-bottom:20px">
+            <div style="margin-bottom:10px">
                 <input class="easyui-textbox" id="PassWord" type="password" style="width:100%;height:40px;padding:12px" data-options="prompt:'密码',iconCls:'icon-lock',iconWidth:38">
             </div>
+            <div style="margin-bottom:20px">
+                <input class="easyui-textbox" id="Code" style="width: 60%; height: 40px; padding: 12px; float: left;" data-options="prompt:'验证码',iconCls:'',iconWidth:38">
+                <img id="img" style="width:40%;height:40px;float:right;" src="@Url.Action("GetValidateCode", new { id = 1 })" onclick="changeCheckCode()" />
+            </div>
+
         </div>
         <div class="submit">
             <input type="button" class="btn_submit_login" value=" " />
@@ -67,6 +73,7 @@
         $(".btn_submit_login").bind("click", function () {
             var LoginName = $("#LoginName").val();
             var PassWord = $("#PassWord").val();
+            var Code = $("#Code").val();
             if (LoginName == "") {
                 $.messager.alert('提示', '登录帐号不能为空！', 'info');
             } else if (PassWord == "") {
@@ -75,11 +82,12 @@
                 $.ajax({
                     type: "POST",
                     url: "/Manage/Login/CheckLogin",
-                    data: "LoginName=" + LoginName + "&PassWord=" + PassWord,
+                    data: "LoginName=" + LoginName + "&PassWord=" + PassWord+ "&Code=" + Code,
                     success: function (msg) {
                         if (msg == "OK") {
                             location.href = "/Manage/Home";
                         } else {
+        changeCheckCode();
                             $.messager.alert('提示', msg, 'info');
                         }
                     }
@@ -93,6 +101,9 @@
                 $(".btn_submit_login").click();
             }
         });
+        function changeCheckCode() {
+            $("#img").attr("src", $("#img").attr("src") + 1);  //id=2
+        }
     </script>
 </body>
 </html>

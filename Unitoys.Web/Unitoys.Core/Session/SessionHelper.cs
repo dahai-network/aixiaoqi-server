@@ -11,7 +11,7 @@ namespace Unitoys.Core
     {
         private const int secondsTimeOut = 60 * 600;  //默认过期时间20分钟  单位秒
 
-        
+
         public LoginUserInfo this[string key]
         {
             get
@@ -33,12 +33,12 @@ namespace Unitoys.Core
                     }
                     return RedisHelper.Instance.Get<LoginUserInfo>(key);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    LoggerHelper.Error("Redis数据库访问出错！"+e.Message,e);
+                    LoggerHelper.Error("Redis数据库访问出错！" + e.Message, e);
                     return null;
                 }
-                
+
             }
             set
             {
@@ -64,7 +64,6 @@ namespace Unitoys.Core
             {
                 LoggerHelper.Error("Redis数据库访问出错！");
             }
-            
         }
         /// <summary>
         /// 查看改帐号是否有在其他地方登录
@@ -96,7 +95,57 @@ namespace Unitoys.Core
             WebHelper.DeleteCookie(key);
             return rs;
         }
-             
+
+
+
+        #region 验证码
+        public string GetSessionVCode(string key)
+        {
+            string webCookie = WebHelper.GetCookie(key);
+            if (webCookie == "")
+            {
+                return null;
+            }
+            key = key + "_" + SecureHelper.AESDecrypt(webCookie);
+
+            try
+            {
+                //距离过期时间还有多少秒
+                long l = RedisHelper.Instance.TTL(key);
+                if (l >= 0)
+                {
+                    RedisHelper.Instance.Expire(key, secondsTimeOut);
+                }
+                return RedisHelper.Instance.Get<string>(key);
+            }
+            catch (Exception e)
+            {
+                LoggerHelper.Error("Redis数据库访问出错！" + e.Message, e);
+                return null;
+            }
+        }
+        public void SetSessionVCode(string key, string value, Guid cookieValueId)
+        {
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new Exception("Key is Null or Epmty");
+            }
+            WebHelper.SetCookie(key, SecureHelper.AESEncrypt(cookieValueId.ToString()));
+            key = key + "_" + cookieValueId;
+
+            try
+            {
+
+                RedisHelper.Instance.Set<string>(key, value, secondsTimeOut);
+            }
+            catch
+            {
+                LoggerHelper.Error("Redis数据库访问出错！");
+            }
+        }
+        #endregion
+
 
     }
 }
